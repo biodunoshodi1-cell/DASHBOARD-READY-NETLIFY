@@ -1,0 +1,38 @@
+# Netlify configuration for the Bright Learners frontend.
+#
+# This repo is a pnpm monorepo; the actual frontend app lives at
+# artifacts/bright-learners. Netlify only builds/serves that folder's
+# static output - the API server (artifacts/api-server) is NOT deployed by
+# Netlify and must be hosted separately (see NETLIFY.md).
+
+[build]
+  base = "artifacts/bright-learners"
+  command = "cd ../.. && pnpm install --frozen-lockfile && cd artifacts/bright-learners && pnpm run build"
+  publish = "dist/public"
+
+[build.environment]
+  PORT = "5173"
+  BASE_PATH = "/"
+  NODE_VERSION = "22"
+
+# ---------------------------------------------------------------------------
+# API proxy
+# ---------------------------------------------------------------------------
+# /api/* is forwarded to the backend URL read from the BACKEND_URL
+# environment variable (set it in Netlify: Site settings > Environment
+# variables > BACKEND_URL, e.g. https://bright-learners-api.onrender.com -
+# no need to edit this file when the backend URL changes, just update the
+# env var and trigger a redeploy).
+#
+# Because this is a server-side proxy, the browser only ever talks to your
+# Netlify domain - no CORS, no cross-site cookie configuration needed.
+
+[[edge_functions]]
+  path = "/api/*"
+  function = "api-proxy"
+
+# SPA fallback: let the React app's router (wouter) handle all other routes.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
