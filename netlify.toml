@@ -2,15 +2,13 @@
 #
 # This repo is a pnpm monorepo; the actual frontend app lives at
 # artifacts/bright-learners. Netlify only builds/serves that folder's
-# static output — the API server (artifacts/api-server) is NOT deployed by
-# Netlify and must be hosted separately (see DEPLOYMENT.md).
+# static output - the API server (artifacts/api-server) is NOT deployed by
+# Netlify and must be hosted separately (see NETLIFY.md).
 
 [build]
   base = "artifacts/bright-learners"
-  # PORT/BASE_PATH are required by vite.config.ts at build time (Replit
-  # holdovers) — they don't affect the built static output.
   command = "cd ../.. && pnpm install --frozen-lockfile && cd artifacts/bright-learners && pnpm run build"
-  publish = "artifacts/bright-learners/dist/public"
+  publish = "dist/public"
 
 [build.environment]
   PORT = "5173"
@@ -20,18 +18,18 @@
 # ---------------------------------------------------------------------------
 # API proxy
 # ---------------------------------------------------------------------------
-# Forwards /api/* to the backend server (set BACKEND_URL below to your
-# deployed api-server URL, e.g. https://bright-learners-api.onrender.com).
-# Because this is a server-side proxy, the browser only ever talks to your
-# custom domain — no CORS, no cross-site cookie configuration needed.
+# /api/* is forwarded to the backend URL read from the BACKEND_URL
+# environment variable (set it in Netlify: Site settings > Environment
+# variables > BACKEND_URL, e.g. https://bright-learners-api.onrender.com -
+# no need to edit this file when the backend URL changes, just update the
+# env var and trigger a redeploy).
 #
-# Replace the destination URL, then redeploy (Netlify redirects don't read
-# env vars, so this must be a literal URL, not ${BACKEND_URL}).
-[[redirects]]
-  from = "/api/*"
-  to = "https://REPLACE-WITH-YOUR-BACKEND-URL/api/:splat"
-  status = 200
-  force = true
+# Because this is a server-side proxy, the browser only ever talks to your
+# Netlify domain - no CORS, no cross-site cookie configuration needed.
+
+[[edge_functions]]
+  path = "/api/*"
+  function = "api-proxy"
 
 # SPA fallback: let the React app's router (wouter) handle all other routes.
 [[redirects]]

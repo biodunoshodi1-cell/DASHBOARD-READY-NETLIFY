@@ -77,13 +77,26 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-gradient-to-br from-orange-100 via-pink-50 to-purple-100 flex items-center justify-center p-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
-      >
-        <div className="bg-white dark:bg-card rounded-3xl shadow-2xl p-8 border-2 border-border">
+    <div className="min-h-[100dvh] lg:flex">
+      {/* Full-bleed photo: entire left half of the screen (edge to edge,
+          no rounded corners/padding) on larger screens, and a large top
+          section on phones - not a small banner tucked inside the card
+          like before. */}
+      <div className="relative h-64 sm:h-80 lg:h-auto lg:w-1/2 lg:min-h-[100dvh]">
+        <img
+          src="/images/therapy-session.png"
+          alt="A learning support session between an adult and a child"
+          className="absolute inset-0 w-full h-full object-cover object-top"
+        />
+      </div>
+
+      <div className="flex-1 bg-gradient-to-br from-orange-100 via-pink-50 to-purple-100 flex items-center justify-center p-6 lg:w-1/2">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-md"
+        >
+          <div className="bg-white dark:bg-card rounded-3xl shadow-2xl p-8 border-2 border-border">
           <div className="flex justify-center mb-6">
             <Brighty size={100} />
           </div>
@@ -197,8 +210,9 @@ export default function Login() {
           >
             {mode === 'login' ? "New here? Create an account" : 'Already have an account? Sign in'}
           </button>
-        </div>
-      </motion.div>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 }

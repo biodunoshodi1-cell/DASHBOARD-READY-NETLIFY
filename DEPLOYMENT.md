@@ -1,9 +1,5 @@
 # Deployment Guide (GitHub Pages + Render)
 
-> **Prefer Netlify for the frontend?** See `NETLIFY_DEPLOYMENT.md` instead —
-> same backend/Firebase setup, Netlify-specific frontend steps. Don't follow
-> both guides on the same repo; pick one frontend host.
-
 This app has two parts, and they live in two different places:
 
 - **Frontend** (what students see and click) → **GitHub Pages**. This is

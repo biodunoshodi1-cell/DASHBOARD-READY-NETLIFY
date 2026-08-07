@@ -1,3 +1,21 @@
-<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="180" height="180" rx="36" fill="#FF3C00"/>
+<svg width="180" height="180" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Rounded background matching the app's brand square -->
+  <rect width="120" height="120" rx="24" fill="#FF3C00"/>
+
+  <!-- Brighty the owl mascot, matching src/components/Brighty.tsx -->
+  <ellipse cx="60" cy="70" rx="35" ry="40" fill="#C17817"/>
+  <circle cx="60" cy="45" r="32" fill="#D4941A"/>
+  <ellipse cx="32" cy="70" rx="14" ry="22" fill="#A66314"/>
+  <ellipse cx="88" cy="70" rx="14" ry="22" fill="#A66314"/>
+  <circle cx="48" cy="42" r="12" fill="white"/>
+  <circle cx="72" cy="42" r="12" fill="white"/>
+  <circle cx="48" cy="42" r="9" fill="#FFD700"/>
+  <circle cx="72" cy="42" r="9" fill="#FFD700"/>
+  <circle cx="48" cy="42" r="4" fill="#1a1a1a"/>
+  <circle cx="72" cy="42" r="4" fill="#1a1a1a"/>
+  <path d="M 60 50 L 65 58 L 55 58 Z" fill="#FF8C00"/>
+  <path d="M 42 38 Q 48 36 54 38" stroke="#8B5A00" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <path d="M 66 38 Q 72 36 78 38" stroke="#8B5A00" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <ellipse cx="50" cy="108" rx="8" ry="6" fill="#FF8C00"/>
+  <ellipse cx="70" cy="108" rx="8" ry="6" fill="#FF8C00"/>
 </svg>

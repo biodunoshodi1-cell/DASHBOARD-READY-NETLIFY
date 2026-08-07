@@ -97,7 +97,14 @@ app.use(
     store: new PgSessionStore({
       pool,
       tableName: "session",
-      createTableIfMissing: true,
+      // createTableIfMissing (was true) reads a SQL file bundled *inside*
+      // the connect-pg-simple package at a path relative to itself - our
+      // production build bundles everything into a single dist file, which
+      // breaks that relative lookup at runtime. The table is created once
+      // instead via the SQL in artifacts/api-server/session-table.sql (see
+      // NETLIFY.md's "one-time session table" step), so this can safely
+      // stay false.
+      createTableIfMissing: false,
     }),
     secret: process.env.SESSION_SECRET,
     name: "bls.sid",

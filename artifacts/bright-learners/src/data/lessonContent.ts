@@ -12,241 +12,12 @@ export type MathQuestion = {
 
 export type MathLesson = {
   title: string;
-  /** UK National Curriculum year group this lesson is written for (1-6) */
-  year: number;
-  /** Curriculum strand, e.g. "Number - place value" */
-  strand: string;
   questions: MathQuestion[];
 };
 
 export const mathLessons: Record<string, MathLesson> = {
-  // ==================== YEAR 1 ====================
-  'counting-to-100': {
-    title: 'Counting to 100',
-    year: 1,
-    strand: 'Number - number and place value',
-    questions: [
-      { id: 'c100-1', question: 'What number comes after 47?', options: ['46', '47', '48', '49'], correct: '48', hint: 'Count one more than 47' },
-      { id: 'c100-2', question: 'What number comes before 60?', options: ['58', '59', '60', '61'], correct: '59', hint: 'Count back one from 60' },
-      { id: 'c100-3', question: 'Which number is missing? 21, 22, 23, ?, 25', options: ['20', '24', '26', '30'], correct: '24', hint: 'Count on from 23' },
-      { id: 'c100-4', question: 'What is ten more than 34?', options: ['24', '35', '44', '45'], correct: '44', hint: 'Add 10 to the tens digit' },
-      { id: 'c100-5', question: 'What is ten less than 76?', options: ['66', '67', '75', '86'], correct: '66', hint: 'Take away 10 from the tens digit' },
-      { id: 'c100-6', question: 'Count on: 88, 89, 90, ?', options: ['91', '80', '100', '89'], correct: '91', hint: 'Keep counting up by one' },
-      { id: 'c100-7', question: 'Which number is the biggest?', options: ['54', '45', '58', '48'], correct: '58', hint: 'Compare the tens digit first' },
-      { id: 'c100-8', question: 'Which number is the smallest?', options: ['72', '27', '77', '70'], correct: '27', hint: 'Compare the tens digit first' },
-      { id: 'c100-9', question: 'What number is this? Ninety-three', options: ['39', '93', '90', '13'], correct: '93', hint: 'Ninety means 9 tens' },
-      { id: 'c100-10', question: 'How do you write 100 in words?', options: ['Ten', 'One hundred', 'Thousand', 'Nineteen'], correct: 'One hundred', hint: 'It comes right after 99' },
-    ],
-  },
-  'counting-in-steps': {
-    title: 'Counting in 2s, 5s and 10s',
-    year: 1,
-    strand: 'Number - number and place value',
-    questions: [
-      { id: 'step-1', question: '2, 4, 6, ?', options: ['7', '8', '9', '10'], correct: '8', hint: 'Count in 2s' },
-      { id: 'step-2', question: '5, 10, 15, ?', options: ['16', '18', '20', '25'], correct: '20', hint: 'Count in 5s' },
-      { id: 'step-3', question: '10, 20, 30, ?', options: ['35', '40', '45', '50'], correct: '40', hint: 'Count in 10s' },
-      { id: 'step-4', question: 'What comes next? 1, 3, 5, 7, ?', options: ['8', '9', '10', '11'], correct: '9', hint: 'These are odd numbers, add 2 each time' },
-      { id: 'step-5', question: 'What comes next? 0, 2, 4, 6, ?', options: ['7', '8', '9', '10'], correct: '8', hint: 'These are even numbers, add 2 each time' },
-      { id: 'step-6', question: 'Count in 5s: 20, 25, 30, ?', options: ['31', '32', '35', '40'], correct: '35', hint: 'Add 5 each time' },
-      { id: 'step-7', question: 'Count in 10s: 50, 60, 70, ?', options: ['71', '75', '80', '90'], correct: '80', hint: 'Add 10 each time' },
-      { id: 'step-8', question: 'Which set of numbers counts in 2s?', options: ['1, 2, 3, 4', '2, 4, 6, 8', '5, 10, 15, 20', '10, 20, 30'], correct: '2, 4, 6, 8', hint: 'Each number is 2 more than the last' },
-      { id: 'step-9', question: 'Count back in 10s: 60, 50, 40, ?', options: ['20', '30', '35', '45'], correct: '30', hint: 'Take away 10 each time' },
-      { id: 'step-10', question: 'What comes next? 15, 20, 25, ?', options: ['26', '28', '30', '35'], correct: '30', hint: 'Count in 5s' },
-    ],
-  },
-  'place-value': {
-    title: 'Place Value to 20',
-    year: 1,
-    strand: 'Number - number and place value',
-    questions: [
-      { id: 'pv-1', question: 'What is one more than 14?', options: ['13', '14', '15', '16'], correct: '15', hint: 'One more means add 1' },
-      { id: 'pv-2', question: 'What is one less than 9?', options: ['7', '8', '9', '10'], correct: '8', hint: 'One less means take away 1' },
-      { id: 'pv-3', question: 'Which number is bigger, 13 or 17?', options: ['13', '17', 'They are equal', 'Cannot tell'], correct: '17', hint: 'Compare the last digit' },
-      { id: 'pv-4', question: 'Which number is smaller, 11 or 8?', options: ['11', '8', 'They are equal', 'Cannot tell'], correct: '8', hint: '8 comes before 11 when counting' },
-      { id: 'pv-5', question: 'What is one more than 19?', options: ['18', '19', '20', '21'], correct: '20', hint: 'What comes right after 19?' },
-      { id: 'pv-6', question: 'How many tens and ones make 16?', options: ['1 ten and 6 ones', '6 tens and 1 one', '1 ten and 5 ones', '2 tens'], correct: '1 ten and 6 ones', hint: '16 = 10 + 6' },
-      { id: 'pv-7', question: 'How many tens and ones make 12?', options: ['1 ten and 2 ones', '2 tens and 1 one', '1 ten and 1 one', '2 tens'], correct: '1 ten and 2 ones', hint: '12 = 10 + 2' },
-      { id: 'pv-8', question: 'What is one less than 20?', options: ['18', '19', '20', '21'], correct: '19', hint: 'Count back one from 20' },
-      { id: 'pv-9', question: 'Order these from smallest to biggest: which is smallest?', image: '7, 15, 3', options: ['7', '15', '3', 'They are equal'], correct: '3', hint: 'Look for the lowest number' },
-      { id: 'pv-10', question: 'Order these: which is biggest?', image: '9, 18, 14', options: ['9', '18', '14', 'They are equal'], correct: '18', hint: 'Look for the highest number' },
-    ],
-  },
-  'number-bonds': {
-    title: 'Number Bonds to 20',
-    year: 1,
-    strand: 'Number - addition and subtraction',
-    questions: [
-      { id: 'bond-1', question: '7 + ? = 10', options: ['2', '3', '4', '5'], correct: '3', hint: 'What plus 7 makes 10?' },
-      { id: 'bond-2', question: '? + 6 = 10', options: ['3', '4', '5', '6'], correct: '4', hint: 'Think of the pairs that make 10' },
-      { id: 'bond-3', question: '12 + ? = 20', options: ['6', '7', '8', '9'], correct: '8', hint: 'How far is 12 from 20?' },
-      { id: 'bond-4', question: '? + 15 = 20', options: ['3', '4', '5', '6'], correct: '5', hint: 'Count on from 15 to 20' },
-      { id: 'bond-5', question: '9 + ? = 10', options: ['0', '1', '2', '3'], correct: '1', hint: 'One more than 9 is 10' },
-      { id: 'bond-6', question: '10 + ? = 18', options: ['6', '7', '8', '9'], correct: '8', hint: 'Count on from 10' },
-      { id: 'bond-7', question: 'Which pair makes 10?', options: ['4 and 5', '6 and 4', '3 and 8', '2 and 9'], correct: '6 and 4', hint: 'Add each pair together' },
-      { id: 'bond-8', question: 'Which pair makes 20?', options: ['10 and 8', '12 and 8', '15 and 4', '9 and 9'], correct: '12 and 8', hint: 'Add each pair together' },
-      { id: 'bond-9', question: '14 + ? = 20', options: ['4', '5', '6', '7'], correct: '6', hint: 'Count on from 14 to 20' },
-      { id: 'bond-10', question: '0 + ? = 10', options: ['0', '5', '10', '20'], correct: '10', hint: 'Adding zero changes nothing' },
-    ],
-  },
-  'money-coins': {
-    title: 'Coins and Notes',
-    year: 1,
-    strand: 'Measurement - money',
-    questions: [
-      { id: 'coin-1', question: 'Which coin is worth the most?', options: ['1p', '2p', '5p', '10p'], correct: '10p', hint: 'Look for the biggest number' },
-      { id: 'coin-2', question: 'How many 1p coins make 5p?', image: '🪙', options: ['3', '4', '5', '6'], correct: '5', hint: 'Count 1p five times' },
-      { id: 'coin-3', question: 'How many 2p coins make 10p?', options: ['3', '4', '5', '6'], correct: '5', hint: '2 + 2 + 2 + 2 + 2' },
-      { id: 'coin-4', question: 'You have a 5p and a 5p coin. How much do you have?', image: '🪙', options: ['5p', '10p', '15p', '20p'], correct: '10p', hint: 'Add 5 + 5' },
-      { id: 'coin-5', question: 'Which note is this?', image: '💷', options: ['£5 note', '£10 note', '£20 note', '£1 coin'], correct: '£10 note', hint: 'Notes are paper money, not coins' },
-      { id: 'coin-6', question: 'You have a 10p and a 2p coin. How much altogether?', options: ['10p', '11p', '12p', '20p'], correct: '12p', hint: 'Add 10 + 2' },
-      { id: 'coin-7', question: 'Which is worth less, a 2p or a 20p?', options: ['2p', '20p', 'They are equal', 'Cannot tell'], correct: '2p', hint: 'Compare the numbers' },
-      { id: 'coin-8', question: 'How many 5p coins make 20p?', options: ['2', '3', '4', '5'], correct: '4', hint: '5 + 5 + 5 + 5' },
-      { id: 'coin-9', question: 'You have one £1 coin and one 1p coin. What is the total?', options: ['£1', '£1 and 1p', '2p', '£2'], correct: '£1 and 1p', hint: 'Add the pound and the penny together' },
-      { id: 'coin-10', question: 'Which coin would you use to pay for something that costs exactly 20p?', options: ['A 20p coin', 'A 2p coin', 'A £2 coin', 'A 1p coin'], correct: 'A 20p coin', hint: 'Match the value exactly' },
-    ],
-  },
-  'time-oclock': {
-    title: "Telling the Time: O'Clock & Half Past",
-    year: 1,
-    strand: 'Measurement - time',
-    questions: [
-      { id: 'toc-1', question: 'What time does the clock show?', clockTime: { hour: 3, minute: 0 }, options: ['3:00', '3:30', '9:00', '12:00'], correct: '3:00', hint: "When the minute hand points to 12, it is o'clock" },
-      { id: 'toc-2', question: 'What time does the clock show?', clockTime: { hour: 7, minute: 0 }, options: ['7:00', '7:30', '12:07', '1:00'], correct: '7:00', hint: 'The hour hand points to 7 and the minute hand points to 12' },
-      { id: 'toc-3', question: 'What time does the clock show?', clockTime: { hour: 9, minute: 30 }, options: ['9:00', '9:30', '3:45', '6:00'], correct: '9:30', hint: 'The minute hand pointing to 6 means half past' },
-      { id: 'toc-4', question: 'What time does the clock show?', clockTime: { hour: 12, minute: 30 }, options: ['12:00', '12:30', '6:30', '1:00'], correct: '12:30', hint: 'Half past 12 means half way to 1 o\u2019clock' },
-      { id: 'toc-5', question: 'What time does the clock show?', clockTime: { hour: 5, minute: 0 }, options: ['5:00', '5:30', '11:00', '10:00'], correct: '5:00', hint: "The minute hand at 12 means it's o'clock" },
-      { id: 'toc-6', question: 'What time does the clock show?', clockTime: { hour: 2, minute: 30 }, options: ['2:00', '2:30', '8:00', '3:00'], correct: '2:30', hint: 'The minute hand is on the 6' },
-      { id: 'toc-7', question: 'Which time is "half past 4"?', options: ['4:00', '4:15', '4:30', '4:45'], correct: '4:30', hint: 'Half past means 30 minutes' },
-      { id: 'toc-8', question: 'Which time is "8 o\u2019clock"?', options: ['8:00', '8:30', '7:30', '12:08'], correct: '8:00', hint: "O'clock means the minute hand points straight up" },
-      { id: 'toc-9', question: 'What time does the clock show?', clockTime: { hour: 6, minute: 30 }, options: ['6:00', '6:30', '12:30', '7:30'], correct: '6:30', hint: 'Half past 6 is between 6 and 7' },
-      { id: 'toc-10', question: 'What time does the clock show?', clockTime: { hour: 11, minute: 0 }, options: ['11:00', '11:30', '1:00', '10:00'], correct: '11:00', hint: "The minute hand points straight up for o'clock" },
-    ],
-  },
-  '2d-shapes': {
-    title: '2D Shapes',
-    year: 1,
-    strand: 'Geometry - properties of shapes',
-    questions: [
-      { id: '2d-1', question: 'What is the name of this shape?', image: '🔺', options: ['Square', 'Circle', 'Triangle', 'Rectangle'], correct: 'Triangle', hint: 'It has three sides' },
-      { id: '2d-2', question: 'What is the name of this shape?', image: '🟥', options: ['Circle', 'Square', 'Triangle', 'Oval'], correct: 'Square', hint: 'All four sides are the same length' },
-      { id: '2d-3', question: 'What is the name of this shape?', image: '🔵', options: ['Square', 'Circle', 'Triangle', 'Rectangle'], correct: 'Circle', hint: 'It is round with no corners' },
-      { id: '2d-4', question: 'What is the name of this shape?', image: '🟦', options: ['Circle', 'Square', 'Rectangle', 'Triangle'], correct: 'Rectangle', hint: 'It has 4 sides but they are not all equal' },
-      { id: '2d-5', question: 'How many sides does a triangle have?', image: '🔺', options: ['2', '3', '4', '5'], correct: '3', hint: 'Tri means three' },
-      { id: '2d-6', question: 'How many corners does a square have?', image: '🟥', options: ['2', '3', '4', '5'], correct: '4', hint: 'Count each pointy corner' },
-      { id: '2d-7', question: 'Which shape has no straight sides at all?', options: ['Circle', 'Square', 'Triangle', 'Rectangle'], correct: 'Circle', hint: 'It is completely curved' },
-      { id: '2d-8', question: 'Which of these shapes is a rectangle?', image: '🟦', options: ['This shape', 'A circle', 'A triangle', 'A star'], correct: 'This shape', hint: 'It has 4 straight sides, two long and two short' },
-      { id: '2d-9', question: 'How many sides does a rectangle have?', image: '🟦', options: ['3', '4', '5', '6'], correct: '4', hint: 'Count each straight edge' },
-      { id: '2d-10', question: 'Which shape looks like a stop sign?', options: ['Octagon', 'Circle', 'Triangle', 'Square'], correct: 'Octagon', hint: 'It has 8 sides' },
-    ],
-  },
-  '3d-shapes': {
-    title: '3D Shapes',
-    year: 1,
-    strand: 'Geometry - properties of shapes',
-    questions: [
-      { id: '3d-1', question: 'What is the name of this 3D shape?', image: '🎲', options: ['Cube', 'Sphere', 'Cone', 'Cylinder'], correct: 'Cube', hint: 'Think of a dice' },
-      { id: '3d-2', question: 'Which shape is round like a ball?', options: ['Sphere', 'Cube', 'Cone', 'Cuboid'], correct: 'Sphere', hint: 'Perfectly round in every direction' },
-      { id: '3d-3', question: 'Which shape looks like a tin of beans?', options: ['Cylinder', 'Cube', 'Sphere', 'Pyramid'], correct: 'Cylinder', hint: 'It has two flat circle ends and rolls' },
-      { id: '3d-4', question: 'Which shape has a pointy top and a flat square bottom?', options: ['Pyramid', 'Cylinder', 'Sphere', 'Cube'], correct: 'Pyramid', hint: 'Think of the Egyptian pyramids' },
-      { id: '3d-5', question: 'Which shape looks like an ice cream cone?', options: ['Cone', 'Cube', 'Cuboid', 'Sphere'], correct: 'Cone', hint: 'It has one flat circle end and comes to a point' },
-      { id: '3d-6', question: 'A shoebox is an example of which 3D shape?', options: ['Cuboid', 'Sphere', 'Cone', 'Cylinder'], correct: 'Cuboid', hint: 'It is like a stretched cube' },
-      { id: '3d-7', question: 'Which of these 3D shapes can roll in every direction?', options: ['Sphere', 'Cube', 'Cuboid', 'Pyramid'], correct: 'Sphere', hint: 'It has no flat faces at all' },
-      { id: '3d-8', question: 'How many flat faces does a cube have?', image: '🎲', options: ['4', '5', '6', '8'], correct: '6', hint: 'It looks the same as a dice' },
-      { id: '3d-9', question: 'Which 3D shape is this football?', image: '⚽', options: ['Sphere', 'Cube', 'Cone', 'Cylinder'], correct: 'Sphere', hint: 'A ball is always this shape' },
-      { id: '3d-10', question: 'Which everyday object is shaped like a cylinder?', options: ['A can of drink', 'A dice', 'A party hat', 'A book'], correct: 'A can of drink', hint: 'Think of something that rolls on its side' },
-    ],
-  },
-  'position-direction': {
-    title: 'Position and Direction',
-    year: 1,
-    strand: 'Geometry - position and direction',
-    questions: [
-      { id: 'pos-1', question: 'If you are facing forward and turn all the way around, how much have you turned?', options: ['Quarter turn', 'Half turn', 'Three-quarter turn', 'Whole turn'], correct: 'Whole turn', hint: 'A full turn brings you back to facing the same way' },
-      { id: 'pos-2', question: 'If you turn to face the opposite way, how much have you turned?', options: ['Quarter turn', 'Half turn', 'Whole turn', 'No turn'], correct: 'Half turn', hint: 'Facing the opposite direction is halfway around' },
-      { id: 'pos-3', question: 'A cat is above a box. Where is the box?', options: ['Above the cat', 'Below the cat', 'Next to the cat', 'Inside the cat'], correct: 'Below the cat', hint: 'If the cat is above, the box must be underneath' },
-      { id: 'pos-4', question: 'Which direction is opposite to "left"?', options: ['Up', 'Down', 'Right', 'Forward'], correct: 'Right', hint: 'Left and this are opposites' },
-      { id: 'pos-5', question: 'If a ball rolls forward and then turns a quarter turn, which way does it now face?', options: ['Sideways', 'Backward', 'Still forward', 'Upside down'], correct: 'Sideways', hint: 'A quarter turn is like turning a corner' },
-      { id: 'pos-6', question: 'A bird is flying between two trees. Where is the bird?', options: ['Above the trees', 'Below the trees', 'Between the trees', 'Behind the trees'], correct: 'Between the trees', hint: 'Between means in the middle of two things' },
-      { id: 'pos-7', question: 'Which word describes something under the table?', options: ['Above', 'Below', 'Beside', 'On top of'], correct: 'Below', hint: 'Below means underneath' },
-      { id: 'pos-8', question: 'You are facing north and make a half turn. Which way do you now face?', options: ['North', 'South', 'East', 'West'], correct: 'South', hint: 'A half turn means the opposite direction' },
-      { id: 'pos-9', question: 'Which of these describes "behind"?', options: ['In front of something', 'At the back of something', 'On top of something', 'Next to something'], correct: 'At the back of something', hint: 'Behind is the opposite of in front' },
-      { id: 'pos-10', question: 'A quarter turn is the same as turning through which angle shape?', options: ['A corner of a square', 'A full circle', 'Half a circle', 'No angle at all'], correct: 'A corner of a square', hint: 'A square corner is a quarter turn' },
-    ],
-  },
-  'length-height': {
-    title: 'Length and Height',
-    year: 1,
-    strand: 'Measurement - length and height',
-    questions: [
-      { id: 'len-1', question: 'Which is longer, a pencil or a bus?', options: ['A pencil', 'A bus', 'They are the same', 'Cannot tell'], correct: 'A bus', hint: 'Think about which one is bigger in real life' },
-      { id: 'len-2', question: 'Which is taller, a house or a dog?', options: ['A dog', 'A house', 'They are the same', 'Cannot tell'], correct: 'A house', hint: 'Picture both side by side' },
-      { id: 'len-3', question: 'A worm measures 4 cubes long and a crayon measures 6 cubes long. Which is longer?', options: ['The worm', 'The crayon', 'They are equal', 'Cannot tell'], correct: 'The crayon', hint: '6 is bigger than 4' },
-      { id: 'len-4', question: 'Which is shortest?', options: ['A ruler', 'A pencil', 'A school bus', 'A road'], correct: 'A pencil', hint: 'Think about everyday sizes' },
-      { id: 'len-5', question: 'Two ribbons are measured with paperclips: one is 5 clips long, one is 8 clips long. Which is shorter?', options: ['The 5-clip ribbon', 'The 8-clip ribbon', 'They are equal', 'Cannot tell'], correct: 'The 5-clip ribbon', hint: '5 is smaller than 8' },
-      { id: 'len-6', question: 'Which tool would you use to check whose tower of blocks is taller?', options: ['A ruler standing next to it', 'A clock', 'A scale', 'A thermometer'], correct: 'A ruler standing next to it', hint: 'You need something that measures height' },
-      { id: 'len-7', question: 'If Ali is taller than Sam, and Sam is taller than Ben, who is the tallest?', options: ['Ali', 'Sam', 'Ben', 'Cannot tell'], correct: 'Ali', hint: 'Follow the chain: Ali > Sam > Ben' },
-      { id: 'len-8', question: 'Which is longer, a snake or a ladybird?', options: ['A snake', 'A ladybird', 'They are the same', 'Cannot tell'], correct: 'A snake', hint: 'Compare their real-life sizes' },
-      { id: 'len-9', question: 'A table is measured as 10 hand-spans wide. A door is measured as 4 hand-spans wide. Which is wider?', options: ['The table', 'The door', 'They are equal', 'Cannot tell'], correct: 'The table', hint: '10 is bigger than 4' },
-      { id: 'len-10', question: 'Which word means "not as long as"?', options: ['Longer', 'Shorter', 'Taller', 'Wider'], correct: 'Shorter', hint: 'This is the opposite of longer' },
-    ],
-  },
-  'mass-capacity': {
-    title: 'Weight and Capacity',
-    year: 1,
-    strand: 'Measurement - mass, capacity and volume',
-    questions: [
-      { id: 'mc-1', question: 'Which is heavier, a feather or a brick?', options: ['A feather', 'A brick', 'They are the same', 'Cannot tell'], correct: 'A brick', hint: 'Think about which is harder to lift' },
-      { id: 'mc-2', question: 'Which is lighter, an elephant or a mouse?', options: ['An elephant', 'A mouse', 'They are the same', 'Cannot tell'], correct: 'A mouse', hint: 'Think about their real size' },
-      { id: 'mc-3', question: 'Which cup has more water in it?', image: '🥤', options: ['The fuller cup', 'The emptier cup', 'They are equal', 'Cannot tell'], correct: 'The fuller cup', hint: 'More water means fuller' },
-      { id: 'mc-4', question: 'Which container holds more, a bathtub or a teacup?', options: ['A teacup', 'A bathtub', 'They hold the same', 'Cannot tell'], correct: 'A bathtub', hint: 'Picture how much water fits in each' },
-      { id: 'mc-5', question: 'A bag of feathers and a bag of rocks are the same size. Which is heavier?', options: ['The feathers', 'The rocks', 'They are equal', 'Cannot tell'], correct: 'The rocks', hint: 'Rocks are much heavier than feathers even at the same size' },
-      { id: 'mc-6', question: 'Which word describes a cup with no water in it?', options: ['Full', 'Empty', 'Heavy', 'Tall'], correct: 'Empty', hint: 'No water means nothing inside' },
-      { id: 'mc-7', question: 'Which would you use to check which of two bags is heavier?', options: ['A ruler', 'A pair of scales', 'A clock', 'A thermometer'], correct: 'A pair of scales', hint: 'This tool balances weight' },
-      { id: 'mc-8', question: 'Which holds the least water?', options: ['A bucket', 'A swimming pool', 'A teaspoon', 'A bathtub'], correct: 'A teaspoon', hint: 'Think about the smallest container' },
-      { id: 'mc-9', question: 'If a jug is half full, how much more can you pour in before it is full?', options: ['None', 'A little', 'Half a jug more', 'Two jugs more'], correct: 'Half a jug more', hint: 'Half plus half makes a whole jug' },
-      { id: 'mc-10', question: 'Which is heavier, a bag with 2 apples or a bag with 6 apples of the same size?', options: ['2 apples', '6 apples', 'They are equal', 'Cannot tell'], correct: '6 apples', hint: 'More apples means more weight' },
-    ],
-  },
-  'sequencing-events': {
-    title: 'Days, Months and Sequencing',
-    year: 1,
-    strand: 'Measurement - time',
-    questions: [
-      { id: 'seq-1', question: 'What day comes after Monday?', options: ['Sunday', 'Tuesday', 'Wednesday', 'Friday'], correct: 'Tuesday', hint: 'Think of the days of the week in order' },
-      { id: 'seq-2', question: 'What day comes before Friday?', options: ['Wednesday', 'Thursday', 'Saturday', 'Monday'], correct: 'Thursday', hint: 'Count back one day from Friday' },
-      { id: 'seq-3', question: 'How many days are in a week?', options: ['5', '6', '7', '8'], correct: '7', hint: 'Monday to Sunday' },
-      { id: 'seq-4', question: 'Which comes first: breakfast or dinner?', options: ['Breakfast', 'Dinner', 'They happen together', 'Cannot tell'], correct: 'Breakfast', hint: 'Think about the order of meals in a day' },
-      { id: 'seq-5', question: 'Yesterday was Monday. What day is today?', options: ['Sunday', 'Tuesday', 'Wednesday', 'Saturday'], correct: 'Tuesday', hint: 'Today comes right after yesterday' },
-      { id: 'seq-6', question: 'What month comes after January?', options: ['December', 'February', 'March', 'June'], correct: 'February', hint: 'January is the first month of the year' },
-      { id: 'seq-7', question: 'Which season comes after winter?', options: ['Summer', 'Autumn', 'Spring', 'Winter again'], correct: 'Spring', hint: 'Think of the order: winter, spring, summer, autumn' },
-      { id: 'seq-8', question: 'What is the last day of the school week called (Monday to Friday)?', options: ['Monday', 'Wednesday', 'Friday', 'Sunday'], correct: 'Friday', hint: 'It is the fifth day if starting from Monday' },
-      { id: 'seq-9', question: 'Put these in order: put on shoes, put on socks, go outside. What comes first?', options: ['Put on shoes', 'Put on socks', 'Go outside', 'It does not matter'], correct: 'Put on socks', hint: 'Socks go on before shoes' },
-      { id: 'seq-10', question: 'How many months are in a year?', options: ['10', '11', '12', '13'], correct: '12', hint: 'January through December' },
-    ],
-  },
-  'addition-subtraction-problems': {
-    title: 'Addition & Subtraction Word Problems',
-    year: 1,
-    strand: 'Number - addition and subtraction',
-    questions: [
-      { id: 'asp-1', question: 'Mia has 6 stickers. Her friend gives her 5 more. How many stickers does Mia have now?', image: '⭐', options: ['9', '10', '11', '12'], correct: '11', hint: 'Add 6 + 5' },
-      { id: 'asp-2', question: 'There are 15 ducks on a pond. 6 swim away. How many ducks are left?', image: '🦆', options: ['8', '9', '10', '11'], correct: '9', hint: 'Take away 15 - 6' },
-      { id: 'asp-3', question: 'Jack has 8 crayons. He gets 4 more for his birthday. How many crayons does he have now?', image: '🖍️', options: ['10', '11', '12', '13'], correct: '12', hint: 'Add 8 + 4' },
-      { id: 'asp-4', question: 'A basket has 18 eggs. 9 are used for baking. How many eggs are left?', image: '🥚', options: ['7', '8', '9', '10'], correct: '9', hint: 'Take away 18 - 9' },
-      { id: 'asp-5', question: 'There are 7 red cars and 6 blue cars in the car park. How many cars altogether?', image: '🚗', options: ['12', '13', '14', '15'], correct: '13', hint: 'Add 7 + 6' },
-      { id: 'asp-6', question: 'Ella had 20 sweets. She ate 8 of them. How many sweets does she have left?', image: '🍬', options: ['10', '11', '12', '13'], correct: '12', hint: 'Take away 20 - 8' },
-      { id: 'asp-7', question: 'There are 9 children on the swings and 7 more join them. How many children altogether?', options: ['14', '15', '16', '17'], correct: '16', hint: 'Add 9 + 7' },
-      { id: 'asp-8', question: 'A farmer has 14 sheep. 5 sheep go into the barn. How many sheep are still outside?', image: '🐑', options: ['8', '9', '10', '11'], correct: '9', hint: 'Take away 14 - 5' },
-      { id: 'asp-9', question: 'Sam collects 8 shells on Monday and 9 shells on Tuesday. How many shells in total?', image: '🐚', options: ['15', '16', '17', '18'], correct: '17', hint: 'Add 8 + 9' },
-      { id: 'asp-10', question: 'There are 20 balloons at a party. 12 pop. How many balloons are left?', image: '🎈', options: ['6', '7', '8', '9'], correct: '8', hint: 'Take away 20 - 12' },
-    ],
-  },
-  // ==================== YEAR 1 (existing topics) ====================
   counting: {
     title: 'Counting',
-    year: 1,
-    strand: 'Number - number and place value',
     questions: [
       { id: 'count-1', question: 'How many stars?', image: '⭐⭐⭐', options: ['2', '3', '4', '5'], correct: '3', hint: 'Count each star one by one' },
       { id: 'count-2', question: 'Count the apples', image: '🍎🍎🍎🍎🍎', options: ['4', '5', '6', '7'], correct: '5', hint: 'Point to each apple as you count' },
@@ -262,8 +33,6 @@ export const mathLessons: Record<string, MathLesson> = {
   },
   addition: {
     title: 'Addition',
-    year: 1,
-    strand: 'Number - addition and subtraction',
     questions: [
       { id: 'add-1', question: '2 + 3 = ?', options: ['4', '5', '6', '7'], correct: '5', hint: 'Start at 2, count up 3 more' },
       { id: 'add-2', question: '5 + 2 = ?', options: ['6', '7', '8', '9'], correct: '7', hint: 'Add the numbers together' },
@@ -279,8 +48,6 @@ export const mathLessons: Record<string, MathLesson> = {
   },
   subtraction: {
     title: 'Subtraction',
-    year: 1,
-    strand: 'Number - addition and subtraction',
     questions: [
       { id: 'sub-1', question: '5 - 2 = ?', options: ['2', '3', '4', '5'], correct: '3', hint: 'Take away 2 from 5' },
       { id: 'sub-2', question: '7 - 3 = ?', options: ['3', '4', '5', '6'], correct: '4', hint: 'Count back 3 from 7' },
@@ -296,8 +63,6 @@ export const mathLessons: Record<string, MathLesson> = {
   },
   multiplication: {
     title: 'Multiplication',
-    year: 2,
-    strand: 'Number - multiplication and division',
     questions: [
       { id: 'mult-1', question: '2 × 3 = ?', options: ['4', '5', '6', '7'], correct: '6', hint: '2 groups of 3' },
       { id: 'mult-2', question: '3 × 3 = ?', options: ['6', '7', '8', '9'], correct: '9', hint: '3 + 3 + 3' },
@@ -313,8 +78,6 @@ export const mathLessons: Record<string, MathLesson> = {
   },
   division: {
     title: 'Division',
-    year: 2,
-    strand: 'Number - multiplication and division',
     questions: [
       { id: 'div-1', question: '6 ÷ 2 = ?', options: ['2', '3', '4', '5'], correct: '3', hint: 'Share 6 into 2 equal groups' },
       { id: 'div-2', question: '10 ÷ 2 = ?', options: ['4', '5', '6', '7'], correct: '5', hint: 'Half of 10' },
@@ -330,8 +93,6 @@ export const mathLessons: Record<string, MathLesson> = {
   },
   fractions: {
     title: 'Fractions',
-    year: 1,
-    strand: 'Number - fractions',
     questions: [
       { id: 'frac-1', question: 'What is half of 8?', image: '🍕', options: ['2', '3', '4', '5'], correct: '4', hint: 'Half means splitting into 2 equal parts' },
       { id: 'frac-2', question: 'What is half of 10?', image: '🍎', options: ['4', '5', '6', '7'], correct: '5', hint: 'Divide by 2' },
@@ -346,9 +107,7 @@ export const mathLessons: Record<string, MathLesson> = {
     ],
   },
   money: {
-    title: 'Money (Change & Totals)',
-    year: 2,
-    strand: 'Measurement - money',
+    title: 'Money',
     questions: [
       { id: 'money-1', question: 'You have 2 coins of £1. How much do you have?', image: '💷', options: ['£1', '£2', '£3', '£4'], correct: '£2', hint: 'Add 1 + 1' },
       { id: 'money-2', question: 'You have 3 coins of 10p. How much do you have?', image: '🪙', options: ['20p', '30p', '40p', '50p'], correct: '30p', hint: 'Add 10 three times' },
@@ -363,43 +122,46 @@ export const mathLessons: Record<string, MathLesson> = {
     ],
   },
   time: {
-    title: 'Time (Quarter Past & Quarter To)',
-    year: 2,
-    strand: 'Measurement - time',
+    title: 'Time',
+    // Reordered so o'clock, half past, quarter past, and quarter to all
+    // appear within the first few questions instead of half past/quarter
+    // past/quarter to only showing up in the second half of the lesson -
+    // makes the variety visible even if a learner doesn't finish all 10.
     questions: [
       { id: 'time-1', question: 'What time does the clock show?', clockTime: { hour: 3, minute: 0 }, options: ['3:00', '3:30', '9:00', '12:15'], correct: '3:00', hint: 'The hour hand points to 3 and the minute hand points straight up to 12 — that means o\u2019clock' },
-      { id: 'time-2', question: 'What time does the clock show?', clockTime: { hour: 6, minute: 0 }, options: ['6:00', '12:30', '6:30', '5:00'], correct: '6:00', hint: 'The minute hand is on the 12, so it is an exact hour' },
       { id: 'time-3', question: 'What time does the clock show?', clockTime: { hour: 9, minute: 30 }, options: ['9:00', '9:30', '3:45', '10:30'], correct: '9:30', hint: 'The minute hand points to 6, which means half past' },
-      { id: 'time-4', question: 'What time does the clock show?', clockTime: { hour: 12, minute: 30 }, options: ['12:00', '12:30', '6:30', '1:30'], correct: '12:30', hint: 'Half past means the minute hand is on the 6' },
       { id: 'time-5', question: 'What time does the clock show?', clockTime: { hour: 4, minute: 15 }, options: ['4:00', '4:15', '4:45', '3:15'], correct: '4:15', hint: 'The minute hand points to the 3, which means quarter past' },
-      { id: 'time-6', question: 'What time does the clock show?', clockTime: { hour: 8, minute: 15 }, options: ['8:00', '8:15', '8:45', '7:15'], correct: '8:15', hint: 'Quarter past means 15 minutes have gone by' },
       { id: 'time-7', question: 'What time does the clock show?', clockTime: { hour: 5, minute: 45 }, options: ['5:45', '5:15', '6:00', '6:15'], correct: '5:45', hint: 'The minute hand points to the 9, which means quarter to the next hour' },
+      { id: 'time-2', question: 'What time does the clock show?', clockTime: { hour: 6, minute: 0 }, options: ['6:00', '12:30', '6:30', '5:00'], correct: '6:00', hint: 'The minute hand is on the 12, so it is an exact hour' },
+      { id: 'time-4', question: 'What time does the clock show?', clockTime: { hour: 12, minute: 30 }, options: ['12:00', '12:30', '6:30', '1:30'], correct: '12:30', hint: 'Half past means the minute hand is on the 6' },
+      { id: 'time-6', question: 'What time does the clock show?', clockTime: { hour: 8, minute: 15 }, options: ['8:00', '8:15', '8:45', '7:15'], correct: '8:15', hint: 'Quarter past means 15 minutes have gone by' },
       { id: 'time-8', question: 'What time does the clock show?', clockTime: { hour: 10, minute: 45 }, options: ['10:45', '11:15', '10:15', '9:45'], correct: '10:45', hint: 'Quarter to 11 means 45 minutes past 10' },
       { id: 'time-9', question: 'What time does the clock show?', clockTime: { hour: 2, minute: 0 }, options: ['2:00', '2:30', '12:10', '10:00'], correct: '2:00', hint: 'Both hands help you tell the exact hour' },
       { id: 'time-10', question: 'What time does the clock show?', clockTime: { hour: 7, minute: 30 }, options: ['7:00', '7:30', '6:30', '8:30'], correct: '7:30', hint: 'Half past 7 is halfway between 7 and 8 o\u2019clock' },
     ],
   },
   shapes: {
-    title: 'Shapes (More Sides & Faces)',
-    year: 2,
-    strand: 'Geometry - properties of shapes',
+    title: 'Shapes',
+    // image values below are shape keywords (rendered as real drawn SVG
+    // shapes by ShapeGlyph in math-lesson.tsx / game-math-sprint.tsx), not
+    // emoji - the previous emoji were visually wrong for some shapes (the
+    // rectangle question used a square icon, 🟦) and invisible on many
+    // devices for others (pentagon/hexagon aren't real emoji).
     questions: [
-      { id: 'shape-1', question: 'How many sides does a triangle have?', image: '🔺', options: ['2', '3', '4', '5'], correct: '3', hint: 'Tri means three' },
-      { id: 'shape-2', question: 'How many sides does a square have?', image: '🟥', options: ['3', '4', '5', '6'], correct: '4', hint: 'All sides are equal' },
-      { id: 'shape-3', question: 'How many corners does a rectangle have?', image: '🟦', options: ['2', '3', '4', '5'], correct: '4', hint: 'Count each corner' },
-      { id: 'shape-4', question: 'Which shape has no corners at all?', image: '🔵', options: ['Circle', 'Square', 'Triangle', 'Rectangle'], correct: 'Circle', hint: 'It is perfectly round' },
-      { id: 'shape-5', question: 'How many sides does a pentagon have?', image: '⬠', options: ['4', '5', '6', '7'], correct: '5', hint: 'Penta means five' },
-      { id: 'shape-6', question: 'How many sides does a hexagon have?', image: '⬡', options: ['5', '6', '7', '8'], correct: '6', hint: 'Hexa means six' },
+      { id: 'shape-1', question: 'How many sides does a triangle have?', image: 'triangle', options: ['2', '3', '4', '5'], correct: '3', hint: 'Tri means three' },
+      { id: 'shape-2', question: 'How many sides does a square have?', image: 'square', options: ['3', '4', '5', '6'], correct: '4', hint: 'All sides are equal' },
+      { id: 'shape-3', question: 'How many corners does a rectangle have?', image: 'rectangle', options: ['2', '3', '4', '5'], correct: '4', hint: 'Count each corner' },
+      { id: 'shape-4', question: 'Which shape has no corners at all?', image: 'circle', options: ['Circle', 'Square', 'Triangle', 'Rectangle'], correct: 'Circle', hint: 'It is perfectly round' },
+      { id: 'shape-5', question: 'How many sides does a pentagon have?', image: 'pentagon', options: ['4', '5', '6', '7'], correct: '5', hint: 'Penta means five' },
+      { id: 'shape-6', question: 'How many sides does a hexagon have?', image: 'hexagon', options: ['5', '6', '7', '8'], correct: '6', hint: 'Hexa means six' },
       { id: 'shape-7', question: 'Which of these is a 3D shape?', options: ['Cube', 'Circle', 'Triangle', 'Square'], correct: 'Cube', hint: 'It has depth, not just flat sides' },
-      { id: 'shape-8', question: 'How many faces does a cube have?', image: '🎲', options: ['4', '5', '6', '7'], correct: '6', hint: 'Think of a dice' },
-      { id: 'shape-9', question: 'Which shape is round like a ball?', options: ['Sphere', 'Cube', 'Cone', 'Cylinder'], correct: 'Sphere', hint: 'Perfectly round in 3D' },
-      { id: 'shape-10', question: 'How many corners does a triangle have?', image: '🔺', options: ['2', '3', '4', '5'], correct: '3', hint: 'Same number as its sides' },
+      { id: 'shape-8', question: 'How many faces does a cube have?', image: 'cube', options: ['4', '5', '6', '7'], correct: '6', hint: 'Think of a dice' },
+      { id: 'shape-9', question: 'Which shape is round like a ball?', image: 'sphere', options: ['Sphere', 'Cube', 'Cone', 'Cylinder'], correct: 'Sphere', hint: 'Perfectly round in 3D' },
+      { id: 'shape-10', question: 'How many corners does a triangle have?', image: 'triangle', options: ['2', '3', '4', '5'], correct: '3', hint: 'Same number as its sides' },
     ],
   },
   measurements: {
-    title: 'Measurements (Units & Conversion)',
-    year: 3,
-    strand: 'Measurement - length, mass and capacity',
+    title: 'Measurements',
     questions: [
       { id: 'measure-1', question: 'Which is longer?', options: ['5 cm', '50 cm', 'They are equal', 'Cannot tell'], correct: '50 cm', hint: 'Bigger number of centimetres means longer' },
       { id: 'measure-2', question: 'How many centimetres are in 1 metre?', options: ['10', '100', '1000', '50'], correct: '100', hint: '1 m = 100 cm' },
@@ -414,9 +176,7 @@ export const mathLessons: Record<string, MathLesson> = {
     ],
   },
   'word-problems': {
-    title: 'Word Problems (Mixed Operations)',
-    year: 2,
-    strand: 'Number - addition, subtraction, multiplication and division',
+    title: 'Word Problems',
     questions: [
       { id: 'word-1', question: 'Sara has 4 apples. Her mum gives her 3 more. How many apples does Sara have now?', image: '🍎', options: ['5', '6', '7', '8'], correct: '7', hint: 'Add 4 + 3' },
       { id: 'word-2', question: 'There are 10 birds on a tree. 4 fly away. How many birds are left?', image: '🐦', options: ['4', '5', '6', '7'], correct: '6', hint: 'Take away 10 - 4' },
@@ -428,317 +188,6 @@ export const mathLessons: Record<string, MathLesson> = {
       { id: 'word-8', question: 'Each spider has 8 legs. How many legs do 2 spiders have?', image: '🕷️', options: ['14', '15', '16', '17'], correct: '16', hint: '2 × 8' },
       { id: 'word-9', question: 'Layla read 5 pages on Monday and 6 pages on Tuesday. How many pages did she read in total?', image: '📖', options: ['9', '10', '11', '12'], correct: '11', hint: 'Add 5 + 6' },
       { id: 'word-10', question: 'There are 15 sweets shared equally between 5 friends. How many sweets does each friend get?', image: '🍬', options: ['2', '3', '4', '5'], correct: '3', hint: 'Share 15 into 5 equal groups' },
-    ],
-  },
-  // ==================== YEAR 2 (new topics) ====================
-  'place-value-100': {
-    title: 'Place Value to 100',
-    year: 2,
-    strand: 'Number - number and place value',
-    questions: [
-      { id: 'pv100-1', question: 'How many tens and ones make 47?', options: ['4 tens and 7 ones', '7 tens and 4 ones', '4 tens and 17 ones', '47 tens'], correct: '4 tens and 7 ones', hint: '47 = 40 + 7' },
-      { id: 'pv100-2', question: 'Which number is bigger, 68 or 86?', options: ['68', '86', 'They are equal', 'Cannot tell'], correct: '86', hint: 'Compare the tens digit first' },
-      { id: 'pv100-3', question: 'Which number is smaller, 54 or 45?', options: ['54', '45', 'They are equal', 'Cannot tell'], correct: '45', hint: 'Compare the tens digit first' },
-      { id: 'pv100-4', question: 'Order from smallest to largest: which is smallest? 72, 27, 92', options: ['72', '27', '92', 'They are equal'], correct: '27', hint: 'Compare the tens digits' },
-      { id: 'pv100-5', question: 'What is 10 more than 58?', options: ['48', '59', '68', '69'], correct: '68', hint: 'Add one ten' },
-      { id: 'pv100-6', question: 'What is 10 less than 90?', options: ['70', '80', '89', '91'], correct: '80', hint: 'Take away one ten' },
-      { id: 'pv100-7', question: 'Count in 3s: 3, 6, 9, ?', options: ['10', '11', '12', '13'], correct: '12', hint: 'Add 3 each time' },
-      { id: 'pv100-8', question: 'What is the value of the 6 in 63?', options: ['6', '60', '6 ones', '63'], correct: '60', hint: 'The 6 is in the tens place' },
-      { id: 'pv100-9', question: 'Write "seventy-five" as a number', options: ['57', '75', '705', '715'], correct: '75', hint: 'Seventy is 70' },
-      { id: 'pv100-10', question: 'Which number is between 40 and 50?', options: ['38', '44', '52', '60'], correct: '44', hint: 'It must be greater than 40 and less than 50' },
-    ],
-  },
-  'standard-units': {
-    title: 'Standard Units of Measurement',
-    year: 2,
-    strand: 'Measurement - length, mass, capacity',
-    questions: [
-      { id: 'unit-1', question: 'Which unit would you use to measure the length of a pencil?', options: ['Kilometres', 'Centimetres', 'Litres', 'Kilograms'], correct: 'Centimetres', hint: 'A pencil is quite small' },
-      { id: 'unit-2', question: 'Which unit would you use to measure the length of a running track?', options: ['Centimetres', 'Metres', 'Grams', 'Millilitres'], correct: 'Metres', hint: 'A running track is long' },
-      { id: 'unit-3', question: 'Which unit would you use to weigh an apple?', options: ['Kilograms', 'Grams', 'Litres', 'Metres'], correct: 'Grams', hint: 'An apple is quite light' },
-      { id: 'unit-4', question: 'Which unit would you use to weigh a bag of potatoes?', options: ['Grams', 'Kilograms', 'Centimetres', 'Millilitres'], correct: 'Kilograms', hint: 'A bag of potatoes is heavier' },
-      { id: 'unit-5', question: 'Which unit would you use to measure water in a glass?', options: ['Litres', 'Millilitres', 'Metres', 'Kilograms'], correct: 'Millilitres', hint: 'A glass holds a small amount' },
-      { id: 'unit-6', question: 'Which unit would you use to measure water in a bathtub?', options: ['Millilitres', 'Litres', 'Centimetres', 'Grams'], correct: 'Litres', hint: 'A bathtub holds a lot of water' },
-      { id: 'unit-7', question: 'A ribbon is 30 centimetres long. A rope is 3 metres long. Which is longer?', options: ['The ribbon', 'The rope', 'They are equal', 'Cannot tell'], correct: 'The rope', hint: '3 metres = 300 centimetres' },
-      { id: 'unit-8', question: 'Which is heavier, 500 grams of flour or 1 kilogram of flour?', options: ['500 grams', '1 kilogram', 'They are equal', 'Cannot tell'], correct: '1 kilogram', hint: '1 kilogram = 1000 grams' },
-      { id: 'unit-9', question: 'Which holds more, 200 millilitres or 1 litre?', options: ['200 millilitres', '1 litre', 'They are equal', 'Cannot tell'], correct: '1 litre', hint: '1 litre = 1000 millilitres' },
-      { id: 'unit-10', question: 'What tool measures how heavy something is?', options: ['A ruler', 'A jug', 'A scale', 'A clock'], correct: 'A scale', hint: 'It balances weight' },
-    ],
-  },
-  'fractions-y2': {
-    title: 'Fractions of Shapes and Quantities',
-    year: 2,
-    strand: 'Number - fractions',
-    questions: [
-      { id: 'fracy2-1', question: 'What fraction of this shape is shaded if 1 out of 3 equal parts is coloured?', options: ['1/2', '1/3', '1/4', '2/3'], correct: '1/3', hint: 'One part out of three equal parts' },
-      { id: 'fracy2-2', question: 'What is 1/4 of 12?', options: ['2', '3', '4', '6'], correct: '3', hint: 'Share 12 into 4 equal groups' },
-      { id: 'fracy2-3', question: 'What is 1/3 of 9?', options: ['2', '3', '4', '9'], correct: '3', hint: 'Share 9 into 3 equal groups' },
-      { id: 'fracy2-4', question: 'What is 3/4 of 8?', options: ['2', '4', '6', '8'], correct: '6', hint: 'First find 1/4 of 8, then multiply by 3' },
-      { id: 'fracy2-5', question: 'What is 2/4 the same as?', options: ['1/2', '1/4', '1/3', '3/4'], correct: '1/2', hint: '2 out of 4 equal parts' },
-      { id: 'fracy2-6', question: 'What is 1/2 of 20?', options: ['5', '10', '15', '20'], correct: '10', hint: 'Share 20 into 2 equal groups' },
-      { id: 'fracy2-7', question: 'A pizza is cut into 4 equal slices. You eat 1 slice. What fraction did you eat?', options: ['1/2', '1/3', '1/4', '1/5'], correct: '1/4', hint: 'One slice out of four' },
-      { id: 'fracy2-8', question: 'What is 1/3 of 15?', options: ['3', '5', '7', '9'], correct: '5', hint: 'Share 15 into 3 equal groups' },
-      { id: 'fracy2-9', question: 'Which is bigger, 1/2 or 1/4?', options: ['1/2', '1/4', 'They are equal', 'Cannot tell'], correct: '1/2', hint: 'Half is more than a quarter' },
-      { id: 'fracy2-10', question: 'What is 3/4 of 20?', options: ['5', '10', '15', '20'], correct: '15', hint: 'First find 1/4 of 20, then multiply by 3' },
-    ],
-  },
-  statistics: {
-    title: 'Pictograms and Tally Charts',
-    year: 2,
-    strand: 'Statistics',
-    questions: [
-      { id: 'stat-1', question: 'On a pictogram, each apple picture stands for 2 real apples. If there are 3 apple pictures, how many apples is that?', options: ['3', '5', '6', '9'], correct: '6', hint: 'Multiply 3 by 2' },
-      { id: 'stat-2', question: 'What does a tally mark IIII with a line through it (𝄍𝄍𝄍𝄍/) usually represent?', options: ['4', '5', '10', '1'], correct: '5', hint: 'Four marks plus one diagonal line' },
-      { id: 'stat-3', question: 'A block diagram shows 5 blocks for cats and 3 blocks for dogs. Which pet has more?', options: ['Cats', 'Dogs', 'They are equal', 'Cannot tell'], correct: 'Cats', hint: '5 is greater than 3' },
-      { id: 'stat-4', question: 'In a tally chart, how many tally marks are needed to show 7?', options: ['5', '6', '7', '8'], correct: '7', hint: 'Each tally mark stands for one, until you reach five' },
-      { id: 'stat-5', question: 'A pictogram shows 4 pictures of a sun, each worth 1 day. How many sunny days were there?', options: ['1', '2', '4', '8'], correct: '4', hint: 'Each picture is worth 1' },
-      { id: 'stat-6', question: 'If a chart shows 6 red cars and 2 blue cars, how many more red cars are there?', options: ['2', '3', '4', '8'], correct: '4', hint: 'Take away 6 - 2' },
-      { id: 'stat-7', question: 'What is the best way to record how many children like each fruit as you ask them?', options: ['Draw a picture', 'Use a tally chart', 'Guess', 'Ask only once'], correct: 'Use a tally chart', hint: 'It helps you count as you go' },
-      { id: 'stat-8', question: 'A pictogram key shows 🍎 = 2 apples. There are 5 pictures. How many apples altogether?', options: ['5', '7', '10', '12'], correct: '10', hint: 'Multiply 5 by 2' },
-      { id: 'stat-9', question: 'A block diagram has bars for Monday (3), Tuesday (5), Wednesday (2). Which day has the most?', options: ['Monday', 'Tuesday', 'Wednesday', 'They are equal'], correct: 'Tuesday', hint: 'Find the tallest bar' },
-      { id: 'stat-10', question: 'What do we call a chart that uses pictures to show information?', options: ['A tally chart', 'A pictogram', 'A number line', 'A calendar'], correct: 'A pictogram', hint: 'Think about the word "picture"' },
-    ],
-  },
-  'shape-properties': {
-    title: '2D & 3D Shape Properties',
-    year: 2,
-    strand: 'Geometry - properties of shapes',
-    questions: [
-      { id: 'shpr-1', question: 'How many sides does a pentagon have?', options: ['4', '5', '6', '8'], correct: '5', hint: 'Penta means five' },
-      { id: 'shpr-2', question: 'How many sides does a hexagon have?', options: ['5', '6', '7', '8'], correct: '6', hint: 'Hexa means six' },
-      { id: 'shpr-3', question: 'How many vertices (corners) does a triangle have?', options: ['2', '3', '4', '5'], correct: '3', hint: 'Count the pointy corners' },
-      { id: 'shpr-4', question: 'How many faces does a cuboid have?', options: ['4', '5', '6', '8'], correct: '6', hint: 'Like a shoebox' },
-      { id: 'shpr-5', question: 'How many edges does a cube have?', options: ['6', '8', '10', '12'], correct: '12', hint: 'Count where two faces meet' },
-      { id: 'shpr-6', question: 'How many vertices does a cube have?', options: ['4', '6', '8', '12'], correct: '8', hint: 'Count the corner points' },
-      { id: 'shpr-7', question: 'Which 2D shape has no straight sides and no corners?', options: ['Square', 'Circle', 'Triangle', 'Pentagon'], correct: 'Circle', hint: 'It is perfectly round' },
-      { id: 'shpr-8', question: 'How many faces does a triangular pyramid have?', options: ['3', '4', '5', '6'], correct: '4', hint: 'It has a triangular base plus 3 sloped faces' },
-      { id: 'shpr-9', question: 'Which shape has exactly one curved surface and no flat faces?', options: ['Cylinder', 'Sphere', 'Cone', 'Cube'], correct: 'Sphere', hint: 'It is completely round like a ball' },
-      { id: 'shpr-10', question: 'How many sides does an octagon have?', options: ['6', '7', '8', '9'], correct: '8', hint: 'Think of a stop sign' },
-    ],
-  },
-  'position-turns': {
-    title: 'Position, Direction and Turns',
-    year: 2,
-    strand: 'Geometry - position and direction',
-    questions: [
-      { id: 'turn-1', question: 'If you turn a quarter turn clockwise from facing north, which way do you face?', options: ['North', 'East', 'South', 'West'], correct: 'East', hint: 'Clockwise from north goes to east' },
-      { id: 'turn-2', question: 'If you turn a half turn from facing east, which way do you face?', options: ['North', 'South', 'East', 'West'], correct: 'West', hint: 'A half turn is the opposite direction' },
-      { id: 'turn-3', question: 'Which direction does a clock\'s hands move?', options: ['Clockwise', 'Anticlockwise', 'Both ways', 'Neither'], correct: 'Clockwise', hint: 'It is named after this!' },
-      { id: 'turn-4', question: 'If you turn a quarter turn anticlockwise from facing south, which way do you face?', options: ['North', 'East', 'South', 'West'], correct: 'East', hint: 'Anticlockwise is the opposite rotation to clockwise' },
-      { id: 'turn-5', question: 'How many quarter turns make a full turn?', options: ['2', '3', '4', '8'], correct: '4', hint: 'Each quarter turn is 90 degrees' },
-      { id: 'turn-6', question: 'A three-quarter turn clockwise from north ends up facing which way?', options: ['East', 'South', 'West', 'North'], correct: 'West', hint: 'Three quarter turns clockwise from north' },
-      { id: 'turn-7', question: 'Which word describes turning in the same direction as a clock\'s hands?', options: ['Clockwise', 'Anticlockwise', 'Sideways', 'Upside down'], correct: 'Clockwise', hint: 'Named after the clock' },
-      { id: 'turn-8', question: 'If a robot faces east and makes a half turn, which way does it face?', options: ['North', 'South', 'East', 'West'], correct: 'West', hint: 'Half turn = opposite direction' },
-      { id: 'turn-9', question: 'A dial turns two quarter turns clockwise from south. Which way does it now point?', options: ['North', 'East', 'South', 'West'], correct: 'North', hint: 'Two quarter turns = a half turn' },
-      { id: 'turn-10', question: 'Which word means turning in the opposite direction to a clock\'s hands?', options: ['Clockwise', 'Anticlockwise', 'Forward', 'Backward'], correct: 'Anticlockwise', hint: 'The opposite of clockwise' },
-    ],
-  },
-  // ==================== YEAR 3 (new topics) ====================
-  'place-value-1000': {
-    title: 'Place Value & Rounding to 1000',
-    year: 3,
-    strand: 'Number - number and place value',
-    questions: [
-      { id: 'pv1000-1', question: 'What is the value of the 4 in 743?', options: ['4', '40', '400', '4000'], correct: '400', hint: 'It is in the hundreds place' },
-      { id: 'pv1000-2', question: 'Round 246 to the nearest 10', options: ['240', '250', '246', '200'], correct: '250', hint: '246 is closer to 250 than 240' },
-      { id: 'pv1000-3', question: 'Round 372 to the nearest 100', options: ['300', '370', '400', '372'], correct: '400', hint: '372 is closer to 400 than 300' },
-      { id: 'pv1000-4', question: 'Which number is 100 more than 458?', options: ['358', '468', '548', '558'], correct: '558', hint: 'Add one hundred' },
-      { id: 'pv1000-5', question: 'Which is the largest number?', options: ['897', '978', '789', '798'], correct: '978', hint: 'Compare the hundreds digit first' },
-      { id: 'pv1000-6', question: 'Write "six hundred and five" as a number', options: ['65', '650', '605', '6005'], correct: '605', hint: 'There are 0 tens' },
-      { id: 'pv1000-7', question: 'What is 1000 - 1?', options: ['999', '990', '1001', '900'], correct: '999', hint: 'Count back one from 1000' },
-      { id: 'pv1000-8', question: 'Round 850 to the nearest 100', options: ['800', '850', '900', '1000'], correct: '900', hint: '850 rounds up' },
-      { id: 'pv1000-9', question: 'Which digit is in the tens place in 386?', options: ['3', '8', '6', '0'], correct: '8', hint: 'Hundreds, tens, ones - the middle digit' },
-      { id: 'pv1000-10', question: 'What is 50 less than 723?', options: ['673', '773', '683', '723'], correct: '673', hint: 'Subtract 50' },
-    ],
-  },
-  'times-tables-3-4-8': {
-    title: 'The 3, 4 and 8 Times Tables',
-    year: 3,
-    strand: 'Number - multiplication and division',
-    questions: [
-      { id: 'tt348-1', question: '3 × 4 = ?', options: ['7', '12', '15', '9'], correct: '12', hint: 'Add 3 four times' },
-      { id: 'tt348-2', question: '4 × 6 = ?', options: ['20', '22', '24', '26'], correct: '24', hint: 'Add 4 six times' },
-      { id: 'tt348-3', question: '8 × 3 = ?', options: ['16', '21', '24', '32'], correct: '24', hint: 'Same as 3 × 8' },
-      { id: 'tt348-4', question: '3 × 7 = ?', options: ['18', '21', '24', '27'], correct: '21', hint: 'Add 3 seven times' },
-      { id: 'tt348-5', question: '4 × 9 = ?', options: ['32', '36', '40', '38'], correct: '36', hint: 'Add 4 nine times' },
-      { id: 'tt348-6', question: '8 × 5 = ?', options: ['35', '40', '45', '48'], correct: '40', hint: 'Double 4 × 5' },
-      { id: 'tt348-7', question: '24 ÷ 3 = ?', options: ['6', '7', '8', '9'], correct: '8', hint: 'How many 3s make 24?' },
-      { id: 'tt348-8', question: '32 ÷ 4 = ?', options: ['6', '7', '8', '9'], correct: '8', hint: 'How many 4s make 32?' },
-      { id: 'tt348-9', question: '8 × 8 = ?', options: ['56', '60', '64', '72'], correct: '64', hint: 'Eight groups of eight' },
-      { id: 'tt348-10', question: '48 ÷ 8 = ?', options: ['5', '6', '7', '8'], correct: '6', hint: 'How many 8s make 48?' },
-    ],
-  },
-  'fractions-y3': {
-    title: 'Fractions & Equivalence',
-    year: 3,
-    strand: 'Number - fractions',
-    questions: [
-      { id: 'fracy3-1', question: 'Which fraction is the same as 1/2?', options: ['2/4', '1/3', '3/4', '1/5'], correct: '2/4', hint: 'Both mean half' },
-      { id: 'fracy3-2', question: 'What is 3/10 written as a fraction of 10 equal parts?', options: ['Three parts out of ten', 'Ten parts out of three', 'Three out of three', 'One out of ten'], correct: 'Three parts out of ten', hint: 'The bottom number shows total parts' },
-      { id: 'fracy3-3', question: 'What is 2/3 + 1/3?', options: ['3/3 or 1 whole', '2/6', '1/3', '3/6'], correct: '3/3 or 1 whole', hint: 'Add the top numbers, keep the bottom the same' },
-      { id: 'fracy3-4', question: 'What is 3/5 - 1/5?', options: ['2/5', '2/10', '4/5', '1/5'], correct: '2/5', hint: 'Subtract the top numbers' },
-      { id: 'fracy3-5', question: 'Which is bigger, 2/5 or 4/5?', options: ['2/5', '4/5', 'They are equal', 'Cannot tell'], correct: '4/5', hint: 'Compare the top numbers - same bottom number' },
-      { id: 'fracy3-6', question: 'What is 1/4 of 20?', options: ['4', '5', '6', '8'], correct: '5', hint: 'Share 20 into 4 equal groups' },
-      { id: 'fracy3-7', question: 'Which fraction is the same as 5/10?', options: ['1/2', '1/5', '1/10', '2/5'], correct: '1/2', hint: 'Both are half' },
-      { id: 'fracy3-8', question: 'What is 4/8 simplified?', options: ['1/2', '1/4', '2/4', '4/4'], correct: '1/2', hint: 'Divide top and bottom by 4' },
-      { id: 'fracy3-9', question: 'What is 7/10 + 2/10?', options: ['9/10', '9/20', '5/10', '1'], correct: '9/10', hint: 'Add the top numbers' },
-      { id: 'fracy3-10', question: 'What is 1 whole minus 3/4?', options: ['1/4', '1/2', '3/4', '2/4'], correct: '1/4', hint: '4/4 - 3/4' },
-    ],
-  },
-  // ==================== YEAR 4 (new topics) ====================
-  'times-tables-to-12': {
-    title: 'Times Tables up to 12 × 12',
-    year: 4,
-    strand: 'Number - multiplication and division',
-    questions: [
-      { id: 'tt12-1', question: '6 × 7 = ?', options: ['36', '40', '42', '48'], correct: '42', hint: 'Six sevens' },
-      { id: 'tt12-2', question: '9 × 6 = ?', options: ['45', '54', '56', '63'], correct: '54', hint: 'Nine sixes' },
-      { id: 'tt12-3', question: '7 × 8 = ?', options: ['48', '54', '56', '64'], correct: '56', hint: 'Seven eights' },
-      { id: 'tt12-4', question: '11 × 6 = ?', options: ['60', '66', '72', '76'], correct: '66', hint: 'Ten sixes plus one more six' },
-      { id: 'tt12-5', question: '12 × 5 = ?', options: ['50', '55', '60', '65'], correct: '60', hint: 'Twelve fives' },
-      { id: 'tt12-6', question: '9 × 9 = ?', options: ['72', '81', '90', '99'], correct: '81', hint: 'Nine nines' },
-      { id: 'tt12-7', question: '84 ÷ 7 = ?', options: ['11', '12', '13', '14'], correct: '12', hint: 'How many 7s make 84?' },
-      { id: 'tt12-8', question: '12 × 12 = ?', options: ['124', '134', '144', '154'], correct: '144', hint: 'Twelve twelves' },
-      { id: 'tt12-9', question: '96 ÷ 8 = ?', options: ['10', '11', '12', '13'], correct: '12', hint: 'How many 8s make 96?' },
-      { id: 'tt12-10', question: '11 × 11 = ?', options: ['111', '112', '121', '122'], correct: '121', hint: 'Eleven elevens' },
-    ],
-  },
-  'decimals-y4': {
-    title: 'Decimals (Tenths & Hundredths)',
-    year: 4,
-    strand: 'Number - decimals',
-    questions: [
-      { id: 'dec4-1', question: 'What is 0.5 the same as?', options: ['1/2', '1/5', '5', '1/10'], correct: '1/2', hint: 'Half as a decimal' },
-      { id: 'dec4-2', question: 'What is 3/10 as a decimal?', options: ['0.3', '0.03', '3.0', '0.30 and 3'], correct: '0.3', hint: 'Tenths go in the first decimal place' },
-      { id: 'dec4-3', question: 'Which is bigger, 0.4 or 0.35?', options: ['0.4', '0.35', 'They are equal', 'Cannot tell'], correct: '0.4', hint: '0.40 is more than 0.35' },
-      { id: 'dec4-4', question: 'What is 0.25 as a fraction?', options: ['1/4', '1/2', '2/5', '1/25'], correct: '1/4', hint: '25 hundredths simplifies' },
-      { id: 'dec4-5', question: 'What is 1.5 + 0.5?', options: ['1.0', '2.0', '1.5', '2.5'], correct: '2.0', hint: 'Add the decimal parts' },
-      { id: 'dec4-6', question: 'What is 2.7 - 1.2?', options: ['1.5', '1.9', '3.9', '0.5'], correct: '1.5', hint: 'Subtract the decimal parts' },
-      { id: 'dec4-7', question: 'How many hundredths are in 0.67?', options: ['6', '7', '67', '670'], correct: '67', hint: 'Both digits after the point are hundredths' },
-      { id: 'dec4-8', question: 'Round 3.6 to the nearest whole number', options: ['3', '4', '3.5', '3.6'], correct: '4', hint: '.6 rounds up' },
-      { id: 'dec4-9', question: 'What is 0.1 + 0.9?', options: ['0.10', '1.0', '0.9', '10'], correct: '1.0', hint: 'Ten tenths make one whole' },
-      { id: 'dec4-10', question: 'Which decimal equals 50/100?', options: ['0.5', '0.05', '5.0', '0.50 and 0.5 only'], correct: '0.5', hint: 'Fifty hundredths simplifies to one half' },
-    ],
-  },
-  'area-perimeter-y4': {
-    title: 'Area and Perimeter',
-    year: 4,
-    strand: 'Measurement - perimeter and area',
-    questions: [
-      { id: 'ap4-1', question: 'A rectangle is 5cm long and 3cm wide. What is its perimeter?', options: ['8cm', '15cm', '16cm', '18cm'], correct: '16cm', hint: 'Add all 4 sides: 5+3+5+3' },
-      { id: 'ap4-2', question: 'A square has sides of 4cm. What is its perimeter?', options: ['8cm', '12cm', '16cm', '20cm'], correct: '16cm', hint: '4 sides of 4cm each' },
-      { id: 'ap4-3', question: 'A rectangle is 6cm long and 2cm wide. What is its area?', options: ['8cm²', '12cm²', '16cm²', '24cm²'], correct: '12cm²', hint: 'Area = length × width' },
-      { id: 'ap4-4', question: 'A square has sides of 5cm. What is its area?', options: ['10cm²', '20cm²', '25cm²', '30cm²'], correct: '25cm²', hint: 'Area = side × side' },
-      { id: 'ap4-5', question: 'What is the area of a rectangle 8cm by 3cm?', options: ['11cm²', '22cm²', '24cm²', '32cm²'], correct: '24cm²', hint: '8 × 3' },
-      { id: 'ap4-6', question: 'What is the perimeter of a rectangle 7cm by 4cm?', options: ['11cm', '18cm', '22cm', '28cm'], correct: '22cm', hint: '7+4+7+4' },
-      { id: 'ap4-7', question: 'Which measures the distance all the way around a shape?', options: ['Area', 'Perimeter', 'Volume', 'Angle'], correct: 'Perimeter', hint: 'Think "perimeter fence"' },
-      { id: 'ap4-8', question: 'Which measures the space inside a flat shape?', options: ['Perimeter', 'Area', 'Length', 'Weight'], correct: 'Area', hint: 'Measured in square units' },
-      { id: 'ap4-9', question: 'A square has a perimeter of 20cm. How long is each side?', options: ['4cm', '5cm', '10cm', '20cm'], correct: '5cm', hint: 'Divide the perimeter by 4' },
-      { id: 'ap4-10', question: 'A rectangle has area 30cm² and length 6cm. What is its width?', options: ['3cm', '4cm', '5cm', '6cm'], correct: '5cm', hint: 'Divide area by length' },
-    ],
-  },
-  // ==================== YEAR 5 (new topics) ====================
-  'primes-squares-cubes': {
-    title: 'Prime, Square & Cube Numbers',
-    year: 5,
-    strand: 'Number - properties of number',
-    questions: [
-      { id: 'psc-1', question: 'Which number is prime?', options: ['9', '15', '7', '21'], correct: '7', hint: 'A prime number has exactly two factors: 1 and itself' },
-      { id: 'psc-2', question: 'Which number is NOT prime?', options: ['2', '3', '4', '5'], correct: '4', hint: '4 = 2 × 2, so it has more than two factors' },
-      { id: 'psc-3', question: 'What is 4 squared (4²)?', options: ['8', '12', '16', '20'], correct: '16', hint: '4 × 4' },
-      { id: 'psc-4', question: 'What is 5 squared (5²)?', options: ['10', '15', '20', '25'], correct: '25', hint: '5 × 5' },
-      { id: 'psc-5', question: 'What is 2 cubed (2³)?', options: ['4', '6', '8', '9'], correct: '8', hint: '2 × 2 × 2' },
-      { id: 'psc-6', question: 'What is 3 cubed (3³)?', options: ['9', '18', '27', '36'], correct: '27', hint: '3 × 3 × 3' },
-      { id: 'psc-7', question: 'Which of these is a square number?', options: ['10', '9', '8', '7'], correct: '9', hint: '3 × 3 = 9' },
-      { id: 'psc-8', question: 'Is 1 a prime number?', options: ['Yes', 'No, it only has one factor', 'Yes, always', 'Only sometimes'], correct: 'No, it only has one factor', hint: 'Primes need exactly two different factors' },
-      { id: 'psc-9', question: 'What are the first three prime numbers?', options: ['1, 2, 3', '2, 3, 5', '2, 4, 6', '3, 5, 7'], correct: '2, 3, 5', hint: '2 is the smallest and only even prime' },
-      { id: 'psc-10', question: 'What is the square root of 36?', options: ['4', '6', '9', '18'], correct: '6', hint: 'Which number times itself equals 36?' },
-    ],
-  },
-  'fractions-y5': {
-    title: 'Mixed Numbers & Fraction Operations',
-    year: 5,
-    strand: 'Number - fractions',
-    questions: [
-      { id: 'fracy5-1', question: 'What is 1 1/2 + 1/2?', options: ['1', '1 1/2', '2', '2 1/2'], correct: '2', hint: 'Half plus half makes a whole more' },
-      { id: 'fracy5-2', question: 'What is 7/4 as a mixed number?', options: ['1 3/4', '1 1/4', '2 1/4', '1 1/2'], correct: '1 3/4', hint: '4/4 = 1, with 3/4 left over' },
-      { id: 'fracy5-3', question: 'What is 2/3 × 3?', options: ['1', '2', '3', '6'], correct: '2', hint: 'Multiply the numerator by 3, then simplify' },
-      { id: 'fracy5-4', question: 'What is 1/2 + 1/4?', options: ['2/6', '2/4', '3/4', '1/4'], correct: '3/4', hint: 'Convert 1/2 to 2/4 first' },
-      { id: 'fracy5-5', question: 'Which is bigger, 3/4 or 5/8?', options: ['3/4', '5/8', 'They are equal', 'Cannot tell'], correct: '3/4', hint: 'Convert 3/4 to 6/8 to compare' },
-      { id: 'fracy5-6', question: 'What is 2 1/4 as an improper fraction?', options: ['9/4', '8/4', '7/4', '6/4'], correct: '9/4', hint: '(2 × 4) + 1 = 9' },
-      { id: 'fracy5-7', question: 'What is 3/5 - 1/10?', options: ['1/2', '5/10', '2/5', '1/5'], correct: '1/2', hint: 'Convert 3/5 to 6/10 first' },
-      { id: 'fracy5-8', question: 'What is 1/3 of 30?', options: ['3', '10', '15', '20'], correct: '10', hint: 'Divide 30 by 3' },
-      { id: 'fracy5-9', question: 'What is 5/6 + 1/6?', options: ['6/12', '1', '6/6 and not simplified', '5/12'], correct: '1', hint: '6/6 makes one whole' },
-      { id: 'fracy5-10', question: 'What is 4/5 of 25?', options: ['5', '15', '20', '25'], correct: '20', hint: 'Find 1/5 of 25 first, then multiply by 4' },
-    ],
-  },
-  'percentages-y5': {
-    title: 'Percentages & Decimal Equivalents',
-    year: 5,
-    strand: 'Number - percentages',
-    questions: [
-      { id: 'pct5-1', question: 'What does 50% mean?', options: ['All of it', 'Half of it', 'A quarter of it', 'None of it'], correct: 'Half of it', hint: '50% = 1/2' },
-      { id: 'pct5-2', question: 'What is 25% the same as?', options: ['1/2', '1/4', '1/5', '3/4'], correct: '1/4', hint: '25% = 1/4' },
-      { id: 'pct5-3', question: 'What is 10% of 50?', options: ['5', '10', '15', '25'], correct: '5', hint: '10% means divide by 10' },
-      { id: 'pct5-4', question: 'What is 50% of 80?', options: ['20', '40', '60', '80'], correct: '40', hint: 'Half of 80' },
-      { id: 'pct5-5', question: 'What is 0.75 as a percentage?', options: ['7.5%', '75%', '750%', '0.75%'], correct: '75%', hint: 'Multiply the decimal by 100' },
-      { id: 'pct5-6', question: 'What is 100% of a number?', options: ['Half of it', 'None of it', 'All of it', 'Double it'], correct: 'All of it', hint: '100% means the whole amount' },
-      { id: 'pct5-7', question: 'What is 20% of 30?', options: ['3', '6', '10', '15'], correct: '6', hint: '10% of 30 is 3, so 20% is double that' },
-      { id: 'pct5-8', question: 'Which is bigger, 40% or 0.35?', options: ['40%', '0.35', 'They are equal', 'Cannot tell'], correct: '40%', hint: 'Convert 0.35 to a percentage: 35%' },
-      { id: 'pct5-9', question: 'What is 1/2 as a percentage?', options: ['25%', '50%', '75%', '100%'], correct: '50%', hint: 'Half is fifty out of a hundred' },
-      { id: 'pct5-10', question: 'What is 75% of 40?', options: ['10', '20', '30', '35'], correct: '30', hint: '75% = 3/4, and 3/4 of 40 is 30' },
-    ],
-  },
-  // ==================== YEAR 6 (new topics) ====================
-  'order-of-operations-y6': {
-    title: 'Order of Operations (BODMAS)',
-    year: 6,
-    strand: 'Number - arithmetic',
-    questions: [
-      { id: 'bodmas-1', question: 'What is 2 + 3 × 4?', options: ['20', '14', '9', '24'], correct: '14', hint: 'Multiply before you add' },
-      { id: 'bodmas-2', question: 'What is (2 + 3) × 4?', options: ['20', '14', '9', '24'], correct: '20', hint: 'Do the brackets first' },
-      { id: 'bodmas-3', question: 'What is 10 - 2 × 3?', options: ['4', '24', '8', '6'], correct: '4', hint: 'Multiply before you subtract' },
-      { id: 'bodmas-4', question: 'What does the "B" in BODMAS stand for?', options: ['Basic', 'Brackets', 'Big numbers', 'Both'], correct: 'Brackets', hint: 'Do this operation first' },
-      { id: 'bodmas-5', question: 'What is 20 ÷ (2 + 2)?', options: ['5', '12', '20', '4'], correct: '5', hint: 'Brackets first: 2+2=4, then 20÷4' },
-      { id: 'bodmas-6', question: 'What is 3 × 3 + 3 × 2?', options: ['21', '15', '30', '18'], correct: '15', hint: 'Do both multiplications first, then add' },
-      { id: 'bodmas-7', question: 'What is 5² - 10?', options: ['15', '25', '5', '0'], correct: '15', hint: 'Work out the power first: 5² = 25' },
-      { id: 'bodmas-8', question: 'What is 6 + 4 ÷ 2?', options: ['5', '8', '10', '20'], correct: '8', hint: 'Divide before you add' },
-      { id: 'bodmas-9', question: 'What is (6 - 2) × (3 + 1)?', options: ['16', '20', '8', '12'], correct: '16', hint: 'Work out both brackets first' },
-      { id: 'bodmas-10', question: 'What is 12 ÷ 3 + 2 × 5?', options: ['14', '70', '34', '24'], correct: '14', hint: 'Divide and multiply before you add' },
-    ],
-  },
-  'ratio-proportion-y6': {
-    title: 'Ratio and Proportion',
-    year: 6,
-    strand: 'Ratio and proportion',
-    questions: [
-      { id: 'ratio-1', question: 'A recipe uses 2 cups of flour for every 1 cup of sugar. What is the ratio of flour to sugar?', options: ['1:2', '2:1', '1:1', '2:2'], correct: '2:1', hint: 'Flour first, then sugar' },
-      { id: 'ratio-2', question: 'If the ratio of red to blue paint is 3:1, and you use 9 litres of red, how much blue do you need?', options: ['1 litre', '2 litres', '3 litres', '9 litres'], correct: '3 litres', hint: '9 ÷ 3 = 3' },
-      { id: 'ratio-3', question: 'A class has 12 boys and 8 girls. What is the ratio of boys to girls in simplest form?', options: ['12:8', '3:2', '4:3', '2:3'], correct: '3:2', hint: 'Divide both numbers by 4' },
-      { id: 'ratio-4', question: 'For every 2 dogs at the park, there are 5 cats. If there are 4 dogs, how many cats are there?', options: ['5', '8', '10', '20'], correct: '10', hint: 'Double the ratio: 2:5 becomes 4:10' },
-      { id: 'ratio-5', question: 'A model car is built at a scale of 1:10. If the real car is 400cm long, how long is the model?', options: ['4cm', '40cm', '400cm', '4000cm'], correct: '40cm', hint: 'Divide by 10' },
-      { id: 'ratio-6', question: 'If 3 pens cost £6, how much do 6 pens cost?', options: ['£6', '£9', '£12', '£18'], correct: '£12', hint: 'Double the pens, double the price' },
-      { id: 'ratio-7', question: 'A ribbon is shared in the ratio 2:3 between Amy and Ben. If there are 10 total parts of ribbon, how many parts does Amy get if the ratio uses 5 equal shares?', options: ['2', '3', '4', '5'], correct: '4', hint: '10 shared in 2:3 means 5 groups of 2, so Amy gets 2 groups = 4' },
-      { id: 'ratio-8', question: 'A juice mix uses water and squash in a ratio of 4:1. How many parts are water out of 5 total parts?', options: ['1', '2', '3', '4'], correct: '4', hint: 'The first number in the ratio' },
-      { id: 'ratio-9', question: 'If the ratio of cats to dogs is 1:4, and there are 3 cats, how many dogs are there?', options: ['4', '8', '12', '16'], correct: '12', hint: 'Multiply both parts of the ratio by 3' },
-      { id: 'ratio-10', question: 'A shop sells apples and oranges in a ratio of 5:3. If there are 40 apples, how many oranges are there?', options: ['24', '30', '35', '45'], correct: '24', hint: '40 ÷ 5 = 8, then 8 × 3 = 24' },
-    ],
-  },
-  'algebra-y6': {
-    title: 'Introduction to Algebra',
-    year: 6,
-    strand: 'Algebra',
-    questions: [
-      { id: 'alg6-1', question: 'If x + 5 = 12, what is x?', options: ['5', '6', '7', '17'], correct: '7', hint: 'Subtract 5 from both sides' },
-      { id: 'alg6-2', question: 'If y - 3 = 10, what is y?', options: ['7', '10', '13', '30'], correct: '13', hint: 'Add 3 to both sides' },
-      { id: 'alg6-3', question: 'If 3n = 21, what is n?', options: ['6', '7', '18', '24'], correct: '7', hint: 'Divide both sides by 3' },
-      { id: 'alg6-4', question: 'If a = 4, what is 2a + 3?', options: ['9', '10', '11', '14'], correct: '11', hint: '(2 × 4) + 3' },
-      { id: 'alg6-5', question: 'What is the value of 5b when b = 6?', options: ['11', '25', '30', '56'], correct: '30', hint: '5 × 6' },
-      { id: 'alg6-6', question: 'If x/2 = 8, what is x?', options: ['4', '6', '10', '16'], correct: '16', hint: 'Multiply both sides by 2' },
-      { id: 'alg6-7', question: 'Simplify: 3n + 2n', options: ['5n', '6n', '5n²', '6n²'], correct: '5n', hint: 'Add the coefficients of n' },
-      { id: 'alg6-8', question: 'If c + c + c = 18, what is c?', options: ['3', '6', '9', '15'], correct: '6', hint: '3c = 18' },
-      { id: 'alg6-9', question: 'What is the missing number? 4 + □ = 10', options: ['4', '5', '6', '14'], correct: '6', hint: '10 - 4' },
-      { id: 'alg6-10', question: 'If p = 3 and q = 5, what is p + q × 2?', options: ['13', '16', '11', '10'], correct: '13', hint: 'Multiply first: 5 × 2 = 10, then add 3' },
     ],
   },
 };
@@ -755,15 +204,12 @@ export type EnglishPassage = {
   id: string;
   title: string;
   content: string;
-  /** UK National Curriculum year group this passage is written for (1-6) */
-  year: number;
   questions: QuizQuestion[];
 };
 
 export const englishStories: EnglishPassage[] = [
   {
     id: 'story-1',
-    year: 2,
     title: 'The Brave Little Mouse',
     content: 'Once upon a time, there was a tiny mouse named Max. Max lived in a cozy hole under a big oak tree. One day, Max heard a loud roar! A lion was caught in a hunter\'s net. "Help me!" cried the lion. Max was scared, but he was also brave. He ran to the net and began to chew through the ropes with his sharp teeth. After working hard, Max freed the lion! "Thank you, little friend," said the lion. "You are small, but you have a big heart." From that day on, Max and the lion were the best of friends.',
     questions: [
@@ -776,7 +222,6 @@ export const englishStories: EnglishPassage[] = [
   },
   {
     id: 'story-2',
-    year: 2,
     title: 'Luna\'s Magic Garden',
     content: 'Luna loved flowers more than anything. Every morning, she would water her garden and sing to the plants. One magical morning, something wonderful happened! The flowers began to sing back! Red roses hummed, yellow sunflowers whistled, and purple violets chimed like bells. "This is amazing!" Luna laughed with joy. A wise old daisy spoke up: "Luna, your kindness made us bloom. When you care for others, magic happens." Luna learned that love and care can create the most beautiful things.',
     questions: [
@@ -789,7 +234,6 @@ export const englishStories: EnglishPassage[] = [
   },
   {
     id: 'story-3',
-    year: 2,
     title: 'The Rainbow Bridge',
     content: 'In a land where the sky touched the ground, there lived two villages. The Sun Village was always warm and bright. The Moon Village was cool and peaceful. But they were separated by a wide river. The villagers wanted to be friends, but no one could cross. Then, after a big storm, something beautiful appeared—a brilliant rainbow stretched across the river like a bridge! The children from both villages ran across the rainbow, laughing and holding hands. From that day on, whenever it rained and the sun came out, the rainbow bridge would appear, reminding everyone that differences can bring us together.',
     questions: [
@@ -800,48 +244,11 @@ export const englishStories: EnglishPassage[] = [
       { id: 'story-3-q5', question: 'What does the rainbow teach us?', options: ['Storms are scary', 'Rainbows are pretty', 'Differences bring us together', 'Villages are fun'], correct: 'Differences bring us together', hint: 'About being different' },
     ],
   },
-  {
-    id: 'story-y1-1',
-    year: 1,
-    title: 'Sam and the Big Red Ball',
-    content: 'Sam has a big red ball. Sam kicks the ball. The ball rolls fast! It rolls into the pond. Splash! Sam is sad. A dog runs to the pond. The dog gets the ball in its mouth. Sam is glad. "Thank you, dog!" says Sam. Sam and the dog play with the ball all day.',
-    questions: [
-      { id: 'story-y1-1-q1', question: 'What color is the ball?', options: ['Blue', 'Red', 'Green', 'Yellow'], correct: 'Red', hint: 'Look at the first sentence' },
-      { id: 'story-y1-1-q2', question: 'Where does the ball roll?', options: ['Into the pond', 'Up a tree', 'Into the house', 'Down the road'], correct: 'Into the pond', hint: 'Splash!' },
-      { id: 'story-y1-1-q3', question: 'Who gets the ball back?', options: ['Sam', 'A dog', 'A cat', 'A bird'], correct: 'A dog', hint: 'It runs to the pond' },
-      { id: 'story-y1-1-q4', question: 'How does Sam feel at the end?', options: ['Sad', 'Glad', 'Angry', 'Tired'], correct: 'Glad', hint: 'Sam got the ball back' },
-    ],
-  },
-  {
-    id: 'story-y1-2',
-    year: 1,
-    title: 'The Cat on the Mat',
-    content: 'A cat sits on a mat. The cat is black. The cat sees a rat. The rat runs fast. The cat runs too! Up a tree goes the rat. The cat cannot climb. The cat sits back on the mat. The cat has a nap in the sun.',
-    questions: [
-      { id: 'story-y1-2-q1', question: 'What color is the cat?', options: ['Black', 'White', 'Brown', 'Grey'], correct: 'Black', hint: 'It says so early in the story' },
-      { id: 'story-y1-2-q2', question: 'What does the cat see?', options: ['A dog', 'A rat', 'A bird', 'A fish'], correct: 'A rat', hint: 'It runs fast' },
-      { id: 'story-y1-2-q3', question: 'Where does the rat go?', options: ['Up a tree', 'Under the mat', 'Into a hole', 'Into the pond'], correct: 'Up a tree', hint: 'The cat cannot follow it there' },
-      { id: 'story-y1-2-q4', question: 'What does the cat do at the end?', options: ['Runs away', 'Has a nap', 'Climbs the tree', 'Eats the rat'], correct: 'Has a nap', hint: 'In the sun' },
-    ],
-  },
-  {
-    id: 'story-y1-3',
-    year: 1,
-    title: 'Tim Gets a New Bike',
-    content: 'Tim gets a new bike. It is blue and shiny. Tim puts on his helmet. Mum holds the bike. Tim sits on the seat. He starts to pedal. Wobble, wobble! Tim falls off. "Try again," says Mum. Tim tries again and again. At last, Tim can ride the bike all by himself. Hooray for Tim!',
-    questions: [
-      { id: 'story-y1-3-q1', question: 'What color is the new bike?', options: ['Red', 'Blue', 'Green', 'Pink'], correct: 'Blue', hint: 'It is blue and shiny' },
-      { id: 'story-y1-3-q2', question: 'What does Tim put on before riding?', options: ['A hat', 'A helmet', 'Gloves', 'Boots'], correct: 'A helmet', hint: 'To keep his head safe' },
-      { id: 'story-y1-3-q3', question: 'What happens the first time Tim pedals?', options: ['He rides perfectly', 'He falls off', 'He stops', 'He goes backwards'], correct: 'He falls off', hint: 'Wobble, wobble!' },
-      { id: 'story-y1-3-q4', question: 'What does Tim do after he falls?', options: ['Gives up', 'Tries again', 'Cries all day', 'Goes inside'], correct: 'Tries again', hint: 'Mum tells him to' },
-    ],
-  },
 ];
 
 export const readingPassages: EnglishPassage[] = [
   {
     id: 'reading-1',
-    year: 2,
     title: 'The Kind Fox',
     content: 'A little fox named Ruby lived at the edge of a forest. One cold morning, she found a rabbit shivering under a bush. Ruby did not eat the rabbit, even though she was hungry. Instead, she led the rabbit to a warm den and shared her food. The rabbit was surprised. "Why are you helping me?" asked the rabbit. Ruby smiled and said, "Because being kind feels better than being full." From then on, the fox and the rabbit were the best of friends.',
     questions: [
@@ -854,7 +261,6 @@ export const readingPassages: EnglishPassage[] = [
   },
   {
     id: 'reading-2',
-    year: 2,
     title: 'A Trip to the Farm',
     content: 'On Saturday, Ben and his class visited a farm. They saw fluffy sheep, brown cows, and clucking chickens. The farmer showed them how to collect eggs from the henhouse. Ben was nervous at first, but the hens were gentle and friendly. Later, everyone got to feed the goats with handfuls of hay. Ben\'s favorite part was riding on the tractor around the big green field. On the bus ride home, Ben told his friend it was the best school trip ever.',
     questions: [
@@ -867,7 +273,6 @@ export const readingPassages: EnglishPassage[] = [
   },
   {
     id: 'reading-3',
-    year: 2,
     title: 'The Lost Kite',
     content: 'Mia flew her red kite at the park every weekend. One windy day, the string snapped and the kite sailed away over the trees! Mia felt sad, but her dad said, "Let\'s go find it together." They followed the direction of the wind and searched the park. After a while, they spotted the kite stuck in a tall tree near the pond. A kind jogger helped them reach it with a long stick. Mia was overjoyed to have her kite back, and she held the string extra tight the rest of the afternoon.',
     questions: [
@@ -878,36 +283,11 @@ export const readingPassages: EnglishPassage[] = [
       { id: 'read-3-q5', question: 'What did Mia do differently afterward?', options: ['Stopped flying kites', 'Held the string extra tight', 'Bought a new kite', 'Went home early'], correct: 'Held the string extra tight', hint: 'She learned from what happened' },
     ],
   },
-  {
-    id: 'reading-y1-1',
-    year: 1,
-    title: 'My Pet Dog',
-    content: 'I have a pet dog. His name is Max. Max is brown and white. Max likes to run in the park. Max likes to play with his ball. At night, Max sleeps in his bed. I love my dog Max.',
-    questions: [
-      { id: 'reading-y1-1-q1', question: 'What is the dog\'s name?', options: ['Max', 'Rex', 'Spot', 'Buddy'], correct: 'Max', hint: 'It is said twice in the first two sentences' },
-      { id: 'reading-y1-1-q2', question: 'What colors is Max?', options: ['Black and white', 'Brown and white', 'All brown', 'All black'], correct: 'Brown and white', hint: 'Read the third sentence' },
-      { id: 'reading-y1-1-q3', question: 'Where does Max like to run?', options: ['In the park', 'In the house', 'At school', 'In the pond'], correct: 'In the park', hint: 'Read the fourth sentence' },
-      { id: 'reading-y1-1-q4', question: 'Where does Max sleep?', options: ['In his bed', 'On the sofa', 'Outside', 'In the car'], correct: 'In his bed', hint: 'At night' },
-    ],
-  },
-  {
-    id: 'reading-y1-2',
-    year: 1,
-    title: 'A Day at the Park',
-    content: 'Zara goes to the park with Dad. Zara plays on the swing. Up and down, up and down! Then Zara goes on the slide. Wheee! Zara feeds the ducks with Dad. The ducks quack. Zara has a fun day at the park.',
-    questions: [
-      { id: 'reading-y1-2-q1', question: 'Who does Zara go to the park with?', options: ['Mum', 'Dad', 'Her friend', 'Her teacher'], correct: 'Dad', hint: 'Said in the first sentence' },
-      { id: 'reading-y1-2-q2', question: 'What does Zara play on first?', options: ['The slide', 'The swing', 'The sandpit', 'The seesaw'], correct: 'The swing', hint: 'Up and down!' },
-      { id: 'reading-y1-2-q3', question: 'What sound do the ducks make?', options: ['Woof', 'Quack', 'Moo', 'Meow'], correct: 'Quack', hint: 'The sound ducks make' },
-      { id: 'reading-y1-2-q4', question: 'Did Zara have a good day?', options: ['Yes, a fun day', 'No, a bad day', 'She felt sick', 'She went home early'], correct: 'Yes, a fun day', hint: 'Read the last sentence' },
-    ],
-  },
 ];
 
 export const comprehensionPassages: EnglishPassage[] = [
   {
     id: 'comp-1',
-    year: 3,
     title: 'Why Bees Matter',
     content: 'Bees are small, but they do a big job. When a bee visits a flower to drink its nectar, tiny grains of pollen stick to its fuzzy legs. As the bee flies to the next flower, some of that pollen rubs off. This is called pollination, and it helps plants grow fruits, vegetables, and seeds. Without bees, many of the foods we eat — like apples, strawberries, and almonds — would become very rare. That is why scientists work hard to protect bees and keep them healthy.',
     questions: [
@@ -920,7 +300,6 @@ export const comprehensionPassages: EnglishPassage[] = [
   },
   {
     id: 'comp-2',
-    year: 3,
     title: 'The Recycling Robot',
     content: 'At Greenfield School, a robot named Sorty helps students recycle. When someone brings rubbish to Sorty, it uses a camera to look at the item and a mechanical arm to sort it into the right bin — paper, plastic, or food waste. Sorty was built by a group of older students for a science project. Since Sorty arrived, the school has recycled twice as much as before, and much less rubbish ends up in the wrong bin. The head teacher says Sorty has taught everyone that small actions, done correctly, can make a big difference.',
     questions: [
@@ -933,7 +312,6 @@ export const comprehensionPassages: EnglishPassage[] = [
   },
   {
     id: 'comp-3',
-    year: 3,
     title: 'Grandma\'s Garden',
     content: 'Every summer, Priya visits her grandmother, who grows vegetables in a small garden behind her house. This year, Grandma taught Priya how to plant tomato seeds, water them gently every morning, and pull out weeds that steal their sunlight. At first, Priya found the work slow and a little boring. But after a few weeks, tiny green tomatoes began to appear on the vines. Priya checked on them every single day, amazed that something so small could grow into food. By the end of summer, she picked the first ripe tomato herself and proudly made a salad for the whole family.',
     questions: [
@@ -944,24 +322,11 @@ export const comprehensionPassages: EnglishPassage[] = [
       { id: 'comp-3-q5', question: 'What did Priya do with the first ripe tomato?', options: ['Gave it away', 'Made a salad for the family', 'Sold it', 'Planted it again'], correct: 'Made a salad for the family', hint: 'The last sentence' },
     ],
   },
-  {
-    id: 'comp-y1-1',
-    year: 1,
-    title: 'Bees Make Honey',
-    content: 'Bees live in a hive. Bees fly to flowers. Bees sip a sweet juice from the flowers. This juice is called nectar. Bees take the nectar back to the hive. Bees turn the nectar into honey. We eat the honey that bees make. Bees are small, but they do a big job!',
-    questions: [
-      { id: 'comp-y1-1-q1', question: 'Where do bees live?', options: ['In a nest', 'In a hive', 'In a hole', 'In a pond'], correct: 'In a hive', hint: 'Read the first sentence' },
-      { id: 'comp-y1-1-q2', question: 'What do bees sip from flowers?', options: ['Water', 'Nectar', 'Pollen', 'Juice from apples'], correct: 'Nectar', hint: 'It is a sweet juice' },
-      { id: 'comp-y1-1-q3', question: 'What do bees turn nectar into?', options: ['Water', 'Honey', 'Sugar', 'Jam'], correct: 'Honey', hint: 'Something we eat' },
-      { id: 'comp-y1-1-q4', question: 'What does the story say bees do?', options: ['A big job', 'Nothing important', 'A small job', 'They sleep all day'], correct: 'A big job', hint: 'The last sentence' },
-    ],
-  },
 ];
 
-export const englishQuizzes: Record<string, { title: string; year: number; questions: QuizQuestion[] }> = {
+export const englishQuizzes: Record<string, { title: string; questions: QuizQuestion[] }> = {
   vocabulary: {
     title: 'Vocabulary',
-    year: 2,
     questions: [
       { id: 'vocab-1', question: 'What does "enormous" mean?', options: ['Tiny', 'Huge', 'Soft', 'Loud'], correct: 'Huge', hint: 'Think of something very, very big' },
       { id: 'vocab-2', question: 'What does "delighted" mean?', options: ['Very happy', 'Very tired', 'Very angry', 'Very cold'], correct: 'Very happy', hint: 'A strong positive feeling' },
@@ -977,7 +342,6 @@ export const englishQuizzes: Record<string, { title: string; year: number; quest
   },
   grammar: {
     title: 'Grammar',
-    year: 2,
     questions: [
       { id: 'gram-1', question: 'Which word is a noun in this sentence: "The dog ran quickly"?', options: ['The', 'dog', 'ran', 'quickly'], correct: 'dog', hint: 'A noun names a person, place, or thing' },
       { id: 'gram-2', question: 'Which word is a verb in this sentence: "Sara sings beautifully"?', options: ['Sara', 'sings', 'beautifully', 'the'], correct: 'sings', hint: 'A verb is an action word' },
@@ -993,7 +357,6 @@ export const englishQuizzes: Record<string, { title: string; year: number; quest
   },
   'sentence-building': {
     title: 'Sentence Building',
-    year: 1,
     questions: [
       { id: 'sent-1', question: 'Which is a correctly ordered sentence?', options: ['Ball the kicked boy', 'The boy kicked the ball', 'Kicked ball the boy', 'The kicked boy ball'], correct: 'The boy kicked the ball', hint: 'Subject, then verb, then object' },
       { id: 'sent-2', question: 'Which sentence makes sense?', options: ['Sun the is bright', 'Bright is the sun', 'The sun is bright', 'Is bright the sun'], correct: 'The sun is bright', hint: 'Start with "The"' },
@@ -1005,134 +368,6 @@ export const englishQuizzes: Record<string, { title: string; year: number; quest
       { id: 'sent-8', question: 'Choose the correctly ordered sentence:', options: ['We tomorrow the beach to are going', 'We are going to the beach tomorrow', 'Tomorrow beach the to going are we', 'Going we are tomorrow the beach to'], correct: 'We are going to the beach tomorrow', hint: 'Time words usually come at the end' },
       { id: 'sent-9', question: 'Which word order is correct?', options: ['Loudly the dog barked', 'The dog barked loudly', 'Barked loudly the dog', 'Dog the barked loudly'], correct: 'The dog barked loudly', hint: 'Subject, verb, then how' },
       { id: 'sent-10', question: 'Which sentence is complete and correct?', options: ['Under the table the cat', 'The cat is under the table', 'Table the under is cat', 'Is under cat the table'], correct: 'The cat is under the table', hint: 'It needs a subject and a verb' },
-    ],
-  },
-  'rhyming-words': {
-    title: 'Rhyming Words',
-    year: 1,
-    questions: [
-      { id: 'rhyme-1', question: 'Which word rhymes with "cat"?', options: ['Dog', 'Hat', 'Sun', 'Cup'], correct: 'Hat', hint: 'Listen for the same ending sound' },
-      { id: 'rhyme-2', question: 'Which word rhymes with "dog"?', options: ['Frog', 'Cat', 'Bird', 'Fish'], correct: 'Frog', hint: 'They both end in "og"' },
-      { id: 'rhyme-3', question: 'Which word rhymes with "bed"?', options: ['Bad', 'Red', 'Bud', 'Bid'], correct: 'Red', hint: 'They both end in "ed"' },
-      { id: 'rhyme-4', question: 'Which word rhymes with "run"?', options: ['Ran', 'Fun', 'Rin', 'Ron'], correct: 'Fun', hint: 'They both end in "un"' },
-      { id: 'rhyme-5', question: 'Which word rhymes with "top"?', options: ['Tap', 'Tip', 'Hop', 'Tup'], correct: 'Hop', hint: 'They both end in "op"' },
-      { id: 'rhyme-6', question: 'Which word does NOT rhyme with "light"?', options: ['Night', 'Bright', 'Kite', 'Look'], correct: 'Look', hint: 'Listen for the odd one out' },
-      { id: 'rhyme-7', question: 'Which word rhymes with "star"?', options: ['Car', 'Stir', 'Store', 'Stop'], correct: 'Car', hint: 'They both end in "ar"' },
-      { id: 'rhyme-8', question: 'Which word rhymes with "cake"?', options: ['Cook', 'Lake', 'Kick', 'Cape'], correct: 'Lake', hint: 'They both end in "ake"' },
-      { id: 'rhyme-9', question: 'Which word rhymes with "ball"?', options: ['Bell', 'Tall', 'Bull', 'Bowl'], correct: 'Tall', hint: 'They both end in "all"' },
-      { id: 'rhyme-10', question: 'Which word rhymes with "mouse"?', options: ['Moose', 'House', 'Miss', 'Mess'], correct: 'House', hint: 'They both end in "ouse"' },
-    ],
-  },
-  'capital-letters-punctuation': {
-    title: 'Capital Letters & Full Stops',
-    year: 1,
-    questions: [
-      { id: 'punc-1', question: 'Which sentence starts correctly?', options: ['the dog ran.', 'The dog ran.', 'The Dog ran.', 'the Dog Ran.'], correct: 'The dog ran.', hint: 'The first word of a sentence needs a capital letter' },
-      { id: 'punc-2', question: 'Which sentence ends correctly?', options: ['I like cake', 'I like cake.', 'I like cake,', 'I like cake;'], correct: 'I like cake.', hint: 'A telling sentence ends with a full stop' },
-      { id: 'punc-3', question: 'Which word should always start with a capital letter?', options: ['dog', 'I', 'run', 'happy'], correct: 'I', hint: 'The word for yourself is always capital' },
-      { id: 'punc-4', question: 'Which is written correctly?', options: ['my name is Sam.', 'My name is sam.', 'My name is Sam.', 'my Name is sam'], correct: 'My name is Sam.', hint: 'Sentence starts and names both need capitals' },
-      { id: 'punc-5', question: 'Which sentence is punctuated correctly?', options: ['She has a cat', 'she has a cat.', 'She has a cat.', 'She Has A Cat.'], correct: 'She has a cat.', hint: 'Only the first word needs a capital letter' },
-      { id: 'punc-6', question: 'Which of these is a person\'s name and needs a capital letter?', options: ['ball', 'Jack', 'happy', 'run'], correct: 'Jack', hint: 'Names of people always start with a capital' },
-      { id: 'punc-7', question: 'Which sentence has correct spacing and punctuation?', options: ['Thecatisblack.', 'The cat is black', 'The cat is black.', 'the Cat Is Black.'], correct: 'The cat is black.', hint: 'Words need spaces and the sentence needs a full stop' },
-      { id: 'punc-8', question: 'Where does a full stop go?', options: ['At the start of a sentence', 'In the middle of a sentence', 'At the end of a sentence', 'It is never needed'], correct: 'At the end of a sentence', hint: 'It shows the sentence is finished' },
-      { id: 'punc-9', question: 'Which sentence is correct?', options: ['We went to London.', 'we went to london.', 'We Went To London.', 'we went to London'], correct: 'We went to London.', hint: 'Place names and sentence starts need capitals' },
-      { id: 'punc-10', question: 'Which is the correctly written sentence?', options: ['it is sunny today', 'It is sunny today.', 'It Is Sunny Today.', 'it is Sunny today.'], correct: 'It is sunny today.', hint: 'Only the first letter and any names need capitals' },
-    ],
-  },
-  homophones: {
-    title: 'Homophones (Same Sound, Different Meaning)',
-    year: 2,
-    questions: [
-      { id: 'homo-1', question: 'Which word means "belonging to them"?', options: ['there', 'their', 'they\'re', 'them'], correct: 'their', hint: 'Think of "their toys"' },
-      { id: 'homo-2', question: 'Which word means "a place"?', options: ['their', 'there', 'they\'re', 'then'], correct: 'there', hint: '"Put it over there"' },
-      { id: 'homo-3', question: 'Which word is short for "they are"?', options: ['their', 'there', 'they\'re', 'them'], correct: 'they\'re', hint: 'The apostrophe replaces a missing letter' },
-      { id: 'homo-4', question: 'Which word means "the number after one"?', options: ['too', 'to', 'two', 'tow'], correct: 'two', hint: '1, ?, 3' },
-      { id: 'homo-5', question: 'Which word means "as well"?', options: ['to', 'too', 'two', 'toe'], correct: 'too', hint: '"I want to come too"' },
-      { id: 'homo-6', question: 'Which word do you use before a verb, like "to run"?', options: ['too', 'two', 'to', 'toe'], correct: 'to', hint: '"I want ___ play"' },
-      { id: 'homo-7', question: 'Which word means "you are not allowed to pass"?', options: ['know', 'no', 'now', 'know how'], correct: 'no', hint: 'The opposite of "yes"' },
-      { id: 'homo-8', question: 'Which word means "to understand something"?', options: ['no', 'know', 'now', 'new'], correct: 'know', hint: '"I ___ the answer"' },
-      { id: 'homo-9', question: 'Which word means "you can see with them"?', options: ['eyes', 'ice', 'ise', 'eys'], correct: 'eyes', hint: 'Part of your face' },
-      { id: 'homo-10', question: 'Which word means "belonging to it"?', options: ['it\'s', 'its', 'its\'', 'it is'], correct: 'its', hint: '"The dog wagged ___ tail" (no apostrophe)' },
-    ],
-  },
-  'apostrophes-joining-words': {
-    title: 'Apostrophes & Joining Words',
-    year: 2,
-    questions: [
-      { id: 'apos-1', question: 'What does the apostrophe show in "don\'t"?', options: ['Something belongs to someone', 'A missing letter', 'The end of a sentence', 'A question'], correct: 'A missing letter', hint: 'do not → don\'t, the "o" is missing' },
-      { id: 'apos-2', question: 'Which is the correct short form of "I am"?', options: ['Im', 'I\'am', 'I\'m', 'Iam'], correct: 'I\'m', hint: 'The apostrophe replaces the "a"' },
-      { id: 'apos-3', question: 'Which shows that the ball belongs to Sam?', options: ['Sams ball', 'Sam\'s ball', 'Sams\' ball', 'Sam ball\'s'], correct: 'Sam\'s ball', hint: 'Apostrophe + s shows ownership' },
-      { id: 'apos-4', question: 'Which is the correct short form of "cannot"?', options: ['can\'t', 'ca\'nt', 'cann\'t', 'cant\''], correct: 'can\'t', hint: 'The apostrophe replaces "no"' },
-      { id: 'apos-5', question: 'Which word could join these two sentences: "I stayed inside ___ it was raining."', options: ['and', 'because', 'but', 'so'], correct: 'because', hint: 'It explains the reason' },
-      { id: 'apos-6', question: 'Which word could join: "I will go outside ___ it stops raining."', options: ['when', 'because', 'and', 'but'], correct: 'when', hint: 'It shows a time condition' },
-      { id: 'apos-7', question: 'Which word could join: "We can play outside ___ it is sunny."', options: ['if', 'because', 'so', 'the'], correct: 'if', hint: 'It shows a possibility' },
-      { id: 'apos-8', question: 'Which is the correct short form of "she is"?', options: ['shes', 'she\'s', 'sh\'es', 'she is\''], correct: 'she\'s', hint: 'The apostrophe replaces the "i"' },
-      { id: 'apos-9', question: 'Whose book is it if we write "the girl\'s book"?', options: ['One girl\'s book', 'Many girls\' books', 'No one\'s book', 'The teacher\'s book'], correct: 'One girl\'s book', hint: 'Apostrophe before the s means one girl' },
-      { id: 'apos-10', question: 'Which sentence uses "because" correctly?', options: ['Because I was tired.', 'I went to bed because I was tired.', 'I because went to bed.', 'Tired because I was.'], correct: 'I went to bed because I was tired.', hint: 'It should explain a reason within a full sentence' },
-    ],
-  },
-  'prefixes-suffixes': {
-    title: 'Prefixes and Suffixes',
-    year: 3,
-    questions: [
-      { id: 'pre-1', question: 'What does the prefix "un-" usually mean?', options: ['Again', 'Not', 'Before', 'After'], correct: 'Not', hint: 'unhappy = not happy' },
-      { id: 'pre-2', question: 'Which word means "to do again"?', options: ['redo', 'undo', 'misdo', 'predo'], correct: 'redo', hint: 'The prefix "re-" means again' },
-      { id: 'pre-3', question: 'What does adding "-ful" to "care" make?', options: ['careless', 'careful', 'cared', 'caring'], correct: 'careful', hint: '"-ful" means full of' },
-      { id: 'pre-4', question: 'What does adding "-less" to "hope" make?', options: ['hopeful', 'hopeless', 'hoping', 'hoped'], correct: 'hopeless', hint: '"-less" means without' },
-      { id: 'pre-5', question: 'What does the prefix "dis-" usually mean?', options: ['Again', 'The opposite of', 'Very', 'Before'], correct: 'The opposite of', hint: 'disagree = the opposite of agree' },
-      { id: 'pre-6', question: 'Which word means "not possible"?', options: ['possible', 'impossible', 'repossible', 'prepossible'], correct: 'impossible', hint: 'The prefix "im-" means not' },
-      { id: 'pre-7', question: 'What does adding "-ly" to "quick" make?', options: ['quickest', 'quickness', 'quickly', 'unquick'], correct: 'quickly', hint: '"-ly" turns an adjective into an adverb' },
-      { id: 'pre-8', question: 'What does the prefix "mis-" usually mean?', options: ['Correctly', 'Wrongly', 'Never', 'Always'], correct: 'Wrongly', hint: 'misspell = spell wrongly' },
-      { id: 'pre-9', question: 'What does adding "-ness" to "kind" make?', options: ['kindly', 'kindness', 'unkind', 'kinder'], correct: 'kindness', hint: '"-ness" turns an adjective into a noun' },
-      { id: 'pre-10', question: 'Which word uses the prefix "super-" meaning "above" or "beyond"?', options: ['submarine', 'superhero', 'international', 'unhappy'], correct: 'superhero', hint: 'A superhero has beyond-normal powers' },
-    ],
-  },
-  'word-classes-apostrophes-y4': {
-    title: 'Word Classes & Standard English',
-    year: 4,
-    questions: [
-      { id: 'wc4-1', question: 'Which word is a determiner in "the tall boy"?', options: ['the', 'tall', 'boy', 'None'], correct: 'the', hint: 'It comes before the noun phrase' },
-      { id: 'wc4-2', question: 'Which sentence uses Standard English correctly?', options: ['We was going home', 'We were going home', 'We is going home', 'We be going home'], correct: 'We were going home', hint: '"Were" agrees with "we"' },
-      { id: 'wc4-3', question: 'Which is an expanded noun phrase?', options: ['dog', 'the big brown dog', 'ran', 'quickly'], correct: 'the big brown dog', hint: 'It adds extra description to the noun' },
-      { id: 'wc4-4', question: 'Which sentence uses the plural possessive apostrophe correctly for more than one dog?', options: ['The dogs bone', 'The dog\'s bone', 'The dogs\' bones', 'The dogs\'s bones'], correct: 'The dogs\' bones', hint: 'For plural nouns ending in s, the apostrophe goes after the s' },
-      { id: 'wc4-5', question: 'Which word is a conjunction in "I stayed in although it was sunny"?', options: ['stayed', 'although', 'sunny', 'in'], correct: 'although', hint: 'It joins two clauses' },
-      { id: 'wc4-6', question: 'Which sentence is in Standard English?', options: ['I done my homework', 'I did my homework', 'I have did my homework', 'I doed my homework'], correct: 'I did my homework', hint: '"Did" is the correct past tense of "do"' },
-      { id: 'wc4-7', question: 'Which word is an adverb in "She ran quickly"?', options: ['She', 'ran', 'quickly', 'None'], correct: 'quickly', hint: 'It describes how she ran' },
-      { id: 'wc4-8', question: 'Which sentence uses "fewer" correctly?', options: ['There is fewer water in the jug', 'There are fewer sweets in the jar', 'There is fewer sweets', 'Fewer water was left'], correct: 'There are fewer sweets in the jar', hint: '"Fewer" is used for countable things like sweets' },
-      { id: 'wc4-9', question: 'Which word is a preposition in "The cat sat under the table"?', options: ['cat', 'sat', 'under', 'table'], correct: 'under', hint: 'It shows the position of the cat' },
-      { id: 'wc4-10', question: 'Which sentence uses Standard English correctly?', options: ['They ain\'t got none', 'They haven\'t got any', 'They ain\'t got no sweets', 'They not got any'], correct: 'They haven\'t got any', hint: 'Avoid double negatives and non-standard words' },
-    ],
-  },
-  'relative-clauses-cohesion-y5': {
-    title: 'Relative Clauses & Cohesion',
-    year: 5,
-    questions: [
-      { id: 'rel5-1', question: 'Which sentence contains a relative clause?', options: ['The dog barked loudly', 'The dog, which was brown, barked loudly', 'The dog ran and barked', 'The loud dog barked'], correct: 'The dog, which was brown, barked loudly', hint: 'Look for the clause starting with "which"' },
-      { id: 'rel5-2', question: 'Which relative pronoun would you use for a person?', options: ['which', 'who', 'that only', 'whose only'], correct: 'who', hint: '"Who" refers to people' },
-      { id: 'rel5-3', question: 'Which relative pronoun shows possession?', options: ['who', 'which', 'whose', 'that'], correct: 'whose', hint: 'It means "belonging to whom"' },
-      { id: 'rel5-4', question: 'Which word could replace "however" to show contrast?', options: ['also', 'therefore', 'but', 'and'], correct: 'but', hint: 'It shows a similar contrasting relationship' },
-      { id: 'rel5-5', question: 'Which sentence uses a modal verb?', options: ['I run every day', 'I might run today', 'I ran yesterday', 'I am running now'], correct: 'I might run today', hint: '"Might" shows possibility' },
-      { id: 'rel5-6', question: 'Which word shows the strongest certainty?', options: ['might', 'could', 'must', 'may'], correct: 'must', hint: 'It expresses near certainty or obligation' },
-      { id: 'rel5-7', question: 'Which sentence correctly uses a relative clause with "that"?', options: ['The book that I read was exciting', 'The book, I read, was exciting', 'The book what I read was exciting', 'I read the book, that was exciting'], correct: 'The book that I read was exciting', hint: '"That" introduces the clause smoothly' },
-      { id: 'rel5-8', question: 'Which word helps link ideas by adding more information?', options: ['furthermore', 'however', 'because', 'unless'], correct: 'furthermore', hint: 'It means "in addition"' },
-      { id: 'rel5-9', question: 'Which is an example of parenthesis (extra information) using brackets?', options: ['The cat (which was ginger) slept', 'The cat which was ginger slept', 'The ginger cat slept', 'The cat slept, ginger'], correct: 'The cat (which was ginger) slept', hint: 'Brackets add extra, non-essential detail' },
-      { id: 'rel5-10', question: 'Which word could join these ideas to show a result: "It rained all day ___ the match was cancelled."', options: ['although', 'so', 'because', 'when'], correct: 'so', hint: 'It shows a consequence' },
-    ],
-  },
-  'active-passive-punctuation-y6': {
-    title: 'Active/Passive Voice & Advanced Punctuation',
-    year: 6,
-    questions: [
-      { id: 'act6-1', question: 'Which sentence is in the active voice?', options: ['The cake was eaten by Tom', 'Tom ate the cake', 'The cake had been eaten', 'The cake is being eaten'], correct: 'Tom ate the cake', hint: 'The subject performs the action' },
-      { id: 'act6-2', question: 'Which sentence is in the passive voice?', options: ['Tom ate the cake', 'The cake was eaten by Tom', 'Tom is eating the cake', 'Tom will eat the cake'], correct: 'The cake was eaten by Tom', hint: 'The subject receives the action' },
-      { id: 'act6-3', question: 'Which punctuation mark introduces a list?', options: ['Comma', 'Colon', 'Semicolon', 'Apostrophe'], correct: 'Colon', hint: 'It comes before the items begin' },
-      { id: 'act6-4', question: 'Which punctuation mark joins two related but independent sentences?', options: ['Comma', 'Colon', 'Semicolon', 'Hyphen'], correct: 'Semicolon', hint: 'It is stronger than a comma but softer than a full stop' },
-      { id: 'act6-5', question: 'Which sentence correctly uses a colon?', options: ['I need: eggs, milk, and flour', 'I need the following: eggs, milk, and flour', 'I need eggs: milk and flour', 'I: need eggs, milk and flour'], correct: 'I need the following: eggs, milk, and flour', hint: 'The colon follows a complete introductory clause' },
-      { id: 'act6-6', question: 'Which sentence uses a hyphen correctly?', options: ['a well known author', 'a well-known author', 'a well; known author', 'a well: known author'], correct: 'a well-known author', hint: 'Hyphens join compound adjectives before a noun' },
-      { id: 'act6-7', question: 'Rewrite in the passive voice: "The team won the match."', options: ['The match was won by the team', 'The team is winning the match', 'The match wins the team', 'The team will win the match'], correct: 'The match was won by the team', hint: 'Make the object the new subject' },
-      { id: 'act6-8', question: 'Which sentence uses the subjunctive mood correctly?', options: ['If I was rich, I would travel', 'If I were rich, I would travel', 'If I am rich, I would travel', 'If I will be rich, I would travel'], correct: 'If I were rich, I would travel', hint: 'The subjunctive uses "were" for hypothetical situations' },
-      { id: 'act6-9', question: 'Which punctuation mark shows a dash used for emphasis or an aside?', options: ['Comma', 'Semicolon', 'Dash', 'Colon'], correct: 'Dash', hint: 'It creates a dramatic pause' },
-      { id: 'act6-10', question: 'Why might a writer choose the passive voice?', options: ['To hide who did the action or focus on the result', 'To make the sentence shorter always', 'It is never used in writing', 'To make the subject perform the action'], correct: 'To hide who did the action or focus on the result', hint: 'Passive voice shifts focus away from the doer' },
     ],
   },
 };
@@ -1202,18 +437,10 @@ export const phonicsSounds = {
     { id: 'nk', sound: 'nk', example: 'think', pronunciation: 'NK sound' },
     { id: 'qu', sound: 'qu', example: 'queen', pronunciation: 'KW sound' },
   ],
-  splitDigraphs: [
-    { id: 'a-e', sound: 'a_e', example: 'cake', pronunciation: 'Long A sound (magic e)' },
-    { id: 'e-e', sound: 'e_e', example: 'these', pronunciation: 'Long E sound (magic e)' },
-    { id: 'i-e', sound: 'i_e', example: 'bike', pronunciation: 'Long I sound (magic e)' },
-    { id: 'o-e', sound: 'o_e', example: 'bone', pronunciation: 'Long O sound (magic e)' },
-    { id: 'u-e', sound: 'u_e', example: 'cube', pronunciation: 'Long U sound (magic e)' },
-  ],
 };
 
 export const phonicsQuizzes: Record<string, QuizQuestion[]> = {
   doubleVowels: buildPhonicsQuiz(phonicsSounds.doubleVowels),
   doubleConsonants: buildPhonicsQuiz(phonicsSounds.doubleConsonants),
   digraphs: buildPhonicsQuiz(phonicsSounds.digraphs),
-  splitDigraphs: buildPhonicsQuiz(phonicsSounds.splitDigraphs),
 };
