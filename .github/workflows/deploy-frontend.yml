@@ -1,0 +1,81 @@
+name: Deploy frontend to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Lets you also trigger a deploy manually from the Actions tab, without a push
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build frontend
+        working-directory: artifacts/bright-learners
+        env:
+          PORT: "5173"
+          # Project Pages are served from https://<user>.github.io/<repo>/ —
+          # BASE_PATH must match that subpath so built asset URLs resolve.
+          # If you later move to a custom domain (or use a
+          # <user>.github.io *root* repo), change this to "/" and remove
+          # the CNAME step below.
+          BASE_PATH: /${{ github.event.repository.name }}/
+          NODE_ENV: production
+          # Set these under: repo Settings > Secrets and variables > Actions
+          # VITE_API_URL: your Render backend URL (required — GitHub Pages
+          # can't proxy /api/* like Netlify could, so this must point
+          # directly at the backend)
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+        run: pnpm run build
+
+      # Uncomment and edit if/when you add a custom domain in repo Settings > Pages:
+      # - name: Add CNAME
+      #   run: echo "your-domain.com" > artifacts/bright-learners/dist/public/CNAME
+
+      - name: Upload build
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: artifacts/bright-learners/dist/public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
