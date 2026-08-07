@@ -17,15 +17,6 @@ import { verifyFirebaseIdToken } from "../lib/firebaseAdmin";
 
 const router: IRouter = Router();
 
-// Drizzle returns `createdAt` as a JS Date instance, but the response
-// schemas below declare it as a string (it becomes one once res.json()
-// serializes it) - .parse() runs BEFORE that serialization, so validating
-// the raw object fails with "Expected string, received date". Converting
-// it here keeps every response route consistent.
-function toSafeUser<T extends { createdAt: Date | string }>(user: T) {
-  return { ...user, createdAt: new Date(user.createdAt).toISOString() };
-}
-
 router.get("/auth/me", async (req, res): Promise<void> => {
   const session = req.session as any;
   if (!session.userId) {
@@ -38,7 +29,7 @@ router.get("/auth/me", async (req, res): Promise<void> => {
     return;
   }
   const { passwordHash: _, firebaseUid: __, ...safeUser } = user;
-  res.json(GetMeResponse.parse(toSafeUser(safeUser)));
+  res.json(GetMeResponse.parse(safeUser));
 });
 
 router.post("/auth/login", async (req, res): Promise<void> => {
@@ -61,7 +52,7 @@ router.post("/auth/login", async (req, res): Promise<void> => {
   const session = req.session as any;
   session.userId = user.id;
   const { passwordHash: _, firebaseUid: __, ...safeUser } = user;
-  res.json(LoginResponse.parse(toSafeUser(safeUser)));
+  res.json(LoginResponse.parse(safeUser));
 });
 
 router.post("/auth/register", async (req, res): Promise<void> => {
@@ -87,7 +78,7 @@ router.post("/auth/register", async (req, res): Promise<void> => {
   const session = req.session as any;
   session.userId = user.id;
   const { passwordHash: _, firebaseUid: __, ...safeUser } = user;
-  res.status(201).json(RegisterResponse.parse(toSafeUser(safeUser)));
+  res.status(201).json(RegisterResponse.parse(safeUser));
 });
 
 router.post("/auth/firebase-session", async (req, res): Promise<void> => {
@@ -154,7 +145,7 @@ router.post("/auth/firebase-session", async (req, res): Promise<void> => {
   const session = req.session as any;
   session.userId = user.id;
   const { passwordHash: _, firebaseUid: __, ...safeUser } = user;
-  res.status(isNewUser ? 201 : 200).json(FirebaseSessionResponse.parse(toSafeUser(safeUser)));
+  res.status(isNewUser ? 201 : 200).json(FirebaseSessionResponse.parse(safeUser));
 });
 
 router.post("/auth/logout", async (req, res): Promise<void> => {

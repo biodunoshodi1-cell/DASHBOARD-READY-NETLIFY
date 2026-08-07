@@ -1,9 +1,12 @@
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'wouter';
 import { ArrowLeft, Volume2, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useListCompletedLessons } from '@workspace/api-client-react';
+
+const YEARS = [1, 2, 3, 4, 5, 6];
 
 const phonicsSections = [
   {
@@ -12,6 +15,7 @@ const phonicsSections = [
     description: 'ai, ay, ee, ea, oa, oo, oi, oy, ie, ue',
     icon: '🎵',
     color: 'from-pink-400 to-rose-500',
+    year: 1,
   },
   {
     id: 'double-consonants',
@@ -19,6 +23,7 @@ const phonicsSections = [
     description: 'll, ss, ff, tt, pp, nn, rr, bb, dd, mm',
     icon: '🎼',
     color: 'from-rose-400 to-orange-500',
+    year: 1,
   },
   {
     id: 'consonant-digraphs',
@@ -26,6 +31,15 @@ const phonicsSections = [
     description: 'ch, sh, th, wh, ph, ck, ng, nk, qu',
     icon: '🎶',
     color: 'from-orange-400 to-yellow-500',
+    year: 1,
+  },
+  {
+    id: 'split-digraphs',
+    title: 'Split Digraphs (Magic E)',
+    description: 'a-e, e-e, i-e, o-e, u-e',
+    icon: '✨',
+    color: 'from-yellow-400 to-amber-500',
+    year: 1,
   },
 ];
 
@@ -37,6 +51,13 @@ export default function Phonics() {
     { query: { enabled: !!user?.id } },
   );
   const completedIds = new Set((completedLessons ?? []).map((l) => l.lessonId));
+
+  const [selectedYear, setSelectedYear] = useState<number>(1);
+  const yearsWithContent = useMemo(() => new Set(phonicsSections.map((s) => s.year)), []);
+  const visibleSections = useMemo(
+    () => phonicsSections.filter((s) => s.year === selectedYear),
+    [selectedYear],
+  );
 
   return (
     <div className="min-h-[100dvh] gradient-phonics pb-12">
@@ -61,10 +82,43 @@ export default function Phonics() {
         </div>
       </div>
 
+      {/* Year Group Selector */}
+      <div className="max-w-7xl mx-auto px-6 pt-8">
+        <div className="flex flex-wrap gap-3 justify-center" role="tablist" aria-label="Select year group">
+          {YEARS.map((year) => {
+            const hasContent = yearsWithContent.has(year);
+            const isSelected = selectedYear === year;
+            return (
+              <button
+                key={year}
+                role="tab"
+                aria-selected={isSelected}
+                data-testid={`tab-year-${year}`}
+                onClick={() => setSelectedYear(year)}
+                className={`px-5 py-2 rounded-full font-black text-sm border-2 transition-colors ${
+                  isSelected
+                    ? 'bg-white text-pink-600 border-white shadow-lg'
+                    : 'bg-white/20 text-white border-white/40 hover:bg-white/30'
+                } ${!hasContent ? 'opacity-60' : ''}`}
+              >
+                Year {year}
+                {!hasContent && <span className="ml-1 text-xs font-bold">(soon)</span>}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Sections Grid */}
       <div className="max-w-7xl mx-auto px-6 py-12">
+        {visibleSections.length === 0 ? (
+          <div className="text-center bg-white/90 dark:bg-card/90 rounded-3xl p-12 shadow-xl">
+            <p className="text-2xl font-black text-foreground mb-2">Year {selectedYear} Phonics is coming soon!</p>
+            <p className="text-muted-foreground font-bold">We're still building these lessons. Check back soon.</p>
+          </div>
+        ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {phonicsSections.map((section, index) => {
+          {visibleSections.map((section, index) => {
             const isComplete = completedIds.has(section.id);
             return (
             <motion.div
@@ -105,6 +159,7 @@ export default function Phonics() {
             );
           })}
         </div>
+        )}
 
         {/* Info Box */}
         <motion.div

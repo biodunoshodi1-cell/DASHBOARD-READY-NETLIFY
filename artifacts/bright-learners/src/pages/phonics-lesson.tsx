@@ -13,20 +13,11 @@ import { phonicsSounds, phonicsQuizzes } from '@/data/lessonContent';
 
 type Mode = 'learn' | 'practice' | 'quiz';
 
-const sectionMeta: Record<string, { sounds: typeof phonicsSounds.doubleVowels; title: string }> = {
-  'double-vowels': { sounds: phonicsSounds.doubleVowels, title: 'Double Vowel Sounds' },
-  'double-consonants': { sounds: phonicsSounds.doubleConsonants, title: 'Double Consonants' },
-  'consonant-digraphs': { sounds: phonicsSounds.digraphs, title: 'Consonant Digraphs' },
-};
-
-// URL section slugs (kebab-case, above) don't match the phonicsQuizzes keys
-// (camelCase, matching phonicsSounds' own key names) - this map bridges the
-// two so the quiz page can find its questions instead of silently getting
-// an empty list.
-const sectionToQuizKey: Record<string, string> = {
-  'double-vowels': 'doubleVowels',
-  'double-consonants': 'doubleConsonants',
-  'consonant-digraphs': 'digraphs',
+const sectionMeta: Record<string, { sounds: typeof phonicsSounds.doubleVowels; title: string; quizKey: keyof typeof phonicsQuizzes }> = {
+  'double-vowels': { sounds: phonicsSounds.doubleVowels, title: 'Double Vowel Sounds', quizKey: 'doubleVowels' },
+  'double-consonants': { sounds: phonicsSounds.doubleConsonants, title: 'Double Consonants', quizKey: 'doubleConsonants' },
+  'consonant-digraphs': { sounds: phonicsSounds.digraphs, title: 'Consonant Digraphs', quizKey: 'digraphs' },
+  'split-digraphs': { sounds: phonicsSounds.splitDigraphs, title: 'Split Digraphs (Magic E)', quizKey: 'splitDigraphs' },
 };
 
 export default function PhonicsLesson() {
@@ -79,13 +70,7 @@ export default function PhonicsLesson() {
   }
 
   if (mode === 'quiz') {
-    return (
-      <PhonicsQuiz
-        section={sectionToQuizKey[section] ?? section}
-        title={title}
-        onExit={() => setMode('learn')}
-      />
-    );
+    return <PhonicsQuiz section={section} quizKey={meta.quizKey} title={title} onExit={() => setMode('learn')} />;
   }
 
   return (
@@ -337,12 +322,22 @@ function PracticeWriting({
 // Take Quiz: multiple-choice — "Which word has this sound?" — through every
 // sound in the section.
 // ---------------------------------------------------------------------------
-function PhonicsQuiz({ section, title, onExit }: { section: string; title: string; onExit: () => void }) {
+function PhonicsQuiz({
+  section,
+  quizKey,
+  title,
+  onExit,
+}: {
+  section: string;
+  quizKey: keyof typeof phonicsQuizzes;
+  title: string;
+  onExit: () => void;
+}) {
   const { user } = useAuth();
   const { playSound } = useSettings();
   const recordProgress = useRecordProgress();
 
-  const questions = phonicsQuizzes[section] ?? [];
+  const questions = phonicsQuizzes[quizKey] ?? [];
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);

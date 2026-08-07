@@ -372,20 +372,9 @@ export default function GameMathSprint() {
           animate={{ opacity: 1, scale: 1 }}
           className="bg-white dark:bg-card rounded-3xl p-12 shadow-2xl border-4 border-white/50"
         >
-          <h2 className="text-6xl font-black text-foreground text-center mb-6">
+          <h2 className="text-6xl font-black text-foreground text-center mb-12">
             {currentQuestion.question}
           </h2>
-
-          {/* The counting questions (mathLessons.counting - "how many
-              stars/dots/flowers?") carry the objects to count in the
-              `image` field, but this game previously never rendered it -
-              only the question text showed, so there was nothing to
-              actually count. */}
-          {currentQuestion.image && (
-            <div className="text-5xl sm:text-6xl text-center mb-6 tracking-wide leading-relaxed">
-              {currentQuestion.image}
-            </div>
-          )}
 
           <div className="grid grid-cols-2 gap-6">
             {currentQuestion.options.map((option, index) => (

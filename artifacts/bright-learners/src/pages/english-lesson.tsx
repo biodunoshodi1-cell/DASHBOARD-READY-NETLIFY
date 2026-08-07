@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams, useLocation, Link } from 'wouter';
+import { useParams, useLocation, useSearch, Link } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSettings } from '@/contexts/SettingsContext';
@@ -62,11 +62,19 @@ export default function EnglishLesson() {
 // ---------------------------------------------------------------------------
 function PassageLesson({ topic }: { topic: string }) {
   const [, setLocation] = useLocation();
+  const search = useSearch();
   const { user } = useAuth();
   const { playSound } = useSettings();
   const recordProgress = useRecordProgress();
 
-  const { passages, heading } = passagesByTopic[topic];
+  const yearParam = Number(new URLSearchParams(search).get('year'));
+  const { passages: allPassages, heading } = passagesByTopic[topic];
+  // Only show passages written for the selected year group. Falls back to
+  // the full list if no valid year was supplied (e.g. a stale/direct link).
+  const passages =
+    yearParam >= 1 && yearParam <= 6
+      ? allPassages.filter((p) => p.year === yearParam)
+      : allPassages;
 
   const [currentPassageIndex, setCurrentPassageIndex] = useState(0);
   const [showPassage, setShowPassage] = useState(true);
@@ -79,6 +87,28 @@ function PassageLesson({ topic }: { topic: string }) {
   const [confetti, setConfetti] = useState(false);
 
   const passage = passages[currentPassageIndex];
+
+  if (!passage) {
+    return (
+      <div className="min-h-[100dvh] gradient-english pb-12">
+        <div className="max-w-4xl mx-auto px-6 py-12">
+          <Link href="/english">
+            <Button variant="ghost" className="mb-6 rounded-full" data-testid="button-back">
+              <ArrowLeft className="w-5 h-5 mr-2" />
+              Back to English
+            </Button>
+          </Link>
+          <div className="bg-white dark:bg-card rounded-3xl p-12 text-center">
+            <h1 className="text-4xl font-black text-foreground mb-4">No lessons here yet</h1>
+            <p className="text-xl text-muted-foreground font-semibold">
+              This year group doesn't have {heading.toLowerCase()} lessons yet. Head back and pick another one!
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const currentQuestion = passage.questions[currentQuestionIndex];
   const totalQuestions = passage.questions.length;
   const progressPercent = ((currentQuestionIndex + 1) / totalQuestions) * 100;

@@ -11,7 +11,6 @@ import { Brighty } from '@/components/Brighty';
 import { AnalogClock } from '@/components/AnalogClock';
 import { ArrowLeft, Lightbulb, CheckCircle2, XCircle } from 'lucide-react';
 import { mathLessons } from '@/data/lessonContent';
-import { ShapeGlyph } from '@/components/ShapeGlyph';
 
 export default function MathLesson() {
   const params = useParams<{ topic: string }>();
@@ -134,9 +133,7 @@ export default function MathLesson() {
                 </div>
               )}
               {!currentQuestion.clockTime && currentQuestion.image && (
-                <div className="my-8 flex justify-center">
-                  <ShapeGlyph shape={currentQuestion.image} className="text-6xl w-24 h-24" />
-                </div>
+                <div className="text-6xl my-8">{currentQuestion.image}</div>
               )}
             </div>
 
