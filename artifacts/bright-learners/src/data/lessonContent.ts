@@ -123,14 +123,18 @@ export const mathLessons: Record<string, MathLesson> = {
   },
   time: {
     title: 'Time',
+    // Reordered so o'clock, half past, quarter past, and quarter to all
+    // appear within the first few questions instead of half past/quarter
+    // past/quarter to only showing up in the second half of the lesson -
+    // makes the variety visible even if a learner doesn't finish all 10.
     questions: [
       { id: 'time-1', question: 'What time does the clock show?', clockTime: { hour: 3, minute: 0 }, options: ['3:00', '3:30', '9:00', '12:15'], correct: '3:00', hint: 'The hour hand points to 3 and the minute hand points straight up to 12 — that means o\u2019clock' },
-      { id: 'time-2', question: 'What time does the clock show?', clockTime: { hour: 6, minute: 0 }, options: ['6:00', '12:30', '6:30', '5:00'], correct: '6:00', hint: 'The minute hand is on the 12, so it is an exact hour' },
       { id: 'time-3', question: 'What time does the clock show?', clockTime: { hour: 9, minute: 30 }, options: ['9:00', '9:30', '3:45', '10:30'], correct: '9:30', hint: 'The minute hand points to 6, which means half past' },
-      { id: 'time-4', question: 'What time does the clock show?', clockTime: { hour: 12, minute: 30 }, options: ['12:00', '12:30', '6:30', '1:30'], correct: '12:30', hint: 'Half past means the minute hand is on the 6' },
       { id: 'time-5', question: 'What time does the clock show?', clockTime: { hour: 4, minute: 15 }, options: ['4:00', '4:15', '4:45', '3:15'], correct: '4:15', hint: 'The minute hand points to the 3, which means quarter past' },
-      { id: 'time-6', question: 'What time does the clock show?', clockTime: { hour: 8, minute: 15 }, options: ['8:00', '8:15', '8:45', '7:15'], correct: '8:15', hint: 'Quarter past means 15 minutes have gone by' },
       { id: 'time-7', question: 'What time does the clock show?', clockTime: { hour: 5, minute: 45 }, options: ['5:45', '5:15', '6:00', '6:15'], correct: '5:45', hint: 'The minute hand points to the 9, which means quarter to the next hour' },
+      { id: 'time-2', question: 'What time does the clock show?', clockTime: { hour: 6, minute: 0 }, options: ['6:00', '12:30', '6:30', '5:00'], correct: '6:00', hint: 'The minute hand is on the 12, so it is an exact hour' },
+      { id: 'time-4', question: 'What time does the clock show?', clockTime: { hour: 12, minute: 30 }, options: ['12:00', '12:30', '6:30', '1:30'], correct: '12:30', hint: 'Half past means the minute hand is on the 6' },
+      { id: 'time-6', question: 'What time does the clock show?', clockTime: { hour: 8, minute: 15 }, options: ['8:00', '8:15', '8:45', '7:15'], correct: '8:15', hint: 'Quarter past means 15 minutes have gone by' },
       { id: 'time-8', question: 'What time does the clock show?', clockTime: { hour: 10, minute: 45 }, options: ['10:45', '11:15', '10:15', '9:45'], correct: '10:45', hint: 'Quarter to 11 means 45 minutes past 10' },
       { id: 'time-9', question: 'What time does the clock show?', clockTime: { hour: 2, minute: 0 }, options: ['2:00', '2:30', '12:10', '10:00'], correct: '2:00', hint: 'Both hands help you tell the exact hour' },
       { id: 'time-10', question: 'What time does the clock show?', clockTime: { hour: 7, minute: 30 }, options: ['7:00', '7:30', '6:30', '8:30'], correct: '7:30', hint: 'Half past 7 is halfway between 7 and 8 o\u2019clock' },

@@ -12,6 +12,33 @@ import { AnalogClock } from '@/components/AnalogClock';
 import { ArrowLeft, Lightbulb, CheckCircle2, XCircle } from 'lucide-react';
 import { mathLessons } from '@/data/lessonContent';
 
+{/*
+ * A couple of the shape lesson's "image" values (pentagon/hexagon) are
+ * Unicode geometric symbols, not proper emoji - most phones/OSes don't
+ * ship a font glyph for them, so they render as an invisible blank box
+ * instead of a visible pentagon/hexagon. Drawing them as SVG instead
+ * guarantees they're visible on every device, unlike the other
+ * questions' images (🔺🟥🟦🔵🎲 etc.), which are standard emoji and
+ * already render everywhere - those are left untouched.
+ */}
+function ShapeGlyph({ shape, className }: { shape: string; className?: string }) {
+  if (shape === '⬠') {
+    return (
+      <svg viewBox="0 0 100 100" className={className} aria-label="Pentagon">
+        <polygon points="50,6 95,40 78,95 22,95 5,40" fill="#7c3aed" />
+      </svg>
+    );
+  }
+  if (shape === '⬡') {
+    return (
+      <svg viewBox="0 0 100 100" className={className} aria-label="Hexagon">
+        <polygon points="25,6 75,6 98,50 75,94 25,94 2,50" fill="#0ea5e9" />
+      </svg>
+    );
+  }
+  return <span className={className}>{shape}</span>;
+}
+
 export default function MathLesson() {
   const params = useParams<{ topic: string }>();
   const [, setLocation] = useLocation();
@@ -133,7 +160,9 @@ export default function MathLesson() {
                 </div>
               )}
               {!currentQuestion.clockTime && currentQuestion.image && (
-                <div className="text-6xl my-8">{currentQuestion.image}</div>
+                <div className="my-8 flex justify-center">
+                  <ShapeGlyph shape={currentQuestion.image} className="text-6xl w-24 h-24" />
+                </div>
               )}
             </div>
 

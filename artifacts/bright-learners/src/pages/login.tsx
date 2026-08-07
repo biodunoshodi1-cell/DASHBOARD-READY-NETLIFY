@@ -77,27 +77,24 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-gradient-to-br from-orange-100 via-pink-50 to-purple-100 flex items-center justify-center p-6 gap-8">
-      {/* Photo panel: hidden on narrow/mobile screens so it doesn't crowd
-          the form, shown alongside it on wider screens. */}
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        className="hidden lg:block w-full max-w-md rounded-3xl overflow-hidden shadow-2xl border-2 border-border"
-      >
-        <img
-          src="/images/therapy-session.png"
-          alt="A learning support session between an adult and a child"
-          className="w-full h-full object-cover"
-        />
-      </motion.div>
-
+    <div className="min-h-[100dvh] bg-gradient-to-br from-orange-100 via-pink-50 to-purple-100 flex items-center justify-center p-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"
       >
-        <div className="bg-white dark:bg-card rounded-3xl shadow-2xl p-8 border-2 border-border">
+        <div className="bg-white dark:bg-card rounded-3xl shadow-2xl overflow-hidden border-2 border-border">
+          {/* Full-width banner photo - shows on every screen size, unlike a
+              side-by-side panel which disappears on narrow/phone widths. */}
+          <div className="w-full h-48 sm:h-56 md:h-64 overflow-hidden">
+            <img
+              src="/images/therapy-session.png"
+              alt="A learning support session between an adult and a child"
+              className="w-full h-full object-cover object-top"
+            />
+          </div>
+
+          <div className="p-8">
           <div className="flex justify-center mb-6">
             <Brighty size={100} />
           </div>
@@ -211,6 +208,7 @@ export default function Login() {
           >
             {mode === 'login' ? "New here? Create an account" : 'Already have an account? Sign in'}
           </button>
+          </div>
         </div>
       </motion.div>
     </div>

@@ -19,6 +19,16 @@ const sectionMeta: Record<string, { sounds: typeof phonicsSounds.doubleVowels; t
   'consonant-digraphs': { sounds: phonicsSounds.digraphs, title: 'Consonant Digraphs' },
 };
 
+// URL section slugs (kebab-case, above) don't match the phonicsQuizzes keys
+// (camelCase, matching phonicsSounds' own key names) - this map bridges the
+// two so the quiz page can find its questions instead of silently getting
+// an empty list.
+const sectionToQuizKey: Record<string, string> = {
+  'double-vowels': 'doubleVowels',
+  'double-consonants': 'doubleConsonants',
+  'consonant-digraphs': 'digraphs',
+};
+
 export default function PhonicsLesson() {
   const params = useParams<{ section: string }>();
   const { playSound } = useSettings();
@@ -69,7 +79,13 @@ export default function PhonicsLesson() {
   }
 
   if (mode === 'quiz') {
-    return <PhonicsQuiz section={section} title={title} onExit={() => setMode('learn')} />;
+    return (
+      <PhonicsQuiz
+        section={sectionToQuizKey[section] ?? section}
+        title={title}
+        onExit={() => setMode('learn')}
+      />
+    );
   }
 
   return (
