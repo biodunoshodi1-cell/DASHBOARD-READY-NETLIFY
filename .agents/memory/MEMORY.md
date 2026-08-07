@@ -1,0 +1,2 @@
+- [Orval codegen barrel fix](orval-codegen-barrel.md) — after every codegen run, immediately overwrite lib/api-zod/src/index.ts to remove the generated/types re-export or builds break
+- [OpenAPI integer types](openapi-integer-compat.md) — always use `type: number` not `type: integer` in openapi.yaml; zod v3 has no zod.int() method
