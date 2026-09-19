@@ -29,10 +29,10 @@ import { db, usersTable } from "@workspace/db";
 const router: IRouter = Router();
 
 type RoomStatus = "waiting" | "active" | "finished" | "closed";
-type Subject = "math" | "science" | "geography" | "pshe";
+type Subject = "math" | "science" | "geography" | "pshe" | "timestables";
 
 const MAX_ROUNDS = 3;
-const SUBJECTS: Subject[] = ["math", "science", "geography", "pshe"];
+const SUBJECTS: Subject[] = ["math", "science", "geography", "pshe", "timestables"];
 
 type Player = {
   userId: number;

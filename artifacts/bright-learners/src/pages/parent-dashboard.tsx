@@ -4,7 +4,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useGetParentDashboard, getGetParentDashboardQueryKey } from '@workspace/api-client-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { AssignTypingModuleCard } from '@/components/AssignTypingModuleCard';
 import { ArrowLeft, Users, TrendingUp } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -13,7 +12,6 @@ export default function ParentDashboard() {
   const { data: dashboard } = useGetParentDashboard(user?.id || 0, {
     query: { queryKey: getGetParentDashboardQueryKey(user?.id || 0), enabled: !!user?.id },
   });
-  const children = (dashboard?.children ?? []).map((c) => ({ id: c.user.id, displayName: c.user.displayName }));
 
   return (
     <div className="min-h-[100dvh] bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pb-12">
@@ -110,8 +108,6 @@ export default function ParentDashboard() {
                 </ResponsiveContainer>
               </motion.div>
             )}
-
-            <AssignTypingModuleCard students={children} />
           </>
         ) : (
           <div className="bg-white dark:bg-card rounded-3xl p-12 text-center">

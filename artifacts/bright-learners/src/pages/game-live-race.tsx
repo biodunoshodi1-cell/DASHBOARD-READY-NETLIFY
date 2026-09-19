@@ -5,11 +5,12 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Trophy, Zap, Users, Copy, Check, Crown, Calculator, FlaskConical, Map as MapIcon, Heart } from 'lucide-react';
+import { ArrowLeft, Trophy, Zap, Users, Copy, Check, Crown, Calculator, FlaskConical, Map as MapIcon, Heart, Music } from 'lucide-react';
 import { mathLessons, type MathLesson } from '@/data/lessonContent';
 import { scienceLessons } from '@/data/scienceContent';
 import { geographyLessons } from '@/data/geographyContent';
 import { psheLessons } from '@/data/psheContent';
+import { timesTablesLessons, TIMES_TABLES_ORDER } from '@/data/timesTablesContent';
 
 // ---------------------------------------------------------------------------
 // Live Challenge (Live Race) — a room-code multiplayer game. The host picks
@@ -34,7 +35,7 @@ type RoomPlayer = {
   rank: number;
 };
 
-type Subject = 'math' | 'science' | 'geography' | 'pshe';
+type Subject = 'math' | 'science' | 'geography' | 'pshe' | 'timestables';
 
 type Room = {
   code: string;
@@ -72,11 +73,22 @@ const SUBJECT_INFO: Record<Subject, { label: string; emoji: string; icon: typeof
   science: { label: 'Science', emoji: '\uD83D\uDD2C', icon: FlaskConical, lessons: scienceLessons },
   geography: { label: 'Geography', emoji: '\uD83D\uDDFA\uFE0F', icon: MapIcon, lessons: geographyLessons },
   pshe: { label: 'PSHE', emoji: '\uD83D\uDC9C', icon: Heart, lessons: psheLessons },
+  timestables: { label: 'Times Tables Rock Stars', emoji: '\uD83C\uDFB8', icon: Music, lessons: timesTablesLessons },
 };
 
-const SUBJECT_ORDER: Subject[] = ['math', 'science', 'geography', 'pshe'];
+const SUBJECT_ORDER: Subject[] = ['math', 'timestables', 'science', 'geography', 'pshe'];
 
 function getTopicsForSubject(subject: Subject): TopicOption[] {
+  // Times Tables Rock Stars keeps a fixed, rock-gig-friendly topic order
+  // ("Mixed" first, then 1x-12x) rather than whatever order Object.entries
+  // happens to iterate the lessons record in.
+  if (subject === 'timestables') {
+    return TIMES_TABLES_ORDER.map((key) => ({
+      key,
+      title: SUBJECT_INFO.timestables.lessons[key].title,
+      count: SUBJECT_INFO.timestables.lessons[key].questions.length,
+    }));
+  }
   return Object.entries(SUBJECT_INFO[subject].lessons).map(([key, lesson]) => ({
     key,
     title: lesson.title,

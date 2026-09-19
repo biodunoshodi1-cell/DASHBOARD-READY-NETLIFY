@@ -17,8 +17,6 @@ import English from '@/pages/english';
 import EnglishLesson from '@/pages/english-lesson';
 import Phonics from '@/pages/phonics';
 import PhonicsLesson from '@/pages/phonics-lesson';
-import Typing from '@/pages/typing';
-import TypingLesson from '@/pages/typing-lesson';
 import Science from '@/pages/science';
 import ScienceLesson from '@/pages/science-lesson';
 import Geography from '@/pages/geography';
@@ -37,6 +35,7 @@ import GameLetterMatch from '@/pages/game-letter-match';
 import GameSentenceBuilder from '@/pages/game-sentence-builder';
 import GameNumberPuzzle from '@/pages/game-number-puzzle';
 import GameLiveRace from '@/pages/game-live-race';
+import TimesTablesRockStars from '@/pages/times-tables';
 import GameLiveMemory from '@/pages/game-live-memory';
 import GameBrainGames from '@/pages/game-brain-games';
 import SocialStories from '@/pages/social-stories';
@@ -76,10 +75,6 @@ function Router() {
       <Route path="/phonics" component={Phonics} />
       <Route path="/phonics/:section" component={PhonicsLesson} />
 
-      {/* Typing */}
-      <Route path="/typing" component={Typing} />
-      <Route path="/typing/:levelId/:moduleId" component={TypingLesson} />
-
       {/* Science */}
       <Route path="/science" component={Science} />
       <Route path="/science/:topic" component={ScienceLesson} />
@@ -105,6 +100,7 @@ function Router() {
       <Route path="/games/sentence-builder" component={GameSentenceBuilder} />
       <Route path="/games/number-puzzle" component={GameNumberPuzzle} />
       <Route path="/games/live-race" component={GameLiveRace} />
+      <Route path="/games/times-tables" component={TimesTablesRockStars} />
       <Route path="/games/live-memory" component={GameLiveMemory} />
       <Route path="/games/brain-games" component={GameBrainGames} />
       <Route path="/social-stories" component={SocialStories} />

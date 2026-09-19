@@ -4,11 +4,14 @@ import { z } from "zod/v4";
 
 export const usersTable = pgTable("users", {
   id: serial("id").primaryKey(),
-  email: text("email").notNull().unique(),
+  // A student/teacher can sign in with either of these — at least one is
+  // required (enforced in the /auth/register route, not here) and both are
+  // unique when set. Email stayed required in the original Firebase-based
+  // flow; it's optional now so young students can log in with just a
+  // teacher-issued username and never need an email address.
+  username: text("username").unique(),
+  email: text("email").unique(),
   passwordHash: text("password_hash").notNull(),
-  // Set when the account signs in via Firebase Authentication instead of
-  // (or in addition to) email/password. Null for password-only accounts.
-  firebaseUid: text("firebase_uid").unique(),
   displayName: text("display_name").notNull(),
   role: text("role", { enum: ["student", "parent", "teacher", "admin"] }).notNull().default("student"),
   avatarUrl: text("avatar_url"),

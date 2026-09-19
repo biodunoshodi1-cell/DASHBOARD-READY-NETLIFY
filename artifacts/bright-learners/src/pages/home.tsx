@@ -23,7 +23,6 @@ import {
   Globe2,
   HeartHandshake,
   Heart,
-  Keyboard,
 } from 'lucide-react';
 
 const greetings = ['Welcome back!', 'Let\'s learn!', 'Excellent work!', 'You\'re amazing!', 'Ready to shine?'];
@@ -137,13 +136,6 @@ export default function Home() {
             gradient="gradient-phonics"
             icon={<Volume2 className="w-16 h-16" />}
             description="Sounds & Letters"
-          />
-          <SubjectCard
-            title="Typing"
-            href="/typing"
-            gradient="gradient-typing"
-            icon={<Keyboard className="w-16 h-16" />}
-            description="Touch-Type, Read & Spell"
           />
           <SubjectCard
             title="Science"

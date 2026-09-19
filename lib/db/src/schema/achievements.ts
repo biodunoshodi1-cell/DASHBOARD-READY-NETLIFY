@@ -7,7 +7,7 @@ export const achievementsTable = pgTable("achievements", {
   title: text("title").notNull(),
   description: text("description").notNull(),
   icon: text("icon").notNull(),
-  category: text("category", { enum: ["math", "english", "phonics", "science", "geography", "pshe", "typing", "games", "streaks", "general"] }).notNull(),
+  category: text("category", { enum: ["math", "english", "phonics", "science", "geography", "pshe", "games", "streaks", "general"] }).notNull(),
   xpReward: integer("xp_reward").notNull().default(50),
   coinsReward: integer("coins_reward").notNull().default(10),
 });

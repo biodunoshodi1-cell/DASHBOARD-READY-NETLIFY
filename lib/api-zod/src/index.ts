@@ -2,4 +2,3 @@
 // Zod schemas (generated/api.ts) and TypeScript interfaces (generated/types/).
 // All TypeScript types can be inferred from the Zod schemas via z.infer<>.
 export * from "./generated/api";
-export * from './generated/types';

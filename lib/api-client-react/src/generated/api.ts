@@ -26,7 +26,6 @@ import type {
   DailyChallengeResult,
   DailyChallengeStatus,
   DailyChallengeSubmission,
-  FirebaseSessionInput,
   GameScore,
   GetLeaderboardParams,
   HealthStatus,
@@ -45,8 +44,6 @@ import type {
   SubjectProgress,
   SuccessResponse,
   TeacherDashboard,
-  TypingAssignment,
-  TypingAssignmentInput,
   User,
   UserAchievement,
   UserList,
@@ -245,7 +242,7 @@ export const getLoginUrl = () => {
 }
 
 /**
- * @summary Login with email and password
+ * @summary Login with username/email and password
  */
 export const login = async (loginInput: LoginInput, options?: Parameters<typeof customFetch>[1]): Promise<User> => {
 
@@ -294,7 +291,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type LoginMutationError = ErrorType<void>
 
     /**
- * @summary Login with email and password
+ * @summary Login with username/email and password
  */
 export const useLogin = <TError = ErrorType<void>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof login>>, TError,{data: BodyType<LoginInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
@@ -376,77 +373,6 @@ export const useRegister = <TError = ErrorType<unknown>,
         TContext
       > => {
       return useMutation(getRegisterMutationOptions(options));
-    }
-
-export const getFirebaseSessionUrl = () => {
-
-
-
-
-  return `/api/auth/firebase-session`
-}
-
-/**
- * @summary Exchange a Firebase Authentication ID token for an app session
- */
-export const firebaseSession = async (firebaseSessionInput: FirebaseSessionInput, options?: Parameters<typeof customFetch>[1]): Promise<User> => {
-
-  return customFetch<User>(getFirebaseSessionUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(firebaseSessionInput)
-  }
-);}
-
-
-
-
-
-export const getFirebaseSessionMutationOptions = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof firebaseSession>>, TError,{data: BodyType<FirebaseSessionInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof firebaseSession>>, TError,{data: BodyType<FirebaseSessionInput>}, TContext> => {
-
-const mutationKey = ['firebaseSession'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof firebaseSession>>, {data: BodyType<FirebaseSessionInput>}> = (props) => {
-          const {data} = props ?? {};
-
-          return  firebaseSession(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type FirebaseSessionMutationResult = NonNullable<Awaited<ReturnType<typeof firebaseSession>>>
-    export type FirebaseSessionMutationBody = BodyType<FirebaseSessionInput>
-    export type FirebaseSessionMutationError = ErrorType<void>
-
-    /**
- * @summary Exchange a Firebase Authentication ID token for an app session
- */
-export const useFirebaseSession = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof firebaseSession>>, TError,{data: BodyType<FirebaseSessionInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
- ): UseMutationResult<
-        Awaited<ReturnType<typeof firebaseSession>>,
-        TError,
-        {data: BodyType<FirebaseSessionInput>},
-        TContext
-      > => {
-      return useMutation(getFirebaseSessionMutationOptions(options));
     }
 
 export const getLogoutUrl = () => {
@@ -2281,223 +2207,4 @@ export function useGetSubjectProgress<TData = Awaited<ReturnType<typeof getSubje
 
 
 
-
-export const getAssignTypingModuleUrl = () => {
-
-
-
-
-  return `/api/typing/assign`
-}
-
-/**
- * @summary Assign a typing curriculum module to a student (parent/teacher)
- */
-export const assignTypingModule = async (typingAssignmentInput: TypingAssignmentInput, options?: Parameters<typeof customFetch>[1]): Promise<TypingAssignment> => {
-
-  return customFetch<TypingAssignment>(getAssignTypingModuleUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(typingAssignmentInput)
-  }
-);}
-
-
-
-
-
-export const getAssignTypingModuleMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof assignTypingModule>>, TError,{data: BodyType<TypingAssignmentInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof assignTypingModule>>, TError,{data: BodyType<TypingAssignmentInput>}, TContext> => {
-
-const mutationKey = ['assignTypingModule'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof assignTypingModule>>, {data: BodyType<TypingAssignmentInput>}> = (props) => {
-          const {data} = props ?? {};
-
-          return  assignTypingModule(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type AssignTypingModuleMutationResult = NonNullable<Awaited<ReturnType<typeof assignTypingModule>>>
-    export type AssignTypingModuleMutationBody = BodyType<TypingAssignmentInput>
-    export type AssignTypingModuleMutationError = ErrorType<unknown>
-
-    /**
- * @summary Assign a typing curriculum module to a student (parent/teacher)
- */
-export const useAssignTypingModule = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof assignTypingModule>>, TError,{data: BodyType<TypingAssignmentInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
- ): UseMutationResult<
-        Awaited<ReturnType<typeof assignTypingModule>>,
-        TError,
-        {data: BodyType<TypingAssignmentInput>},
-        TContext
-      > => {
-      return useMutation(getAssignTypingModuleMutationOptions(options));
-    }
-
-export const getListTypingAssignmentsUrl = (studentId: number,) => {
-
-
-
-
-  return `/api/typing/assignments/${studentId}`
-}
-
-/**
- * @summary List a student's assigned typing modules, with completion status
- */
-export const listTypingAssignments = async (studentId: number, options?: Parameters<typeof customFetch>[1]): Promise<TypingAssignment[]> => {
-
-  return customFetch<TypingAssignment[]>(getListTypingAssignmentsUrl(studentId),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getListTypingAssignmentsQueryKey = (studentId: number,) => {
-    return [
-    `/api/typing/assignments/${studentId}`
-    ] as const;
-    }
-
-
-export const getListTypingAssignmentsQueryOptions = <TData = Awaited<ReturnType<typeof listTypingAssignments>>, TError = ErrorType<unknown>>(studentId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listTypingAssignments>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getListTypingAssignmentsQueryKey(studentId);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof listTypingAssignments>>> = ({ signal }) => listTypingAssignments(studentId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: studentId !== null && studentId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listTypingAssignments>>, TError, TData> & { queryKey: QueryKey }
-}
-
-export type ListTypingAssignmentsQueryResult = NonNullable<Awaited<ReturnType<typeof listTypingAssignments>>>
-export type ListTypingAssignmentsQueryError = ErrorType<unknown>
-
-
-/**
- * @summary List a student's assigned typing modules, with completion status
- */
-
-export function useListTypingAssignments<TData = Awaited<ReturnType<typeof listTypingAssignments>>, TError = ErrorType<unknown>>(
- studentId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listTypingAssignments>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
-
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-
-  const queryOptions = getListTypingAssignmentsQueryOptions(studentId,options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
-
-
-
-
-
-
-
-export const getDeleteTypingAssignmentUrl = (id: number,) => {
-
-
-
-
-  return `/api/typing/assignments/${id}`
-}
-
-/**
- * @summary Remove a typing module assignment
- */
-export const deleteTypingAssignment = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<SuccessResponse> => {
-
-  return customFetch<SuccessResponse>(getDeleteTypingAssignmentUrl(id),
-  {
-    ...options,
-    method: 'DELETE'
-
-
-  }
-);}
-
-
-
-
-
-export const getDeleteTypingAssignmentMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTypingAssignment>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteTypingAssignment>>, TError,{id: number}, TContext> => {
-
-const mutationKey = ['deleteTypingAssignment'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteTypingAssignment>>, {id: number}> = (props) => {
-          const {id} = props ?? {};
-
-          return  deleteTypingAssignment(id,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteTypingAssignmentMutationResult = NonNullable<Awaited<ReturnType<typeof deleteTypingAssignment>>>
-
-    export type DeleteTypingAssignmentMutationError = ErrorType<unknown>
-
-    /**
- * @summary Remove a typing module assignment
- */
-export const useDeleteTypingAssignment = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTypingAssignment>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
- ): UseMutationResult<
-        Awaited<ReturnType<typeof deleteTypingAssignment>>,
-        TError,
-        {id: number},
-        TContext
-      > => {
-      return useMutation(getDeleteTypingAssignmentMutationOptions(options));
-    }
 

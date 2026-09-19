@@ -8,7 +8,10 @@
 import type { RegisterInputRole } from './registerInputRole';
 
 export interface RegisterInput {
-  email: string;
+  /** Required if email is omitted */
+  username?: string;
+  /** Required if username is omitted */
+  email?: string;
   password: string;
   displayName: string;
   role: RegisterInputRole;

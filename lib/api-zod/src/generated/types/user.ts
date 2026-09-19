@@ -9,7 +9,10 @@ import type { UserRole } from './userRole';
 
 export interface User {
   id: number;
-  email: string;
+  /** @nullable */
+  username?: string | null;
+  /** @nullable */
+  email?: string | null;
   displayName: string;
   role: UserRole;
   /** @nullable */

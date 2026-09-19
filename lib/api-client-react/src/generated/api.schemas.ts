@@ -26,7 +26,10 @@ export const UserRole = {
 
 export interface User {
   id: number;
-  email: string;
+  /** @nullable */
+  username?: string | null;
+  /** @nullable */
+  email?: string | null;
   displayName: string;
   role: UserRole;
   /** @nullable */
@@ -58,7 +61,8 @@ export const LoginInputRole = {
 } as const;
 
 export interface LoginInput {
-  email: string;
+  /** Username or email address */
+  identifier: string;
   password: string;
   role?: LoginInputRole;
 }
@@ -74,29 +78,13 @@ export const RegisterInputRole = {
 } as const;
 
 export interface RegisterInput {
-  email: string;
+  /** Required if email is omitted */
+  username?: string;
+  /** Required if username is omitted */
+  email?: string;
   password: string;
   displayName: string;
   role: RegisterInputRole;
-  gradeLevel?: number;
-  age?: number;
-}
-
-export type FirebaseSessionInputRole = typeof FirebaseSessionInputRole[keyof typeof FirebaseSessionInputRole];
-
-
-export const FirebaseSessionInputRole = {
-  student: 'student',
-  parent: 'parent',
-  teacher: 'teacher',
-  admin: 'admin',
-} as const;
-
-export interface FirebaseSessionInput {
-  /** The Firebase Authentication ID token from the frontend's signed-in user */
-  idToken: string;
-  displayName?: string;
-  role?: FirebaseSessionInputRole;
   gradeLevel?: number;
   age?: number;
 }
@@ -131,7 +119,6 @@ export const LessonProgressSubject = {
   science: 'science',
   geography: 'geography',
   pshe: 'pshe',
-  typing: 'typing',
 } as const;
 
 export interface LessonProgress {
@@ -156,7 +143,6 @@ export const ProgressInputSubject = {
   science: 'science',
   geography: 'geography',
   pshe: 'pshe',
-  typing: 'typing',
 } as const;
 
 export interface ProgressInput {
@@ -186,7 +172,6 @@ export const SubjectProgressSubject = {
   science: 'science',
   geography: 'geography',
   pshe: 'pshe',
-  typing: 'typing',
 } as const;
 
 export interface SubjectProgress {
@@ -195,24 +180,6 @@ export interface SubjectProgress {
   totalLessons: number;
   accuracy: number;
   timeMinutes: number;
-}
-
-export interface TypingAssignment {
-  id: number;
-  studentId: number;
-  assignedBy: number;
-  levelId: string;
-  moduleId: string;
-  note?: string | null;
-  createdAt: string;
-  completed: boolean;
-}
-
-export interface TypingAssignmentInput {
-  studentId: number;
-  levelId: string;
-  moduleId: string;
-  note?: string;
 }
 
 export type AchievementCategory = typeof AchievementCategory[keyof typeof AchievementCategory];
@@ -225,7 +192,6 @@ export const AchievementCategory = {
   science: 'science',
   geography: 'geography',
   pshe: 'pshe',
-  typing: 'typing',
   games: 'games',
   streaks: 'streaks',
   general: 'general',
@@ -300,6 +266,7 @@ export const ScoreInputGame = {
   'sentence-builder': 'sentence-builder',
   'number-puzzle': 'number-puzzle',
   'picture-puzzle': 'picture-puzzle',
+  'times-tables': 'times-tables',
 } as const;
 
 export interface ScoreInput {
@@ -320,7 +287,6 @@ export const ChallengeQuestionSubject = {
   science: 'science',
   geography: 'geography',
   pshe: 'pshe',
-  typing: 'typing',
 } as const;
 
 export interface ChallengeQuestion {
@@ -459,7 +425,6 @@ export const ListCompletedLessonsSubject = {
   science: 'science',
   geography: 'geography',
   pshe: 'pshe',
-  typing: 'typing',
 } as const;
 
 export type GetLeaderboardParams = {
@@ -481,5 +446,6 @@ export const GetLeaderboardGame = {
   'sentence-builder': 'sentence-builder',
   'number-puzzle': 'number-puzzle',
   'picture-puzzle': 'picture-puzzle',
+  'times-tables': 'times-tables',
 } as const;
 
