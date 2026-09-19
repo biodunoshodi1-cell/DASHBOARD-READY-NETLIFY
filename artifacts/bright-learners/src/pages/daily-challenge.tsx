@@ -3,7 +3,7 @@ import { Link, useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSettings } from '@/contexts/SettingsContext';
-import { useGetTodayChallenge, useSubmitDailyChallenge, useGetDailyChallengeStatus } from '@workspace/api-client-react';
+import { useGetTodayChallenge, useSubmitDailyChallenge, useGetDailyChallengeStatus, getGetDailyChallengeStatusQueryKey } from '@workspace/api-client-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { ConfettiEffect } from '@/components/ConfettiEffect';
@@ -17,7 +17,7 @@ export default function DailyChallenge() {
   
   const { data: challenge } = useGetTodayChallenge();
   const { data: status } = useGetDailyChallengeStatus(user?.id || 0, {
-    query: { enabled: !!user?.id },
+    query: { queryKey: getGetDailyChallengeStatusQueryKey(user?.id || 0), enabled: !!user?.id },
   });
   const submitChallenge = useSubmitDailyChallenge();
 

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'wouter';
 import { useAuth } from '@/contexts/AuthContext';
-import { useGetTeacherDashboard } from '@workspace/api-client-react';
+import { useGetTeacherDashboard, getGetTeacherDashboardQueryKey } from '@workspace/api-client-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, GraduationCap, TrendingUp, AlertCircle } from 'lucide-react';
@@ -9,7 +9,7 @@ import { ArrowLeft, GraduationCap, TrendingUp, AlertCircle } from 'lucide-react'
 export default function TeacherDashboard() {
   const { user } = useAuth();
   const { data: dashboard, isLoading } = useGetTeacherDashboard(user?.id || 0, {
-    query: { enabled: !!user?.id },
+    query: { queryKey: getGetTeacherDashboardQueryKey(user?.id || 0), enabled: !!user?.id },
   });
 
   return (

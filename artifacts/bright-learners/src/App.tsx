@@ -17,6 +17,12 @@ import English from '@/pages/english';
 import EnglishLesson from '@/pages/english-lesson';
 import Phonics from '@/pages/phonics';
 import PhonicsLesson from '@/pages/phonics-lesson';
+import Science from '@/pages/science';
+import ScienceLesson from '@/pages/science-lesson';
+import Geography from '@/pages/geography';
+import GeographyLesson from '@/pages/geography-lesson';
+import Pshe from '@/pages/pshe';
+import PsheLesson from '@/pages/pshe-lesson';
 import Games from '@/pages/games';
 import GameMathSprint from '@/pages/game-math-sprint';
 import GameMemory from '@/pages/game-memory';
@@ -28,6 +34,11 @@ import GameShapeMatch from '@/pages/game-shape-match';
 import GameLetterMatch from '@/pages/game-letter-match';
 import GameSentenceBuilder from '@/pages/game-sentence-builder';
 import GameNumberPuzzle from '@/pages/game-number-puzzle';
+import GameLiveRace from '@/pages/game-live-race';
+import TimesTablesRockStars from '@/pages/times-tables';
+import GameLiveMemory from '@/pages/game-live-memory';
+import GameBrainGames from '@/pages/game-brain-games';
+import SocialStories from '@/pages/social-stories';
 import Rewards from '@/pages/rewards';
 import ProgressPage from '@/pages/progress';
 import DailyChallenge from '@/pages/daily-challenge';
@@ -63,6 +74,18 @@ function Router() {
       {/* Phonics */}
       <Route path="/phonics" component={Phonics} />
       <Route path="/phonics/:section" component={PhonicsLesson} />
+
+      {/* Science */}
+      <Route path="/science" component={Science} />
+      <Route path="/science/:topic" component={ScienceLesson} />
+
+      {/* Geography */}
+      <Route path="/geography" component={Geography} />
+      <Route path="/geography/:topic" component={GeographyLesson} />
+
+      {/* PSHE */}
+      <Route path="/pshe" component={Pshe} />
+      <Route path="/pshe/:topic" component={PsheLesson} />
       
       {/* Games */}
       <Route path="/games" component={Games} />
@@ -76,6 +99,11 @@ function Router() {
       <Route path="/games/letter-match" component={GameLetterMatch} />
       <Route path="/games/sentence-builder" component={GameSentenceBuilder} />
       <Route path="/games/number-puzzle" component={GameNumberPuzzle} />
+      <Route path="/games/live-race" component={GameLiveRace} />
+      <Route path="/games/times-tables" component={TimesTablesRockStars} />
+      <Route path="/games/live-memory" component={GameLiveMemory} />
+      <Route path="/games/brain-games" component={GameBrainGames} />
+      <Route path="/social-stories" component={SocialStories} />
       
       {/* Other Features */}
       <Route path="/rewards" component={Rewards} />

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'wouter';
 import { useAuth } from '@/contexts/AuthContext';
-import { useGetUserRewards, useGetUserAchievements } from '@workspace/api-client-react';
+import { useGetUserRewards, useGetUserAchievements, getGetUserRewardsQueryKey, getGetUserAchievementsQueryKey } from '@workspace/api-client-react';
 import { Button } from '@/components/ui/button';
 import { RewardDisplay } from '@/components/RewardDisplay';
 import { ArrowLeft, Award, Lock } from 'lucide-react';
@@ -18,10 +18,10 @@ const avatars = [
 export default function Rewards() {
   const { user } = useAuth();
   const { data: rewards } = useGetUserRewards(user?.id || 0, {
-    query: { enabled: !!user?.id },
+    query: { queryKey: getGetUserRewardsQueryKey(user?.id || 0), enabled: !!user?.id },
   });
   const { data: achievements } = useGetUserAchievements(user?.id || 0, {
-    query: { enabled: !!user?.id },
+    query: { queryKey: getGetUserAchievementsQueryKey(user?.id || 0), enabled: !!user?.id },
   });
 
   return (

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams, useLocation, Link } from 'wouter';
+import { useParams, useSearch, Link } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSettings } from '@/contexts/SettingsContext';
@@ -7,6 +7,7 @@ import { useRecordProgress } from '@workspace/api-client-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { ConfettiEffect } from '@/components/ConfettiEffect';
+import { CelebrationPanel } from '@/components/CelebrationPanel';
 import { Brighty } from '@/components/Brighty';
 import { ArrowLeft, BookOpen, Volume2, CheckCircle2, XCircle } from 'lucide-react';
 import {
@@ -61,12 +62,19 @@ export default function EnglishLesson() {
 // Used by Stories, Reading, and Comprehension.
 // ---------------------------------------------------------------------------
 function PassageLesson({ topic }: { topic: string }) {
-  const [, setLocation] = useLocation();
+  const search = useSearch();
   const { user } = useAuth();
   const { playSound } = useSettings();
   const recordProgress = useRecordProgress();
 
-  const { passages, heading } = passagesByTopic[topic];
+  const yearParam = Number(new URLSearchParams(search).get('year'));
+  const { passages: allPassages, heading } = passagesByTopic[topic];
+  // Only show passages written for the selected year group. Falls back to
+  // the full list if no valid year was supplied (e.g. a stale/direct link).
+  const passages =
+    yearParam >= 1 && yearParam <= 6
+      ? allPassages.filter((p) => p.year === yearParam)
+      : allPassages;
 
   const [currentPassageIndex, setCurrentPassageIndex] = useState(0);
   const [showPassage, setShowPassage] = useState(true);
@@ -77,11 +85,61 @@ function PassageLesson({ topic }: { topic: string }) {
   const [score, setScore] = useState(0);
   const [startTime] = useState(Date.now());
   const [confetti, setConfetti] = useState(false);
+  const [isFinished, setIsFinished] = useState(false);
 
   const passage = passages[currentPassageIndex];
+
+  if (!passage) {
+    return (
+      <div className="min-h-[100dvh] gradient-english pb-12">
+        <div className="max-w-4xl mx-auto px-6 py-12">
+          <Link href="/english">
+            <Button variant="ghost" className="mb-6 rounded-full" data-testid="button-back">
+              <ArrowLeft className="w-5 h-5 mr-2" />
+              Back to English
+            </Button>
+          </Link>
+          <div className="bg-white dark:bg-card rounded-3xl p-12 text-center">
+            <h1 className="text-4xl font-black text-foreground mb-4">No lessons here yet</h1>
+            <p className="text-xl text-muted-foreground font-semibold">
+              This year group doesn't have {heading.toLowerCase()} lessons yet. Head back and pick another one!
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const currentQuestion = passage.questions[currentQuestionIndex];
   const totalQuestions = passage.questions.length;
   const progressPercent = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+
+  if (isFinished) {
+    return (
+      <div className="min-h-[100dvh] gradient-english flex items-center justify-center p-6">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-white dark:bg-card rounded-3xl p-8 sm:p-10 shadow-2xl border-4 border-white/50 max-w-lg w-full text-center"
+        >
+          <h2 className="text-3xl font-black text-foreground mb-2">Reading Complete!</h2>
+          <p className="text-muted-foreground font-semibold mb-6">
+            You scored {score} out of {totalQuestions} on the last passage
+          </p>
+          <CelebrationPanel
+            activityTitle={heading}
+            scoreLabel={`${score}/${totalQuestions} correct`}
+            className="mb-6"
+          />
+          <Link href="/english">
+            <Button size="lg" className="w-full rounded-2xl font-black bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white" data-testid="button-back-to-subject">
+              Back to English
+            </Button>
+          </Link>
+        </motion.div>
+      </div>
+    );
+  }
 
   const handleStartQuestions = () => {
     setShowPassage(false);
@@ -137,7 +195,7 @@ function PassageLesson({ topic }: { topic: string }) {
         setCurrentQuestionIndex(0);
         setScore(0);
       } else {
-        setLocation('/english');
+        setIsFinished(true);
       }
     }
   };
@@ -283,7 +341,6 @@ function PassageLesson({ topic }: { topic: string }) {
 // Used by Vocabulary, Grammar, and Sentence Building.
 // ---------------------------------------------------------------------------
 function QuizLesson({ topic }: { topic: string }) {
-  const [, setLocation] = useLocation();
   const { user } = useAuth();
   const { playSound } = useSettings();
   const recordProgress = useRecordProgress();
@@ -297,10 +354,38 @@ function QuizLesson({ topic }: { topic: string }) {
   const [score, setScore] = useState(0);
   const [startTime] = useState(Date.now());
   const [confetti, setConfetti] = useState(false);
+  const [isFinished, setIsFinished] = useState(false);
 
   const currentQuestion: QuizQuestion = questions[currentQuestionIndex];
   const totalQuestions = questions.length;
   const progressPercent = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+
+  if (isFinished) {
+    return (
+      <div className="min-h-[100dvh] gradient-english flex items-center justify-center p-6">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-white dark:bg-card rounded-3xl p-8 sm:p-10 shadow-2xl border-4 border-white/50 max-w-lg w-full text-center"
+        >
+          <h2 className="text-3xl font-black text-foreground mb-2">Lesson Complete!</h2>
+          <p className="text-muted-foreground font-semibold mb-6">
+            You scored {score} out of {totalQuestions}
+          </p>
+          <CelebrationPanel
+            activityTitle={title}
+            scoreLabel={`${score}/${totalQuestions} correct`}
+            className="mb-6"
+          />
+          <Link href="/english">
+            <Button size="lg" className="w-full rounded-2xl font-black bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white" data-testid="button-back-to-subject">
+              Back to English
+            </Button>
+          </Link>
+        </motion.div>
+      </div>
+    );
+  }
 
   const handleAnswerSelect = (answer: string) => {
     if (showFeedback) return;
@@ -346,7 +431,7 @@ function QuizLesson({ topic }: { topic: string }) {
     }
 
     playSound('celebration');
-    setLocation('/english');
+    setIsFinished(true);
   };
 
   return (

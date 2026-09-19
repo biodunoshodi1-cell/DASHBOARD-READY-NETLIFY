@@ -1,7 +1,6 @@
 import { Router, type IRouter } from "express";
 import bcrypt from "bcryptjs";
-import crypto from "crypto";
-import { eq } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
 import { db, usersTable, userProgressTable } from "@workspace/db";
 import {
   LoginBody,
@@ -10,21 +9,9 @@ import {
   LoginResponse,
   RegisterResponse,
   LogoutResponse,
-  FirebaseSessionBody,
-  FirebaseSessionResponse,
 } from "@workspace/api-zod";
-import { verifyFirebaseIdToken } from "../lib/firebaseAdmin";
 
 const router: IRouter = Router();
-
-// Drizzle returns `createdAt` as a JS Date instance, but the response
-// schemas below declare it as a string (it becomes one once res.json()
-// serializes it) - .parse() runs BEFORE that serialization, so validating
-// the raw object fails with "Expected string, received date". Converting
-// it here keeps every response route consistent.
-function toSafeUser<T extends { createdAt: Date | string }>(user: T) {
-  return { ...user, createdAt: new Date(user.createdAt).toISOString() };
-}
 
 router.get("/auth/me", async (req, res): Promise<void> => {
   const session = req.session as any;
@@ -37,8 +24,9 @@ router.get("/auth/me", async (req, res): Promise<void> => {
     res.status(401).json({ error: "User not found" });
     return;
   }
-  const { passwordHash: _, firebaseUid: __, ...safeUser } = user;
-  res.json(GetMeResponse.parse(toSafeUser(safeUser)));
+  const { passwordHash: _, ...safeUser } = user;
+  safeUser.createdAt = new Date(safeUser.createdAt).toISOString() as never;
+  res.json(GetMeResponse.parse(safeUser));
 });
 
 router.post("/auth/login", async (req, res): Promise<void> => {
@@ -47,21 +35,26 @@ router.post("/auth/login", async (req, res): Promise<void> => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const { email, password } = parsed.data;
-  const [user] = await db.select().from(usersTable).where(eq(usersTable.email, email));
+  const { identifier, password } = parsed.data;
+  // identifier may be either a username or an email — try both.
+  const [user] = await db
+    .select()
+    .from(usersTable)
+    .where(or(eq(usersTable.username, identifier), eq(usersTable.email, identifier)));
   if (!user) {
-    res.status(401).json({ error: "Invalid email or password" });
+    res.status(401).json({ error: "Invalid username/email or password" });
     return;
   }
   const valid = await bcrypt.compare(password, user.passwordHash);
   if (!valid) {
-    res.status(401).json({ error: "Invalid email or password" });
+    res.status(401).json({ error: "Invalid username/email or password" });
     return;
   }
   const session = req.session as any;
   session.userId = user.id;
-  const { passwordHash: _, firebaseUid: __, ...safeUser } = user;
-  res.json(LoginResponse.parse(toSafeUser(safeUser)));
+  const { passwordHash: _, ...safeUser } = user;
+  safeUser.createdAt = new Date(safeUser.createdAt).toISOString() as never;
+  res.json(LoginResponse.parse(safeUser));
 });
 
 router.post("/auth/register", async (req, res): Promise<void> => {
@@ -70,91 +63,51 @@ router.post("/auth/register", async (req, res): Promise<void> => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const { email, password, displayName, role, gradeLevel, age } = parsed.data;
-  // Check duplicate email
-  const [existing] = await db.select().from(usersTable).where(eq(usersTable.email, email));
+  const { username, email, password, displayName, role, gradeLevel, age } = parsed.data;
+  const trimmedUsername = username?.trim() || undefined;
+  const trimmedEmail = email?.trim() || undefined;
+  if (!trimmedUsername && !trimmedEmail) {
+    res.status(400).json({ error: "A username or email is required" });
+    return;
+  }
+  // Check duplicates for whichever identifier(s) were provided.
+  const conditions = [
+    trimmedUsername ? eq(usersTable.username, trimmedUsername) : undefined,
+    trimmedEmail ? eq(usersTable.email, trimmedEmail) : undefined,
+  ].filter((c): c is NonNullable<typeof c> => !!c);
+  const [existing] = await db
+    .select()
+    .from(usersTable)
+    .where(or(...conditions));
   if (existing) {
-    res.status(400).json({ error: "Email already registered" });
+    res.status(400).json({
+      error:
+        trimmedUsername && existing.username === trimmedUsername
+          ? "That username is already taken"
+          : "Email already registered",
+    });
     return;
   }
   const passwordHash = await bcrypt.hash(password, 10);
   const [user] = await db
     .insert(usersTable)
-    .values({ email, passwordHash, displayName, role: role ?? "student", gradeLevel, age })
+    .values({
+      username: trimmedUsername,
+      email: trimmedEmail,
+      passwordHash,
+      displayName,
+      role: role ?? "student",
+      gradeLevel,
+      age,
+    })
     .returning();
   // Initialize progress record
   await db.insert(userProgressTable).values({ userId: user.id }).onConflictDoNothing();
   const session = req.session as any;
   session.userId = user.id;
-  const { passwordHash: _, firebaseUid: __, ...safeUser } = user;
-  res.status(201).json(RegisterResponse.parse(toSafeUser(safeUser)));
-});
-
-router.post("/auth/firebase-session", async (req, res): Promise<void> => {
-  const parsed = FirebaseSessionBody.safeParse(req.body);
-  if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.message });
-    return;
-  }
-  const { idToken, displayName, role, gradeLevel, age } = parsed.data;
-
-  let decoded;
-  try {
-    decoded = await verifyFirebaseIdToken(idToken);
-  } catch (err) {
-    res.status(401).json({ error: err instanceof Error ? err.message : "Invalid Firebase ID token" });
-    return;
-  }
-
-  const firebaseUid = decoded.uid;
-  const email = decoded.email;
-  if (!email) {
-    res.status(400).json({ error: "Firebase account has no email address" });
-    return;
-  }
-
-  // 1) Already linked to this exact Firebase account
-  let [user] = await db.select().from(usersTable).where(eq(usersTable.firebaseUid, firebaseUid));
-  let isNewUser = false;
-
-  if (!user) {
-    // 2) An existing password-based account with the same email — link it
-    // rather than creating a duplicate account for the same person.
-    const [existingByEmail] = await db.select().from(usersTable).where(eq(usersTable.email, email));
-    if (existingByEmail) {
-      [user] = await db
-        .update(usersTable)
-        .set({ firebaseUid })
-        .where(eq(usersTable.id, existingByEmail.id))
-        .returning();
-    }
-  }
-
-  if (!user) {
-    // 3) Brand new account. passwordHash is NOT NULL in the schema, so we
-    // store an unusable random hash — this account can only ever sign in
-    // via Firebase, never via the email/password flow.
-    const unusablePasswordHash = await bcrypt.hash(crypto.randomUUID(), 10);
-    [user] = await db
-      .insert(usersTable)
-      .values({
-        email,
-        passwordHash: unusablePasswordHash,
-        firebaseUid,
-        displayName: displayName ?? decoded.name ?? email.split("@")[0],
-        role: role ?? "student",
-        gradeLevel,
-        age,
-      })
-      .returning();
-    await db.insert(userProgressTable).values({ userId: user.id }).onConflictDoNothing();
-    isNewUser = true;
-  }
-
-  const session = req.session as any;
-  session.userId = user.id;
-  const { passwordHash: _, firebaseUid: __, ...safeUser } = user;
-  res.status(isNewUser ? 201 : 200).json(FirebaseSessionResponse.parse(toSafeUser(safeUser)));
+  const { passwordHash: _, ...safeUser } = user;
+  safeUser.createdAt = new Date(safeUser.createdAt).toISOString() as never;
+  res.status(201).json(RegisterResponse.parse(safeUser));
 });
 
 router.post("/auth/logout", async (req, res): Promise<void> => {

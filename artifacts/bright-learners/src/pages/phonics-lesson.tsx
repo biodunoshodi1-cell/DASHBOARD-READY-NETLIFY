@@ -10,24 +10,18 @@ import { ConfettiEffect } from '@/components/ConfettiEffect';
 import { Brighty } from '@/components/Brighty';
 import { ArrowLeft, Volume2, CheckCircle2, XCircle, Delete } from 'lucide-react';
 import { phonicsSounds, phonicsQuizzes } from '@/data/lessonContent';
-import { shuffleQuestionsAndOptions } from '@/lib/shuffle';
 
 type Mode = 'learn' | 'practice' | 'quiz';
 
-const sectionMeta: Record<string, { sounds: typeof phonicsSounds.doubleVowels; title: string }> = {
-  'double-vowels': { sounds: phonicsSounds.doubleVowels, title: 'Double Vowel Sounds' },
-  'double-consonants': { sounds: phonicsSounds.doubleConsonants, title: 'Double Consonants' },
-  'consonant-digraphs': { sounds: phonicsSounds.digraphs, title: 'Consonant Digraphs' },
-};
-
-// URL section slugs (kebab-case, above) don't match the phonicsQuizzes keys
-// (camelCase, matching phonicsSounds' own key names) - this map bridges the
-// two so the quiz page can find its questions instead of silently getting
-// an empty list.
-const sectionToQuizKey: Record<string, string> = {
-  'double-vowels': 'doubleVowels',
-  'double-consonants': 'doubleConsonants',
-  'consonant-digraphs': 'digraphs',
+const sectionMeta: Record<string, { sounds: typeof phonicsSounds.doubleVowels; title: string; quizKey: keyof typeof phonicsQuizzes }> = {
+  'double-vowels': { sounds: phonicsSounds.doubleVowels, title: 'Double Vowel Sounds', quizKey: 'doubleVowels' },
+  'double-consonants': { sounds: phonicsSounds.doubleConsonants, title: 'Double Consonants', quizKey: 'doubleConsonants' },
+  'consonant-digraphs': { sounds: phonicsSounds.digraphs, title: 'Consonant Digraphs', quizKey: 'digraphs' },
+  'split-digraphs': { sounds: phonicsSounds.splitDigraphs, title: 'Split Digraphs (Magic E)', quizKey: 'splitDigraphs' },
+  'r-controlled-vowels': { sounds: phonicsSounds.rControlledVowels, title: 'R-Controlled Vowels', quizKey: 'rControlledVowels' },
+  'more-vowel-teams': { sounds: phonicsSounds.moreVowelTeams, title: 'More Vowel Teams', quizKey: 'moreVowelTeams' },
+  'common-suffixes': { sounds: phonicsSounds.suffixes, title: 'Common Suffixes', quizKey: 'suffixes' },
+  'common-prefixes': { sounds: phonicsSounds.prefixes, title: 'Common Prefixes', quizKey: 'prefixes' },
 };
 
 export default function PhonicsLesson() {
@@ -80,13 +74,7 @@ export default function PhonicsLesson() {
   }
 
   if (mode === 'quiz') {
-    return (
-      <PhonicsQuiz
-        section={sectionToQuizKey[section] ?? section}
-        title={title}
-        onExit={() => setMode('learn')}
-      />
-    );
+    return <PhonicsQuiz section={section} quizKey={meta.quizKey} title={title} onExit={() => setMode('learn')} />;
   }
 
   return (
@@ -99,7 +87,7 @@ export default function PhonicsLesson() {
           </Button>
         </Link>
 
-        <h1 className="text-5xl font-black text-white drop-shadow-lg mb-8 text-center">{title}</h1>
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white drop-shadow-lg mb-8 text-center px-2">{title}</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Sound List */}
@@ -124,19 +112,19 @@ export default function PhonicsLesson() {
           </div>
 
           {/* Sound Display */}
-          <div className="lg:col-span-2 bg-white/90 dark:bg-card/90 rounded-3xl p-10 border-4 border-white/50">
+          <div className="lg:col-span-2 bg-white/90 dark:bg-card/90 rounded-3xl p-6 sm:p-8 md:p-10 border-4 border-white/50 overflow-hidden">
             <motion.div
               key={selectedSound}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               className="text-center"
             >
-              <div className="text-9xl font-black text-pink-600 mb-6">{currentSound.sound}</div>
+              <div className="text-5xl sm:text-7xl md:text-9xl font-black text-pink-600 mb-6 break-words">{currentSound.sound}</div>
 
-              <div className="bg-gradient-to-br from-yellow-100 to-orange-100 dark:from-yellow-900 dark:to-orange-900 rounded-3xl p-8 mb-6">
-                <p className="text-2xl font-bold text-muted-foreground mb-2">Example Word:</p>
-                <p className="text-6xl font-black text-foreground mb-4">{currentSound.example}</p>
-                <p className="text-xl font-bold text-muted-foreground">{currentSound.pronunciation}</p>
+              <div className="bg-gradient-to-br from-yellow-100 to-orange-100 dark:from-yellow-900 dark:to-orange-900 rounded-3xl p-4 sm:p-6 md:p-8 mb-6">
+                <p className="text-lg sm:text-xl md:text-2xl font-bold text-muted-foreground mb-2">Example Word:</p>
+                <p className="text-3xl sm:text-4xl md:text-6xl font-black text-foreground mb-4 break-words">{currentSound.example}</p>
+                <p className="text-base sm:text-lg md:text-xl font-bold text-muted-foreground">{currentSound.pronunciation}</p>
               </div>
 
               <Button
@@ -212,12 +200,6 @@ function PracticeWriting({
   const [placed, setPlaced] = useState<number[]>([]); // indices into the tile array, in placement order
   const [completed, setCompleted] = useState(false);
   const [confetti, setConfetti] = useState(false);
-  // Which tile is currently mid-shake (brief visual feedback for a wrong
-  // tap) and whether to keep showing the "try again" message - the message
-  // stays up (unlike the shake) until the next correct tap or Clear, so
-  // it's clear the attempt was wrong rather than the tap doing nothing.
-  const [shakeTileIndex, setShakeTileIndex] = useState<number | null>(null);
-  const [showWrongMessage, setShowWrongMessage] = useState(false);
 
   const word = sounds[wordIndex].example.toUpperCase();
   const tiles = useMemo(() => shuffleLetters(sounds[wordIndex].example), [wordIndex]);
@@ -232,16 +214,10 @@ function PracticeWriting({
 
     if (!isStillCorrect) {
       playSound('wrong');
-      // Tile stays fully clickable/movable - this is only a visual cue
-      // that this particular tap was wrong, not a lock on the tile.
-      setShakeTileIndex(tileIndex);
-      setShowWrongMessage(true);
-      setTimeout(() => setShakeTileIndex(null), 400);
       return;
     }
 
     playSound('click');
-    setShowWrongMessage(false);
     const newPlaced = [...placed, tileIndex];
     setPlaced(newPlaced);
 
@@ -255,7 +231,6 @@ function PracticeWriting({
 
   const handleClear = () => {
     setPlaced([]);
-    setShowWrongMessage(false);
     playSound('click');
   };
 
@@ -264,7 +239,6 @@ function PracticeWriting({
     setWordIndex(next);
     setPlaced([]);
     setCompleted(false);
-    setShowWrongMessage(false);
   };
 
   return (
@@ -300,23 +274,6 @@ function PracticeWriting({
 
           {!completed ? (
             <>
-              {/* Persistent "wrong" message - stays visible (unlike the
-                  brief tile shake) until the student places a correct
-                  next letter or hits Clear, so it's clear this attempt
-                  needs another try rather than looking unresponsive. */}
-              <div className="h-8 mb-2">
-                {showWrongMessage && (
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-red-500 font-black text-lg"
-                    data-testid="text-wrong-answer"
-                  >
-                    Not quite — try again!
-                  </motion.p>
-                )}
-              </div>
-
               {/* Letter tiles */}
               <div className="flex justify-center gap-3 mb-8 flex-wrap">
                 {tiles.map((letter, i) => (
@@ -326,14 +283,10 @@ function PracticeWriting({
                     disabled={placed.includes(i)}
                     whileHover={!placed.includes(i) ? { scale: 1.08 } : {}}
                     whileTap={!placed.includes(i) ? { scale: 0.95 } : {}}
-                    animate={shakeTileIndex === i ? { x: [0, -10, 10, -10, 10, 0] } : { x: 0 }}
-                    transition={shakeTileIndex === i ? { duration: 0.4 } : undefined}
-                    className={`w-16 h-16 rounded-2xl text-3xl font-black transition-colors ${
+                    className={`w-16 h-16 rounded-2xl text-3xl font-black transition-all ${
                       placed.includes(i)
                         ? 'bg-muted/40 text-transparent'
-                        : shakeTileIndex === i
-                          ? 'bg-gradient-to-br from-red-500 to-red-600 text-white shadow-lg'
-                          : 'bg-gradient-to-br from-pink-500 to-purple-500 text-white shadow-lg'
+                        : 'bg-gradient-to-br from-pink-500 to-purple-500 text-white shadow-lg'
                     }`}
                     data-testid={`letter-tile-${i}`}
                   >
@@ -373,15 +326,22 @@ function PracticeWriting({
 // Take Quiz: multiple-choice — "Which word has this sound?" — through every
 // sound in the section.
 // ---------------------------------------------------------------------------
-function PhonicsQuiz({ section, title, onExit }: { section: string; title: string; onExit: () => void }) {
+function PhonicsQuiz({
+  section,
+  quizKey,
+  title,
+  onExit,
+}: {
+  section: string;
+  quizKey: keyof typeof phonicsQuizzes;
+  title: string;
+  onExit: () => void;
+}) {
   const { user } = useAuth();
   const { playSound } = useSettings();
   const recordProgress = useRecordProgress();
 
-  // Shuffled once per quiz attempt so replaying the same section's quiz
-  // gives a different question order and answer layout, not the same
-  // static sequence every time.
-  const [questions] = useState(() => shuffleQuestionsAndOptions(phonicsQuizzes[section] ?? []));
+  const questions = phonicsQuizzes[quizKey] ?? [];
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);

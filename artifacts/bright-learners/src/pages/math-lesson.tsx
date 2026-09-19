@@ -7,15 +7,11 @@ import { useRecordProgress } from '@workspace/api-client-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { ConfettiEffect } from '@/components/ConfettiEffect';
+import { CelebrationPanel } from '@/components/CelebrationPanel';
 import { Brighty } from '@/components/Brighty';
 import { AnalogClock } from '@/components/AnalogClock';
 import { ArrowLeft, Lightbulb, CheckCircle2, XCircle } from 'lucide-react';
 import { mathLessons } from '@/data/lessonContent';
-import { ShapeGlyph } from '@/components/ShapeGlyph';
-import { CountableDisplay } from '@/components/CountableDisplay';
-import { shuffleQuestionsAndOptions } from '@/lib/shuffle';
-
-const SHAPE_KEYWORDS = new Set(['triangle', 'square', 'rectangle', 'circle', 'pentagon', 'hexagon', 'cube', 'sphere']);
 
 export default function MathLesson() {
   const params = useParams<{ topic: string }>();
@@ -27,11 +23,6 @@ export default function MathLesson() {
   const topic = params.topic as keyof typeof mathLessons;
   const lesson = mathLessons[topic];
 
-  // Shuffled once per visit (not on every re-render) so each attempt at a
-  // lesson has a different question order and answer-button layout instead
-  // of being identical every time - keeps repeat plays from feeling stale.
-  const [questions] = useState(() => (lesson ? shuffleQuestionsAndOptions(lesson.questions) : []));
-
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
@@ -40,13 +31,42 @@ export default function MathLesson() {
   const [showHint, setShowHint] = useState(false);
   const [startTime] = useState(Date.now());
   const [confetti, setConfetti] = useState(false);
+  const [isFinished, setIsFinished] = useState(false);
 
   if (!lesson) {
     return <div className="p-6">Lesson not found</div>;
   }
 
-  const currentQuestion = questions[currentQuestionIndex];
-  const progressPercent = ((currentQuestionIndex + 1) / questions.length) * 100;
+  const currentQuestion = lesson.questions[currentQuestionIndex];
+  const progressPercent = ((currentQuestionIndex + 1) / lesson.questions.length) * 100;
+
+  if (isFinished) {
+    return (
+      <div className="min-h-[100dvh] gradient-math flex items-center justify-center p-6">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-white dark:bg-card rounded-3xl p-8 sm:p-10 shadow-2xl border-4 border-white/50 max-w-lg w-full text-center"
+        >
+          <h2 className="text-3xl font-black text-foreground mb-2">Lesson Complete!</h2>
+          <p className="text-muted-foreground font-semibold mb-6">
+            You scored {score} out of {lesson.questions.length}
+          </p>
+          <CelebrationPanel
+            activityTitle={lesson.title}
+            scoreLabel={`${score}/${lesson.questions.length} correct`}
+            className="mb-6"
+          />
+          <Link href="/math">
+            <Button size="lg" className="w-full rounded-2xl font-black bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white" data-testid="button-back-to-subject">
+              Back to Math
+            </Button>
+          </Link>
+        </motion.div>
+      </div>
+    );
+  }
+
 
   const handleAnswerSelect = (answer: string) => {
     if (showFeedback) return;
@@ -67,7 +87,7 @@ export default function MathLesson() {
   };
 
   const handleNext = () => {
-    if (currentQuestionIndex < questions.length - 1) {
+    if (currentQuestionIndex < lesson.questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setSelectedAnswer(null);
       setShowFeedback(false);
@@ -75,7 +95,7 @@ export default function MathLesson() {
     } else {
       // Lesson complete
       const timeSpentMinutes = Math.round((Date.now() - startTime) / 60000);
-      const accuracy = (score / questions.length) * 100;
+      const accuracy = (score / lesson.questions.length) * 100;
       
       if (user) {
         recordProgress.mutate({
@@ -92,7 +112,7 @@ export default function MathLesson() {
       }
 
       playSound('celebration');
-      setLocation('/math');
+      setIsFinished(true);
     }
   };
 
@@ -112,8 +132,8 @@ export default function MathLesson() {
           <h1 className="text-3xl font-black text-foreground mb-3">{lesson.title}</h1>
           <div className="space-y-2">
             <div className="flex justify-between text-sm font-bold text-muted-foreground">
-              <span>Question {currentQuestionIndex + 1} of {questions.length}</span>
-              <span>Score: {score}/{questions.length}</span>
+              <span>Question {currentQuestionIndex + 1} of {lesson.questions.length}</span>
+              <span>Score: {score}/{lesson.questions.length}</span>
             </div>
             <Progress value={progressPercent} className="h-3" />
           </div>
@@ -142,19 +162,8 @@ export default function MathLesson() {
                   />
                 </div>
               )}
-              {!currentQuestion.clockTime && currentQuestion.countItems && (
-                <div className="my-8">
-                  <CountableDisplay countItems={currentQuestion.countItems} />
-                </div>
-              )}
-              {!currentQuestion.clockTime && !currentQuestion.countItems && currentQuestion.image && (
-                <div className="my-8 flex justify-center">
-                  {SHAPE_KEYWORDS.has(currentQuestion.image) ? (
-                    <ShapeGlyph shape={currentQuestion.image} className="text-6xl w-24 h-24" />
-                  ) : (
-                    <CountableDisplay image={currentQuestion.image} />
-                  )}
-                </div>
+              {!currentQuestion.clockTime && currentQuestion.image && (
+                <div className="text-6xl my-8">{currentQuestion.image}</div>
               )}
             </div>
 
@@ -216,7 +225,7 @@ export default function MathLesson() {
                   className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-black text-xl rounded-2xl h-16"
                   data-testid="button-next"
                 >
-                  {currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'Finish Lesson'}
+                  {currentQuestionIndex < lesson.questions.length - 1 ? 'Next Question' : 'Finish Lesson'}
                 </Button>
               </motion.div>
             )}

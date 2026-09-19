@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'wouter';
+import { useLocation, Link } from 'wouter';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
-import { useGetUserProgress, useGetUserRewards } from '@workspace/api-client-react';
+import { useGetUserProgress, useGetUserRewards, getGetUserProgressQueryKey, getGetUserRewardsQueryKey } from '@workspace/api-client-react';
 import { Brighty } from '@/components/Brighty';
 import { SubjectCard } from '@/components/SubjectCard';
 import { RewardDisplay } from '@/components/RewardDisplay';
@@ -19,19 +19,23 @@ import {
   LayoutDashboard,
   Settings,
   LogOut,
+  FlaskConical,
+  Globe2,
+  HeartHandshake,
+  Heart,
 } from 'lucide-react';
 
 const greetings = ['Welcome back!', 'Let\'s learn!', 'Excellent work!', 'You\'re amazing!', 'Ready to shine?'];
 
 export default function Home() {
-  const { user, logout } = useAuth();
+  const { user, isGuest, logout } = useAuth();
   const [, setLocation] = useLocation();
   const [greeting, setGreeting] = useState(greetings[0]);
   const { data: progress } = useGetUserProgress(user?.id || 0, {
-    query: { enabled: !!user?.id },
+    query: { queryKey: getGetUserProgressQueryKey(user?.id || 0), enabled: !!user?.id },
   });
   const { data: rewards } = useGetUserRewards(user?.id || 0, {
-    query: { enabled: !!user?.id },
+    query: { queryKey: getGetUserRewardsQueryKey(user?.id || 0), enabled: !!user?.id },
   });
 
   useEffect(() => {
@@ -50,28 +54,40 @@ export default function Home() {
     <div className="min-h-[100dvh] bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pb-12">
       {/* Header */}
       <div className="bg-white/80 dark:bg-card/80 backdrop-blur-sm border-b-2 border-border sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-4 min-w-0">
             <Brighty size={60} />
-            <div>
-              <h2 className="text-2xl font-black text-foreground">Bright Learners</h2>
-              <p className="text-sm text-muted-foreground font-semibold">{user?.displayName}</p>
+            <div className="min-w-0">
+              <h2 className="text-xl sm:text-2xl font-black text-foreground truncate">Bright Learners</h2>
+              <p className="text-sm text-muted-foreground font-semibold truncate">{user?.displayName ?? (isGuest ? 'Guest' : '')}</p>
             </div>
           </div>
           <Button
             onClick={handleLogout}
             variant="outline"
             size="sm"
-            className="rounded-full"
+            className="rounded-full shrink-0"
             data-testid="button-logout"
           >
-            <LogOut className="w-4 h-4 mr-2" />
-            Logout
+            <LogOut className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Logout</span>
           </Button>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
+        {isGuest && !user && (
+          <div className="mb-6 bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-200 dark:border-amber-900 rounded-2xl px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <p className="text-sm sm:text-base font-semibold text-amber-900 dark:text-amber-200">
+              👋 You're browsing as a guest — lessons and games work, but progress, rewards, and live multiplayer games aren't available, and nothing you do here will be saved.
+            </p>
+            <Link href="/login">
+              <Button size="sm" className="rounded-full whitespace-nowrap" data-testid="button-guest-sign-in">
+                Sign in to save progress
+              </Button>
+            </Link>
+          </div>
+        )}
         {/* Greeting */}
         <motion.div
           key={greeting}
@@ -79,10 +95,10 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-2">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-2">
             {greeting}
           </h1>
-          <p className="text-xl text-muted-foreground font-semibold">
+          <p className="text-lg sm:text-xl text-muted-foreground font-semibold">
             Ready for today's adventure?
           </p>
         </motion.div>
@@ -122,6 +138,27 @@ export default function Home() {
             description="Sounds & Letters"
           />
           <SubjectCard
+            title="Science"
+            href="/science"
+            gradient="gradient-science"
+            icon={<FlaskConical className="w-16 h-16" />}
+            description="Explore the World Around You"
+          />
+          <SubjectCard
+            title="Geography"
+            href="/geography"
+            gradient="gradient-geography"
+            icon={<Globe2 className="w-16 h-16" />}
+            description="Where in the World?"
+          />
+          <SubjectCard
+            title="PSHE"
+            href="/pshe"
+            gradient="gradient-pshe"
+            icon={<HeartHandshake className="w-16 h-16" />}
+            description="Health, Relationships & the World"
+          />
+          <SubjectCard
             title="Learning Games"
             href="/games"
             gradient="gradient-games"
@@ -156,7 +193,14 @@ export default function Home() {
             icon={<Calendar className="w-16 h-16" />}
             description="Today's Quest"
           />
-          {user?.role !== 'student' && (
+          <SubjectCard
+            title="Social Stories"
+            href="/social-stories"
+            gradient="bg-gradient-to-br from-teal-500 to-cyan-600"
+            icon={<Heart className="w-16 h-16" />}
+            description="Stories for Everyday Moments"
+          />
+          {user && user.role !== 'student' && (
             <SubjectCard
               title={`${user?.role === 'parent' ? 'Parent' : user?.role === 'teacher' ? 'Teacher' : 'Admin'} Dashboard`}
               href={`/${user?.role}-dashboard`}

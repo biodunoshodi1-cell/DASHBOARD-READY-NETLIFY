@@ -113,17 +113,18 @@ router.get("/progress/:userId/subjects", requireSelfOrRole("userId", ["parent", 
   const raw = Array.isArray(req.params.userId) ? req.params.userId[0] : req.params.userId;
   const userId = parseInt(raw, 10);
   if (isNaN(userId)) { res.status(400).json({ error: "Invalid userId" }); return; }
-  const subjects = ["math", "english", "phonics"] as const;
+  const subjects = ["math", "english", "phonics", "science", "geography", "pshe"] as const;
   // Counts of distinct completable lessons per subject, matching the
-  // frontend's actual content (artifacts/bright-learners/src/data/lessonContent.ts):
-  //   math: 11 topics (counting, addition, subtraction, multiplication, division,
-  //     fractions, money, time, shapes, measurements, word-problems)
-  //   english: 12 (3 stories + 3 reading + 3 comprehension passages, plus the
-  //     vocabulary, grammar, and sentence-building quizzes)
-  //   phonics: 3 (one quiz per section: double vowels, double consonants, digraphs —
-  //     "Practice Writing" is ungraded repeatable practice and isn't counted here)
+  // frontend's actual content (artifacts/bright-learners/src/data/lessonContent.ts,
+  // scienceContent.ts, geographyContent.ts, psheContent.ts):
+  //   math: 42 topics across Years 1-6
+  //   english: 26 (6 stories + 5 reading + 4 comprehension passages, plus 11 quizzes)
+  //   phonics: 4 (one quiz per section: double vowels, double consonants, digraphs,
+  //     split digraphs — "Practice Writing" is ungraded repeatable practice and isn't
+  //     counted here)
+  //   science: 6, geography: 5, pshe: 6 (Year 1 topics)
   // Keep this in sync if lesson content is added or removed.
-  const totalsBySubject: Record<string, number> = { math: 11, english: 12, phonics: 3 };
+  const totalsBySubject: Record<string, number> = { math: 42, english: 26, phonics: 4, science: 6, geography: 5, pshe: 6 };
   const result = await Promise.all(subjects.map(async (subject) => {
     const rows = await db.select().from(lessonProgressTable)
       .where(and(eq(lessonProgressTable.userId, userId), eq(lessonProgressTable.subject, subject)));

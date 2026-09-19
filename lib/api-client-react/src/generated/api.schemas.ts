@@ -26,7 +26,10 @@ export const UserRole = {
 
 export interface User {
   id: number;
-  email: string;
+  /** @nullable */
+  username?: string | null;
+  /** @nullable */
+  email?: string | null;
   displayName: string;
   role: UserRole;
   /** @nullable */
@@ -58,7 +61,8 @@ export const LoginInputRole = {
 } as const;
 
 export interface LoginInput {
-  email: string;
+  /** Username or email address */
+  identifier: string;
   password: string;
   role?: LoginInputRole;
 }
@@ -74,29 +78,13 @@ export const RegisterInputRole = {
 } as const;
 
 export interface RegisterInput {
-  email: string;
+  /** Required if email is omitted */
+  username?: string;
+  /** Required if username is omitted */
+  email?: string;
   password: string;
   displayName: string;
   role: RegisterInputRole;
-  gradeLevel?: number;
-  age?: number;
-}
-
-export type FirebaseSessionInputRole = typeof FirebaseSessionInputRole[keyof typeof FirebaseSessionInputRole];
-
-
-export const FirebaseSessionInputRole = {
-  student: 'student',
-  parent: 'parent',
-  teacher: 'teacher',
-  admin: 'admin',
-} as const;
-
-export interface FirebaseSessionInput {
-  /** The Firebase Authentication ID token from the frontend's signed-in user */
-  idToken: string;
-  displayName?: string;
-  role?: FirebaseSessionInputRole;
   gradeLevel?: number;
   age?: number;
 }
@@ -128,6 +116,9 @@ export const LessonProgressSubject = {
   math: 'math',
   english: 'english',
   phonics: 'phonics',
+  science: 'science',
+  geography: 'geography',
+  pshe: 'pshe',
 } as const;
 
 export interface LessonProgress {
@@ -149,6 +140,9 @@ export const ProgressInputSubject = {
   math: 'math',
   english: 'english',
   phonics: 'phonics',
+  science: 'science',
+  geography: 'geography',
+  pshe: 'pshe',
 } as const;
 
 export interface ProgressInput {
@@ -175,6 +169,9 @@ export const SubjectProgressSubject = {
   math: 'math',
   english: 'english',
   phonics: 'phonics',
+  science: 'science',
+  geography: 'geography',
+  pshe: 'pshe',
 } as const;
 
 export interface SubjectProgress {
@@ -192,6 +189,9 @@ export const AchievementCategory = {
   math: 'math',
   english: 'english',
   phonics: 'phonics',
+  science: 'science',
+  geography: 'geography',
+  pshe: 'pshe',
   games: 'games',
   streaks: 'streaks',
   general: 'general',
@@ -266,6 +266,7 @@ export const ScoreInputGame = {
   'sentence-builder': 'sentence-builder',
   'number-puzzle': 'number-puzzle',
   'picture-puzzle': 'picture-puzzle',
+  'times-tables': 'times-tables',
 } as const;
 
 export interface ScoreInput {
@@ -283,6 +284,9 @@ export const ChallengeQuestionSubject = {
   math: 'math',
   english: 'english',
   phonics: 'phonics',
+  science: 'science',
+  geography: 'geography',
+  pshe: 'pshe',
 } as const;
 
 export interface ChallengeQuestion {
@@ -418,6 +422,9 @@ export const ListCompletedLessonsSubject = {
   math: 'math',
   english: 'english',
   phonics: 'phonics',
+  science: 'science',
+  geography: 'geography',
+  pshe: 'pshe',
 } as const;
 
 export type GetLeaderboardParams = {
@@ -439,5 +446,6 @@ export const GetLeaderboardGame = {
   'sentence-builder': 'sentence-builder',
   'number-puzzle': 'number-puzzle',
   'picture-puzzle': 'picture-puzzle',
+  'times-tables': 'times-tables',
 } as const;
 

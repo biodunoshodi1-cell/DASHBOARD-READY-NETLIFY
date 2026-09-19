@@ -20,4 +20,5 @@ export const GetLeaderboardGame = {
   'sentence-builder': 'sentence-builder',
   'number-puzzle': 'number-puzzle',
   'picture-puzzle': 'picture-puzzle',
+  'times-tables': 'times-tables',
 } as const;

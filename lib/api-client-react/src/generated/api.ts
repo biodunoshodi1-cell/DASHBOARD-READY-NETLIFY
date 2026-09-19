@@ -26,7 +26,6 @@ import type {
   DailyChallengeResult,
   DailyChallengeStatus,
   DailyChallengeSubmission,
-  FirebaseSessionInput,
   GameScore,
   GetLeaderboardParams,
   HealthStatus,
@@ -243,7 +242,7 @@ export const getLoginUrl = () => {
 }
 
 /**
- * @summary Login with email and password
+ * @summary Login with username/email and password
  */
 export const login = async (loginInput: LoginInput, options?: Parameters<typeof customFetch>[1]): Promise<User> => {
 
@@ -292,7 +291,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type LoginMutationError = ErrorType<void>
 
     /**
- * @summary Login with email and password
+ * @summary Login with username/email and password
  */
 export const useLogin = <TError = ErrorType<void>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof login>>, TError,{data: BodyType<LoginInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
@@ -374,77 +373,6 @@ export const useRegister = <TError = ErrorType<unknown>,
         TContext
       > => {
       return useMutation(getRegisterMutationOptions(options));
-    }
-
-export const getFirebaseSessionUrl = () => {
-
-
-
-
-  return `/api/auth/firebase-session`
-}
-
-/**
- * @summary Exchange a Firebase Authentication ID token for an app session
- */
-export const firebaseSession = async (firebaseSessionInput: FirebaseSessionInput, options?: Parameters<typeof customFetch>[1]): Promise<User> => {
-
-  return customFetch<User>(getFirebaseSessionUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(firebaseSessionInput)
-  }
-);}
-
-
-
-
-
-export const getFirebaseSessionMutationOptions = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof firebaseSession>>, TError,{data: BodyType<FirebaseSessionInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof firebaseSession>>, TError,{data: BodyType<FirebaseSessionInput>}, TContext> => {
-
-const mutationKey = ['firebaseSession'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof firebaseSession>>, {data: BodyType<FirebaseSessionInput>}> = (props) => {
-          const {data} = props ?? {};
-
-          return  firebaseSession(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type FirebaseSessionMutationResult = NonNullable<Awaited<ReturnType<typeof firebaseSession>>>
-    export type FirebaseSessionMutationBody = BodyType<FirebaseSessionInput>
-    export type FirebaseSessionMutationError = ErrorType<void>
-
-    /**
- * @summary Exchange a Firebase Authentication ID token for an app session
- */
-export const useFirebaseSession = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof firebaseSession>>, TError,{data: BodyType<FirebaseSessionInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
- ): UseMutationResult<
-        Awaited<ReturnType<typeof firebaseSession>>,
-        TError,
-        {data: BodyType<FirebaseSessionInput>},
-        TContext
-      > => {
-      return useMutation(getFirebaseSessionMutationOptions(options));
     }
 
 export const getLogoutUrl = () => {

@@ -239,8 +239,35 @@
     @apply border-border;
   }
 
+  /* Full-screen baseline so every page reliably fills the viewport edge to
+     edge on every device — Android/iOS phones and tablets, laptops, and
+     desktops — instead of relying on each page to get sizing right on its
+     own. Uses 100dvh (falls back gracefully in older browsers) so mobile
+     browser toolbars don't leave a gap or force extra scrolling. */
+  html,
+  body,
+  #root {
+    height: 100%;
+    min-height: 100dvh;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    /* Stops any accidental horizontal overflow (e.g. a slightly-too-wide
+       element) from creating a sideways scrollbar / gap on any device. */
+    overflow-x: hidden;
+  }
+
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    /* Respect the notch / home-indicator / rounded corners on iOS devices
+       (requires viewport-fit=cover in index.html, already set) so content
+       isn't hidden behind them, while adding no extra space on devices
+       without safe areas. */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
 }
 
@@ -333,6 +360,18 @@
     background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
   }
 
+  .gradient-science {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  }
+
+  .gradient-geography {
+    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  }
+
+  .gradient-pshe {
+    background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+  }
+
   .gradient-rewards {
     background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
   }
@@ -387,4 +426,23 @@
 
 .animate-bounce-gentle {
   animation: bounce-gentle 2s ease-in-out infinite;
+}
+
+/* Printable Certificate of Achievement (see components/Certificate.tsx) —
+   hides everything else on the page so only the certificate itself prints
+   or saves as a clean PDF via the browser's native print dialog. */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .certificate-print,
+  .certificate-print * {
+    visibility: visible;
+  }
+  .certificate-print {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
 }

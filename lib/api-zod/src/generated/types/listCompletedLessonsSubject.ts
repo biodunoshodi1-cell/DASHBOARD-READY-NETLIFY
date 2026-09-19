@@ -13,4 +13,7 @@ export const ListCompletedLessonsSubject = {
   math: 'math',
   english: 'english',
   phonics: 'phonics',
+  science: 'science',
+  geography: 'geography',
+  pshe: 'pshe',
 } as const;

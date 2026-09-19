@@ -111,7 +111,7 @@ export default function Settings() {
           {/* Font Size */}
           <div className="pb-6 border-b-2 border-border">
             <Label className="text-lg font-black text-foreground mb-4 block">Font Size</Label>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
               {['normal', 'large', 'extra-large'].map((size) => (
                 <Button
                   key={size}

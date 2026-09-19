@@ -207,7 +207,7 @@ export default function GameMemory() {
           </div>
         </div>
 
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-4 gap-2 sm:gap-3 md:gap-4">
           {cards.map((card, index) => (
             <motion.button
               key={card.id}
@@ -228,7 +228,7 @@ export default function GameMemory() {
                   className="w-full h-full absolute inset-0 bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center"
                   style={{ backfaceVisibility: 'hidden' }}
                 >
-                  <div className="text-4xl">?</div>
+                  <div className="text-2xl sm:text-3xl md:text-4xl">?</div>
                 </div>
 
                 {/* Back */}
@@ -238,7 +238,7 @@ export default function GameMemory() {
                   }`}
                   style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
                 >
-                  <div className="text-6xl">{card.emoji}</div>
+                  <div className="text-3xl sm:text-4xl md:text-6xl">{card.emoji}</div>
                 </div>
               </motion.div>
             </motion.button>

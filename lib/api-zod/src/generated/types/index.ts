@@ -17,8 +17,6 @@ export * from './dailyChallenge';
 export * from './dailyChallengeResult';
 export * from './dailyChallengeStatus';
 export * from './dailyChallengeSubmission';
-export * from './firebaseSessionInput';
-export * from './firebaseSessionInputRole';
 export * from './gameScore';
 export * from './gameStats';
 export * from './getLeaderboardGame';

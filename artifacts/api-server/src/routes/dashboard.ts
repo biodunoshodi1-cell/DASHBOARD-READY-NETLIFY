@@ -17,7 +17,7 @@ const router: IRouter = Router();
 
 // Counts of distinct completable lessons per subject — see the matching
 // comment in routes/progress.ts. Keep both in sync with lessonContent.ts.
-const TOTAL_LESSONS_BY_SUBJECT: Record<string, number> = { math: 11, english: 12, phonics: 3 };
+const TOTAL_LESSONS_BY_SUBJECT: Record<string, number> = { math: 42, english: 26, phonics: 4, science: 6, geography: 5, pshe: 6 };
 
 router.get("/dashboard/student/:userId", requireSelfOrRole("userId", ["teacher", "admin"]), async (req, res): Promise<void> => {
   const raw = Array.isArray(req.params.userId) ? req.params.userId[0] : req.params.userId;
@@ -36,7 +36,7 @@ router.get("/dashboard/student/:userId", requireSelfOrRole("userId", ["teacher",
   const today = getTodayDateString();
   const [dailyStatus] = await db.select().from(dailyChallengeCompletionsTable)
     .where(and(eq(dailyChallengeCompletionsTable.userId, userId), eq(dailyChallengeCompletionsTable.date, today)));
-  const subjects = ["math", "english", "phonics"] as const;
+  const subjects = ["math", "english", "phonics", "science", "geography", "pshe"] as const;
   const subjectBreakdown = await Promise.all(subjects.map(async (subject) => {
     const rows = await db.select().from(lessonProgressTable)
       .where(and(eq(lessonProgressTable.userId, userId), eq(lessonProgressTable.subject, subject)));
@@ -46,7 +46,7 @@ router.get("/dashboard/student/:userId", requireSelfOrRole("userId", ["teacher",
       timeMinutes: rows.reduce((s, r) => s + r.timeSpentMinutes, 0),
     };
   }));
-  const { passwordHash: _, firebaseUid: __, ...safeUser } = user;
+  const { passwordHash: _, ...safeUser } = user;
   res.json(GetStudentDashboardResponse.parse({
     user: safeUser,
     rewards: { userId: progress.userId, stars: progress.stars, coins: progress.coins, xp: progress.xp, level: progress.level, xpToNextLevel: Math.max(0, progress.level * 100 - progress.xp), unlockedAvatars: ["owl"], activeAvatar: "owl" },
@@ -64,11 +64,11 @@ router.get("/dashboard/parent/:userId", requireSelfOrRole("userId", ["teacher", 
   if (isNaN(userId)) { res.status(400).json({ error: "Invalid userId" }); return; }
   const children = await db.select().from(usersTable).where(eq(usersTable.parentId, userId));
   const childSummaries = await Promise.all(children.map(async (child) => {
-    const { passwordHash: _, firebaseUid: __, ...safeChild } = child;
+    const { passwordHash: _, ...safeChild } = child;
     let [progress] = await db.select().from(userProgressTable).where(eq(userProgressTable.userId, child.id));
     if (!progress) { const [c] = await db.insert(userProgressTable).values({ userId: child.id }).returning(); progress = c; }
     const recentLessons = await db.select().from(lessonProgressTable).where(eq(lessonProgressTable.userId, child.id)).orderBy(desc(lessonProgressTable.completedAt)).limit(3);
-    const subjects = ["math", "english", "phonics"] as const;
+    const subjects = ["math", "english", "phonics", "science", "geography", "pshe"] as const;
     const subjectBreakdown = await Promise.all(subjects.map(async (subject) => {
       const rows = await db.select().from(lessonProgressTable).where(and(eq(lessonProgressTable.userId, child.id), eq(lessonProgressTable.subject, subject)));
       return { subject, lessonsCompleted: rows.length, totalLessons: TOTAL_LESSONS_BY_SUBJECT[subject], accuracy: rows.length > 0 ? rows.reduce((s, r) => s + r.accuracy, 0) / rows.length : 0, timeMinutes: rows.reduce((s, r) => s + r.timeSpentMinutes, 0) };
@@ -113,14 +113,14 @@ router.get("/dashboard/teacher/:userId", requireSelfOrRole("userId", ["admin"]),
   const allLessons = await db.select().from(lessonProgressTable);
   const activeToday = new Set(allLessons.filter(l => new Date(l.completedAt) >= todayStart).map(l => l.userId)).size;
   const studentsWithProgress = students.slice(0, 5).map(s => {
-    const { passwordHash: _, firebaseUid: __, ...safeS } = s;
+    const { passwordHash: _, ...safeS } = s;
     const p = allProgress.find(p => p.userId === s.id);
     return { user: safeS, accuracy: p?.overallAccuracy ?? 0, lessonsCompleted: p?.totalLessonsCompleted ?? 0, lastActive: s.createdAt.toISOString() };
   });
 
   // Real per-subject stats across all students, computed from actual lesson
   // completions rather than random placeholder numbers.
-  const subjects = ["math", "english", "phonics"] as const;
+  const subjects = ["math", "english", "phonics", "science", "geography", "pshe"] as const;
   const subjectStats = await Promise.all(subjects.map(async (subject) => {
     const rows = await db.select().from(lessonProgressTable).where(eq(lessonProgressTable.subject, subject));
     return {

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'wouter';
 import { useAuth } from '@/contexts/AuthContext';
-import { useGetParentDashboard } from '@workspace/api-client-react';
+import { useGetParentDashboard, getGetParentDashboardQueryKey } from '@workspace/api-client-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, Users, TrendingUp } from 'lucide-react';
@@ -10,7 +10,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 export default function ParentDashboard() {
   const { user } = useAuth();
   const { data: dashboard } = useGetParentDashboard(user?.id || 0, {
-    query: { enabled: !!user?.id },
+    query: { queryKey: getGetParentDashboardQueryKey(user?.id || 0), enabled: !!user?.id },
   });
 
   return (

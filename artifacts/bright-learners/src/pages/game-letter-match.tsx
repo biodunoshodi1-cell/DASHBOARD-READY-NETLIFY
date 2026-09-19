@@ -188,7 +188,7 @@ export default function GameLetterMatch() {
           </div>
         </div>
 
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-4 gap-2 sm:gap-3 md:gap-4">
           {cards.map((card, index) => {
             const isFlipped = flipped.includes(index) || card.matched;
             return (
@@ -196,7 +196,7 @@ export default function GameLetterMatch() {
                 key={card.key}
                 onClick={() => handleFlip(index)}
                 whileTap={!isFlipped ? { scale: 0.95 } : {}}
-                className={`aspect-square rounded-2xl flex items-center justify-center text-4xl font-black shadow-lg transition-colors ${
+                className={`aspect-square rounded-2xl flex items-center justify-center text-2xl sm:text-3xl md:text-4xl font-black shadow-lg transition-colors ${
                   card.matched
                     ? 'bg-green-200 dark:bg-green-900 text-green-700 dark:text-green-300'
                     : isFlipped

@@ -7,8 +7,8 @@ import { useSubmitScore, useGetLeaderboard, useAwardRewards } from '@workspace/a
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Trophy, Zap, Lock, Star } from 'lucide-react';
 import { mathLessons, type MathQuestion } from '@/data/lessonContent';
-import { CountableDisplay } from '@/components/CountableDisplay';
-import { shuffleQuestionsAndOptions } from '@/lib/shuffle';
+import { AnalogClock } from '@/components/AnalogClock';
+import { StarBurst } from '@/components/StarBurst';
 
 type Level = {
   id: number;
@@ -28,10 +28,14 @@ const levels: Level[] = [
   {
     id: 1,
     name: 'Level 1: Warm Up',
-    description: 'Counting & Addition',
-    timeSeconds: 60,
+    description: 'Counting, Addition & Subtraction',
+    timeSeconds: 120,
     passScore: 5,
-    questions: [...mathLessons.counting.questions, ...mathLessons.addition.questions],
+    questions: [
+      ...mathLessons.counting.questions,
+      ...mathLessons.addition.questions,
+      ...mathLessons.subtraction.questions,
+    ],
   },
   {
     id: 2,
@@ -54,6 +58,129 @@ const levels: Level[] = [
     ],
   },
 ];
+
+// Fisher-Yates shuffle — used to randomize each sprint's question order (and
+// small option lists) so nothing plays in the same sequence every attempt.
+function shuffleArray<T>(items: T[]): T[] {
+  const shuffled = [...items];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+// --- Warm Up (Level 1) procedural question generator ---
+// Level 1 runs for a full 120 seconds, and a quick learner can burn through
+// the ~30 static counting/addition/subtraction questions well before time
+// is up. Instead of cycling that fixed pool (which reads as "repeated
+// questions"), the Warm Up level generates a fresh counting, addition, or
+// subtraction question on demand and tracks every signature it has already
+// used this session, so nothing repeats for the entire 120 seconds.
+const WARM_UP_EMOJIS: { emoji: string; label: string }[] = [
+  { emoji: '\u2B50', label: 'stars' },
+  { emoji: '\uD83C\uDF4E', label: 'apples' },
+  { emoji: '\uD83C\uDF38', label: 'flowers' },
+  { emoji: '\u2764\uFE0F', label: 'hearts' },
+  { emoji: '\uD83C\uDF88', label: 'balloons' },
+];
+
+// Half of a generous 30-question benchmark — used only to decide whether
+// the warm-up star burst plays, since Level 1 no longer has a fixed pool
+// size to measure "half the questions" against.
+const WARM_UP_STAR_BURST_TARGET = 30;
+
+function randomInt(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function buildNumberOptions(correct: number, min: number, max: number): string[] {
+  const options = new Set<number>([correct]);
+  let guard = 0;
+  while (options.size < 4 && guard < 100) {
+    const distractor = randomInt(Math.max(min, correct - 5), Math.min(max, correct + 5));
+    options.add(distractor);
+    guard++;
+  }
+  // Extremely rare fallback if the local range couldn't yield 4 unique values
+  while (options.size < 4) {
+    options.add(randomInt(min, max));
+  }
+  return shuffleArray(Array.from(options)).map((n) => String(n));
+}
+
+function generateWarmUpCountingQuestion(used: Set<string>): MathQuestion {
+  let pick = WARM_UP_EMOJIS[0];
+  let count = 1;
+  let signature = '';
+  let guard = 0;
+  do {
+    pick = WARM_UP_EMOJIS[randomInt(0, WARM_UP_EMOJIS.length - 1)];
+    count = randomInt(1, 10);
+    signature = `warmup-count-${pick.label}-${count}`;
+    guard++;
+  } while (used.has(signature) && guard < 60);
+  used.add(signature);
+  return {
+    id: signature,
+    question: `How many ${pick.label}?`,
+    image: pick.emoji.repeat(count),
+    options: buildNumberOptions(count, 1, 12),
+    correct: String(count),
+    hint: `Count each ${pick.label.slice(0, -1)} one at a time`,
+  };
+}
+
+function generateWarmUpAdditionQuestion(used: Set<string>): MathQuestion {
+  let a = 1;
+  let b = 1;
+  let signature = '';
+  let guard = 0;
+  do {
+    a = randomInt(1, 9);
+    b = randomInt(1, 9);
+    signature = `warmup-add-${a}-${b}`;
+    guard++;
+  } while (used.has(signature) && guard < 60);
+  used.add(signature);
+  const correct = a + b;
+  return {
+    id: signature,
+    question: `What is ${a} + ${b}?`,
+    options: buildNumberOptions(correct, 0, 20),
+    correct: String(correct),
+    hint: 'Count up from the bigger number',
+  };
+}
+
+function generateWarmUpSubtractionQuestion(used: Set<string>): MathQuestion {
+  let a = 2;
+  let b = 1;
+  let signature = '';
+  let guard = 0;
+  do {
+    a = randomInt(2, 18);
+    b = randomInt(1, a - 1);
+    signature = `warmup-sub-${a}-${b}`;
+    guard++;
+  } while (used.has(signature) && guard < 60);
+  used.add(signature);
+  const correct = a - b;
+  return {
+    id: signature,
+    question: `What is ${a} - ${b}?`,
+    options: buildNumberOptions(correct, 0, 18),
+    correct: String(correct),
+    hint: 'Count backwards from the first number',
+  };
+}
+
+function generateWarmUpQuestion(used: Set<string>): MathQuestion {
+  const type = randomInt(0, 2);
+  if (type === 0) return generateWarmUpCountingQuestion(used);
+  if (type === 1) return generateWarmUpAdditionQuestion(used);
+  return generateWarmUpSubtractionQuestion(used);
+}
 
 function unlockedLevelStorageKey(userId?: number) {
   return `bright-learners:math-sprint:unlocked-level:${userId ?? 'guest'}`;
@@ -90,22 +217,42 @@ export default function GameMathSprint() {
 
   const [timeLeft, setTimeLeft] = useState(0);
   const [score, setScore] = useState(0);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  // Freshly shuffled each time startGame() runs (not just once per page
-  // load), so replaying the same level without leaving the page still
-  // gets a different question order and answer layout each time.
-  const [shuffledQuestions, setShuffledQuestions] = useState<MathQuestion[]>([]);
+  const [currentQuestion, setCurrentQuestion] = useState<MathQuestion | null>(null);
+  const [showStarBurst, setShowStarBurst] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Holds the shuffled, not-yet-asked questions for the current sprint
+  // (Levels 2-3) so nothing repeats until every question has been used once.
+  const questionQueueRef = useRef<MathQuestion[]>([]);
+  // Level 1 (Warm Up) generates questions on demand instead of drawing from
+  // a fixed pool — this tracks every question signature already used this
+  // session so nothing repeats for the full 120 seconds.
+  const warmUpUsedRef = useRef<Set<string>>(new Set());
 
   const level = levels.find((l) => l.id === selectedLevelId)!;
-  const questionPool = shuffledQuestions.length > 0 ? shuffledQuestions : level.questions;
-  const currentQuestion = questionPool[currentQuestionIndex % questionPool.length];
 
   const { data: leaderboard } = useGetLeaderboard({ game: GAME_KEY, limit: 5 });
 
   useEffect(() => {
     setUnlockedLevelState(getUnlockedLevel(user?.id));
   }, [user?.id]);
+
+  const drawNextQuestion = () => {
+    if (level.id === 1) {
+      setCurrentQuestion(generateWarmUpQuestion(warmUpUsedRef.current));
+      return;
+    }
+    if (questionQueueRef.current.length === 0) {
+      let reshuffled = shuffleArray(level.questions);
+      // Avoid immediately repeating the question that just finished when a
+      // fresh pass through the pool begins.
+      if (currentQuestion && reshuffled.length > 1 && reshuffled[0].id === currentQuestion.id) {
+        [reshuffled[0], reshuffled[1]] = [reshuffled[1], reshuffled[0]];
+      }
+      questionQueueRef.current = reshuffled;
+    }
+    const next = questionQueueRef.current.shift()!;
+    setCurrentQuestion(next);
+  };
 
   useEffect(() => {
     if (screen === 'playing' && timeLeft > 0) {
@@ -127,22 +274,29 @@ export default function GameMathSprint() {
   };
 
   const startGame = () => {
+    if (level.id === 1) {
+      warmUpUsedRef.current = new Set();
+      setCurrentQuestion(generateWarmUpQuestion(warmUpUsedRef.current));
+    } else {
+      questionQueueRef.current = shuffleArray(level.questions);
+      setCurrentQuestion(questionQueueRef.current.shift()!);
+    }
     setScreen('playing');
     setTimeLeft(level.timeSeconds);
     setScore(0);
-    setCurrentQuestionIndex(0);
-    setShuffledQuestions(shuffleQuestionsAndOptions(level.questions));
+    setShowStarBurst(false);
     playSound('click');
   };
 
   const handleAnswer = (answer: string) => {
+    if (!currentQuestion) return;
     if (answer === currentQuestion.correct) {
       setScore((s) => s + 1);
       playSound('correct');
     } else {
       playSound('wrong');
     }
-    setCurrentQuestionIndex((i) => i + 1);
+    drawNextQuestion();
   };
 
   const endGame = () => {
@@ -153,6 +307,14 @@ export default function GameMathSprint() {
       const next = level.id + 1;
       setUnlockedLevel(user?.id, next);
       setUnlockedLevelState(next);
+    }
+
+    // Warm-up star burst: celebrate when the learner gets at least half of
+    // a generous 30-question benchmark correct by the time the 120s sprint
+    // ends (Level 1 generates questions on demand, so there's no fixed pool
+    // size to measure "half the questions" against).
+    if (level.id === 1 && score >= Math.ceil(WARM_UP_STAR_BURST_TARGET / 2)) {
+      setShowStarBurst(true);
     }
 
     if (user) {
@@ -288,6 +450,7 @@ export default function GameMathSprint() {
   if (screen === 'finished') {
     return (
       <div className="min-h-[100dvh] gradient-games flex items-center justify-center p-6">
+        <StarBurst trigger={showStarBurst} />
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -300,6 +463,13 @@ export default function GameMathSprint() {
             {score}
           </div>
           <p className="text-2xl text-muted-foreground font-bold mb-4">Correct Answers!</p>
+
+          {showStarBurst && (
+            <div className="flex items-center justify-center gap-2 text-orange-500 font-black text-lg mb-6">
+              <Star className="w-6 h-6 fill-orange-500" />
+              Amazing warm-up! You got half the questions or more!
+            </div>
+          )}
 
           {justUnlockedNext && (
             <div className="flex items-center justify-center gap-2 text-green-600 font-black text-lg mb-6">
@@ -348,6 +518,8 @@ export default function GameMathSprint() {
     );
   }
 
+  if (!currentQuestion) return null;
+
   return (
     <div className="min-h-[100dvh] gradient-games pb-12">
       <div className="max-w-4xl mx-auto px-6 py-8">
@@ -375,26 +547,26 @@ export default function GameMathSprint() {
 
         {/* Question */}
         <motion.div
-          key={currentQuestionIndex}
+          key={currentQuestion.id}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className="bg-white dark:bg-card rounded-3xl p-12 shadow-2xl border-4 border-white/50"
         >
-          <h2 className="text-6xl font-black text-foreground text-center mb-6">
+          <h2 className="text-4xl md:text-6xl font-black text-foreground text-center mb-6">
             {currentQuestion.question}
           </h2>
 
-          {/* The counting questions (mathLessons.counting - "how many
-              stars/dots/flowers?") carry the objects to count in
-              countItems (a wrapped grid) or, for pattern-completion
-              questions like "1 2 3 4 5 ?", in image (rendered as spaced
-              number tiles) - this game previously never rendered either,
-              only the question text showed, so there was nothing to
-              actually count. */}
-          {(currentQuestion.countItems || currentQuestion.image) && (
-            <div className="mb-6">
-              <CountableDisplay countItems={currentQuestion.countItems} image={currentQuestion.image} />
+          {currentQuestion.clockTime && (
+            <div className="mb-8 flex justify-center">
+              <AnalogClock
+                hour={currentQuestion.clockTime.hour}
+                minute={currentQuestion.clockTime.minute}
+                size={180}
+              />
             </div>
+          )}
+          {!currentQuestion.clockTime && currentQuestion.image && (
+            <div className="text-6xl text-center mb-8">{currentQuestion.image}</div>
           )}
 
           <div className="grid grid-cols-2 gap-6">

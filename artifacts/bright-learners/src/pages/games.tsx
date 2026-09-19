@@ -14,6 +14,10 @@ const games = [
   { id: 'letter-match', name: 'Letter Match', description: 'Match uppercase & lowercase', icon: '🔠', color: 'from-indigo-400 to-purple-500' },
   { id: 'sentence-builder', name: 'Sentence Builder', description: 'Build proper sentences', icon: '📝', color: 'from-purple-400 to-pink-500' },
   { id: 'number-puzzle', name: 'Number Puzzle', description: 'Solve math mysteries', icon: '🔢', color: 'from-pink-400 to-rose-500' },
+  { id: 'times-tables', name: 'Times Tables Rock Stars', description: 'Practice, sprint, and battle friends live!', icon: '🎸', color: 'from-fuchsia-600 to-indigo-700' },
+  { id: 'live-race', name: 'Live Challenge', description: 'Compete live with a room code!', icon: '🏆', color: 'from-fuchsia-500 to-purple-600' },
+  { id: 'live-memory', name: 'Live Memory', description: 'Match pairs live with up to 4 friends!', icon: '🧠', color: 'from-emerald-500 to-teal-600' },
+  { id: 'brain-games', name: 'Brain Games', description: 'Sharpen your memory with color & number challenges!', icon: '🎯', color: 'from-indigo-500 to-purple-600' },
 ];
 
 export default function Games() {
@@ -27,13 +31,13 @@ export default function Games() {
               Back to Home
             </Button>
           </Link>
-          <div className="flex items-center gap-4">
-            <div className="bg-white dark:bg-card rounded-3xl p-4 shadow-lg">
-              <Gamepad2 className="w-16 h-16 text-cyan-600" />
+          <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+            <div className="bg-white dark:bg-card rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-lg shrink-0">
+              <Gamepad2 className="w-10 h-10 sm:w-16 sm:h-16 text-cyan-600" />
             </div>
-            <div>
-              <h1 className="text-5xl font-black text-white drop-shadow-lg">Learning Games</h1>
-              <p className="text-xl font-bold text-white/95 drop-shadow">Fun Challenges Await!</p>
+            <div className="min-w-0">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white drop-shadow-lg truncate">Learning Games</h1>
+              <p className="text-sm sm:text-lg md:text-xl font-bold text-white/95 drop-shadow truncate">Fun Challenges Await!</p>
             </div>
           </div>
         </div>

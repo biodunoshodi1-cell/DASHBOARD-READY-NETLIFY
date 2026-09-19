@@ -21,7 +21,8 @@ export const HealthCheckResponse = zod.object({
  */
 export const GetMeResponse = zod.object({
   "id": zod.number(),
-  "email": zod.string(),
+  "username": zod.string().nullish(),
+  "email": zod.string().nullish(),
   "displayName": zod.string(),
   "role": zod.enum(['student', 'parent', 'teacher', 'admin']),
   "avatarUrl": zod.string().nullish(),
@@ -33,17 +34,18 @@ export const GetMeResponse = zod.object({
 
 
 /**
- * @summary Login with email and password
+ * @summary Login with username/email and password
  */
 export const LoginBody = zod.object({
-  "email": zod.string(),
+  "identifier": zod.string().describe('Username or email address'),
   "password": zod.string(),
   "role": zod.enum(['student', 'parent', 'teacher', 'admin']).optional()
 })
 
 export const LoginResponse = zod.object({
   "id": zod.number(),
-  "email": zod.string(),
+  "username": zod.string().nullish(),
+  "email": zod.string().nullish(),
   "displayName": zod.string(),
   "role": zod.enum(['student', 'parent', 'teacher', 'admin']),
   "avatarUrl": zod.string().nullish(),
@@ -58,7 +60,8 @@ export const LoginResponse = zod.object({
  * @summary Register a new user
  */
 export const RegisterBody = zod.object({
-  "email": zod.string(),
+  "username": zod.string().optional().describe('Required if email is omitted'),
+  "email": zod.string().optional().describe('Required if username is omitted'),
   "password": zod.string(),
   "displayName": zod.string(),
   "role": zod.enum(['student', 'parent', 'teacher', 'admin']),
@@ -68,31 +71,8 @@ export const RegisterBody = zod.object({
 
 export const RegisterResponse = zod.object({
   "id": zod.number(),
-  "email": zod.string(),
-  "displayName": zod.string(),
-  "role": zod.enum(['student', 'parent', 'teacher', 'admin']),
-  "avatarUrl": zod.string().nullish(),
-  "gradeLevel": zod.number().nullish(),
-  "age": zod.number().nullish(),
-  "parentId": zod.number().nullish(),
-  "createdAt": zod.string()
-})
-
-
-/**
- * @summary Exchange a Firebase Authentication ID token for an app session
- */
-export const FirebaseSessionBody = zod.object({
-  "idToken": zod.string().describe('The Firebase Authentication ID token from the frontend\'s signed-in user'),
-  "displayName": zod.string().optional(),
-  "role": zod.enum(['student', 'parent', 'teacher', 'admin']).optional(),
-  "gradeLevel": zod.number().optional(),
-  "age": zod.number().optional()
-})
-
-export const FirebaseSessionResponse = zod.object({
-  "id": zod.number(),
-  "email": zod.string(),
+  "username": zod.string().nullish(),
+  "email": zod.string().nullish(),
   "displayName": zod.string(),
   "role": zod.enum(['student', 'parent', 'teacher', 'admin']),
   "avatarUrl": zod.string().nullish(),
@@ -127,7 +107,8 @@ export const ListUsersQueryParams = zod.object({
 export const ListUsersResponse = zod.object({
   "users": zod.array(zod.object({
   "id": zod.number(),
-  "email": zod.string(),
+  "username": zod.string().nullish(),
+  "email": zod.string().nullish(),
   "displayName": zod.string(),
   "role": zod.enum(['student', 'parent', 'teacher', 'admin']),
   "avatarUrl": zod.string().nullish(),
@@ -151,7 +132,8 @@ export const GetUserParams = zod.object({
 
 export const GetUserResponse = zod.object({
   "id": zod.number(),
-  "email": zod.string(),
+  "username": zod.string().nullish(),
+  "email": zod.string().nullish(),
   "displayName": zod.string(),
   "role": zod.enum(['student', 'parent', 'teacher', 'admin']),
   "avatarUrl": zod.string().nullish(),
@@ -178,7 +160,8 @@ export const UpdateUserBody = zod.object({
 
 export const UpdateUserResponse = zod.object({
   "id": zod.number(),
-  "email": zod.string(),
+  "username": zod.string().nullish(),
+  "email": zod.string().nullish(),
   "displayName": zod.string(),
   "role": zod.enum(['student', 'parent', 'teacher', 'admin']),
   "avatarUrl": zod.string().nullish(),
@@ -231,13 +214,13 @@ export const ListCompletedLessonsParams = zod.object({
 })
 
 export const ListCompletedLessonsQueryParams = zod.object({
-  "subject": zod.enum(['math', 'english', 'phonics']).optional()
+  "subject": zod.enum(['math', 'english', 'phonics', 'science', 'geography', 'pshe']).optional()
 })
 
 export const ListCompletedLessonsResponseItem = zod.object({
   "id": zod.number(),
   "userId": zod.number(),
-  "subject": zod.enum(['math', 'english', 'phonics']),
+  "subject": zod.enum(['math', 'english', 'phonics', 'science', 'geography', 'pshe']),
   "lessonId": zod.string(),
   "lessonTitle": zod.string(),
   "score": zod.number(),
@@ -253,7 +236,7 @@ export const ListCompletedLessonsResponse = zod.array(ListCompletedLessonsRespon
  */
 export const RecordProgressBody = zod.object({
   "userId": zod.number(),
-  "subject": zod.enum(['math', 'english', 'phonics']),
+  "subject": zod.enum(['math', 'english', 'phonics', 'science', 'geography', 'pshe']),
   "lessonId": zod.string(),
   "lessonTitle": zod.string(),
   "score": zod.number(),
@@ -264,7 +247,7 @@ export const RecordProgressBody = zod.object({
 export const RecordProgressResponse = zod.object({
   "id": zod.number(),
   "userId": zod.number(),
-  "subject": zod.enum(['math', 'english', 'phonics']),
+  "subject": zod.enum(['math', 'english', 'phonics', 'science', 'geography', 'pshe']),
   "lessonId": zod.string(),
   "lessonTitle": zod.string(),
   "score": zod.number(),
@@ -282,7 +265,7 @@ export const ListAchievementsResponseItem = zod.object({
   "title": zod.string(),
   "description": zod.string(),
   "icon": zod.string(),
-  "category": zod.enum(['math', 'english', 'phonics', 'games', 'streaks', 'general']),
+  "category": zod.enum(['math', 'english', 'phonics', 'science', 'geography', 'pshe', 'games', 'streaks', 'general']),
   "xpReward": zod.number(),
   "coinsReward": zod.number()
 })
@@ -302,7 +285,7 @@ export const GetUserAchievementsResponseItem = zod.object({
   "title": zod.string(),
   "description": zod.string(),
   "icon": zod.string(),
-  "category": zod.enum(['math', 'english', 'phonics', 'games', 'streaks', 'general']),
+  "category": zod.enum(['math', 'english', 'phonics', 'science', 'geography', 'pshe', 'games', 'streaks', 'general']),
   "xpReward": zod.number(),
   "coinsReward": zod.number()
 }),
@@ -359,7 +342,7 @@ export const AwardRewardsResponse = zod.object({
 export const getLeaderboardQueryLimitDefault = 10;
 
 export const GetLeaderboardQueryParams = zod.object({
-  "game": zod.enum(['math-sprint', 'memory-match', 'word-builder', 'balloon-pop', 'treasure-hunt', 'shape-match', 'letter-match', 'sentence-builder', 'number-puzzle', 'picture-puzzle']),
+  "game": zod.enum(['math-sprint', 'memory-match', 'word-builder', 'balloon-pop', 'treasure-hunt', 'shape-match', 'letter-match', 'sentence-builder', 'number-puzzle', 'picture-puzzle', 'times-tables']),
   "limit": zod.coerce.number().default(getLeaderboardQueryLimitDefault)
 })
 
@@ -379,7 +362,7 @@ export const GetLeaderboardResponse = zod.array(GetLeaderboardResponseItem)
  */
 export const SubmitScoreBody = zod.object({
   "userId": zod.number(),
-  "game": zod.enum(['math-sprint', 'memory-match', 'word-builder', 'balloon-pop', 'treasure-hunt', 'shape-match', 'letter-match', 'sentence-builder', 'number-puzzle', 'picture-puzzle']),
+  "game": zod.enum(['math-sprint', 'memory-match', 'word-builder', 'balloon-pop', 'treasure-hunt', 'shape-match', 'letter-match', 'sentence-builder', 'number-puzzle', 'picture-puzzle', 'times-tables']),
   "score": zod.number(),
   "coinsEarned": zod.number(),
   "starsEarned": zod.number()
@@ -424,7 +407,7 @@ export const GetTodayChallengeResponse = zod.object({
   "date": zod.string(),
   "mathQuestions": zod.array(zod.object({
   "id": zod.string(),
-  "subject": zod.enum(['math', 'english', 'phonics']),
+  "subject": zod.enum(['math', 'english', 'phonics', 'science', 'geography', 'pshe']),
   "question": zod.string(),
   "options": zod.array(zod.string()),
   "correctAnswer": zod.string(),
@@ -432,7 +415,7 @@ export const GetTodayChallengeResponse = zod.object({
 })),
   "englishQuestions": zod.array(zod.object({
   "id": zod.string(),
-  "subject": zod.enum(['math', 'english', 'phonics']),
+  "subject": zod.enum(['math', 'english', 'phonics', 'science', 'geography', 'pshe']),
   "question": zod.string(),
   "options": zod.array(zod.string()),
   "correctAnswer": zod.string(),
@@ -440,7 +423,7 @@ export const GetTodayChallengeResponse = zod.object({
 })),
   "phonicsQuestions": zod.array(zod.object({
   "id": zod.string(),
-  "subject": zod.enum(['math', 'english', 'phonics']),
+  "subject": zod.enum(['math', 'english', 'phonics', 'science', 'geography', 'pshe']),
   "question": zod.string(),
   "options": zod.array(zod.string()),
   "correctAnswer": zod.string(),
@@ -497,7 +480,8 @@ export const GetStudentDashboardParams = zod.object({
 export const GetStudentDashboardResponse = zod.object({
   "user": zod.object({
   "id": zod.number(),
-  "email": zod.string(),
+  "username": zod.string().nullish(),
+  "email": zod.string().nullish(),
   "displayName": zod.string(),
   "role": zod.enum(['student', 'parent', 'teacher', 'admin']),
   "avatarUrl": zod.string().nullish(),
@@ -519,7 +503,7 @@ export const GetStudentDashboardResponse = zod.object({
   "recentProgress": zod.array(zod.object({
   "id": zod.number(),
   "userId": zod.number(),
-  "subject": zod.enum(['math', 'english', 'phonics']),
+  "subject": zod.enum(['math', 'english', 'phonics', 'science', 'geography', 'pshe']),
   "lessonId": zod.string(),
   "lessonTitle": zod.string(),
   "score": zod.number(),
@@ -528,7 +512,7 @@ export const GetStudentDashboardResponse = zod.object({
   "completedAt": zod.string()
 })),
   "subjectBreakdown": zod.array(zod.object({
-  "subject": zod.enum(['math', 'english', 'phonics']),
+  "subject": zod.enum(['math', 'english', 'phonics', 'science', 'geography', 'pshe']),
   "lessonsCompleted": zod.number(),
   "totalLessons": zod.number(),
   "accuracy": zod.number(),
@@ -540,7 +524,7 @@ export const GetStudentDashboardResponse = zod.object({
   "title": zod.string(),
   "description": zod.string(),
   "icon": zod.string(),
-  "category": zod.enum(['math', 'english', 'phonics', 'games', 'streaks', 'general']),
+  "category": zod.enum(['math', 'english', 'phonics', 'science', 'geography', 'pshe', 'games', 'streaks', 'general']),
   "xpReward": zod.number(),
   "coinsReward": zod.number()
 }),
@@ -562,7 +546,8 @@ export const GetParentDashboardResponse = zod.object({
   "children": zod.array(zod.object({
   "user": zod.object({
   "id": zod.number(),
-  "email": zod.string(),
+  "username": zod.string().nullish(),
+  "email": zod.string().nullish(),
   "displayName": zod.string(),
   "role": zod.enum(['student', 'parent', 'teacher', 'admin']),
   "avatarUrl": zod.string().nullish(),
@@ -586,7 +571,7 @@ export const GetParentDashboardResponse = zod.object({
   "recentLessons": zod.array(zod.object({
   "id": zod.number(),
   "userId": zod.number(),
-  "subject": zod.enum(['math', 'english', 'phonics']),
+  "subject": zod.enum(['math', 'english', 'phonics', 'science', 'geography', 'pshe']),
   "lessonId": zod.string(),
   "lessonTitle": zod.string(),
   "score": zod.number(),
@@ -595,7 +580,7 @@ export const GetParentDashboardResponse = zod.object({
   "completedAt": zod.string()
 })),
   "subjectBreakdown": zod.array(zod.object({
-  "subject": zod.enum(['math', 'english', 'phonics']),
+  "subject": zod.enum(['math', 'english', 'phonics', 'science', 'geography', 'pshe']),
   "lessonsCompleted": zod.number(),
   "totalLessons": zod.number(),
   "accuracy": zod.number(),
@@ -625,7 +610,8 @@ export const GetTeacherDashboardResponse = zod.object({
   "topPerformers": zod.array(zod.object({
   "user": zod.object({
   "id": zod.number(),
-  "email": zod.string(),
+  "username": zod.string().nullish(),
+  "email": zod.string().nullish(),
   "displayName": zod.string(),
   "role": zod.enum(['student', 'parent', 'teacher', 'admin']),
   "avatarUrl": zod.string().nullish(),
@@ -641,7 +627,8 @@ export const GetTeacherDashboardResponse = zod.object({
   "studentsNeedingHelp": zod.array(zod.object({
   "user": zod.object({
   "id": zod.number(),
-  "email": zod.string(),
+  "username": zod.string().nullish(),
+  "email": zod.string().nullish(),
   "displayName": zod.string(),
   "role": zod.enum(['student', 'parent', 'teacher', 'admin']),
   "avatarUrl": zod.string().nullish(),
@@ -705,7 +692,7 @@ export const GetSubjectProgressParams = zod.object({
 })
 
 export const GetSubjectProgressResponseItem = zod.object({
-  "subject": zod.enum(['math', 'english', 'phonics']),
+  "subject": zod.enum(['math', 'english', 'phonics', 'science', 'geography', 'pshe']),
   "lessonsCompleted": zod.number(),
   "totalLessons": zod.number(),
   "accuracy": zod.number(),

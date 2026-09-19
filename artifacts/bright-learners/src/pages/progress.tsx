@@ -6,6 +6,10 @@ import {
   useGetWeeklyProgress,
   useGetSubjectProgress,
   useListCompletedLessons,
+  getGetUserProgressQueryKey,
+  getGetWeeklyProgressQueryKey,
+  getGetSubjectProgressQueryKey,
+  getListCompletedLessonsQueryKey,
 } from '@workspace/api-client-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -15,16 +19,16 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 export default function ProgressPage() {
   const { user } = useAuth();
   const { data: progress } = useGetUserProgress(user?.id || 0, {
-    query: { enabled: !!user?.id },
+    query: { queryKey: getGetUserProgressQueryKey(user?.id || 0), enabled: !!user?.id },
   });
   const { data: weeklyProgress } = useGetWeeklyProgress(user?.id || 0, {
-    query: { enabled: !!user?.id },
+    query: { queryKey: getGetWeeklyProgressQueryKey(user?.id || 0), enabled: !!user?.id },
   });
   const { data: subjectProgress } = useGetSubjectProgress(user?.id || 0, {
-    query: { enabled: !!user?.id },
+    query: { queryKey: getGetSubjectProgressQueryKey(user?.id || 0), enabled: !!user?.id },
   });
   const { data: completedLessons } = useListCompletedLessons(user?.id || 0, undefined, {
-    query: { enabled: !!user?.id },
+    query: { queryKey: getListCompletedLessonsQueryKey(user?.id || 0, undefined), enabled: !!user?.id },
   });
 
   return (
