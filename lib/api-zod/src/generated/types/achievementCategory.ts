@@ -16,6 +16,7 @@ export const AchievementCategory = {
   science: 'science',
   geography: 'geography',
   pshe: 'pshe',
+  typing: 'typing',
   games: 'games',
   streaks: 'streaks',
   general: 'general',

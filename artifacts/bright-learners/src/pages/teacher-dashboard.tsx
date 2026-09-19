@@ -1,9 +1,10 @@
 import { motion } from 'framer-motion';
 import { Link } from 'wouter';
 import { useAuth } from '@/contexts/AuthContext';
-import { useGetTeacherDashboard, getGetTeacherDashboardQueryKey } from '@workspace/api-client-react';
+import { useGetTeacherDashboard, getGetTeacherDashboardQueryKey, useListUsers, getListUsersQueryKey } from '@workspace/api-client-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { AssignTypingModuleCard } from '@/components/AssignTypingModuleCard';
 import { ArrowLeft, GraduationCap, TrendingUp, AlertCircle } from 'lucide-react';
 
 export default function TeacherDashboard() {
@@ -11,6 +12,11 @@ export default function TeacherDashboard() {
   const { data: dashboard, isLoading } = useGetTeacherDashboard(user?.id || 0, {
     query: { queryKey: getGetTeacherDashboardQueryKey(user?.id || 0), enabled: !!user?.id },
   });
+  const { data: studentList } = useListUsers(
+    { role: 'student', limit: 100 },
+    { query: { queryKey: getListUsersQueryKey({ role: 'student', limit: 100 }), enabled: !!user?.id } },
+  );
+  const students = (studentList?.users ?? []).map((s) => ({ id: s.id, displayName: s.displayName }));
 
   return (
     <div className="min-h-[100dvh] bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pb-12">
@@ -82,8 +88,7 @@ export default function TeacherDashboard() {
             )}
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Top Performers */}
-              <motion.div
+              {/* Top Performers */}              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
@@ -138,6 +143,8 @@ export default function TeacherDashboard() {
                 )}
               </motion.div>
             </div>
+
+            <AssignTypingModuleCard students={students} />
           </>
         )}
       </div>

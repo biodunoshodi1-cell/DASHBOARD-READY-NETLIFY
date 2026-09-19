@@ -7,46 +7,60 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Brighty } from '@/components/Brighty';
 import { GraduationCap, Users, BookOpen, Shield, MessageCircle } from 'lucide-react';
-import type { RegisterInputRole } from '@workspace/api-client-react';
+import type { FirebaseSessionInputRole } from '@workspace/api-client-react';
 
 const roleCards = [
-  { role: 'student' as RegisterInputRole, icon: GraduationCap, label: 'Student', gradient: 'gradient-math' },
-  { role: 'parent' as RegisterInputRole, icon: Users, label: 'Parent', gradient: 'gradient-english' },
-  { role: 'teacher' as RegisterInputRole, icon: BookOpen, label: 'Teacher', gradient: 'gradient-phonics' },
-  { role: 'admin' as RegisterInputRole, icon: Shield, label: 'Admin', gradient: 'gradient-games' },
+  { role: 'student' as FirebaseSessionInputRole, icon: GraduationCap, label: 'Student', gradient: 'gradient-math' },
+  { role: 'parent' as FirebaseSessionInputRole, icon: Users, label: 'Parent', gradient: 'gradient-english' },
+  { role: 'teacher' as FirebaseSessionInputRole, icon: BookOpen, label: 'Teacher', gradient: 'gradient-phonics' },
+  { role: 'admin' as FirebaseSessionInputRole, icon: Shield, label: 'Admin', gradient: 'gradient-games' },
 ];
 
 // WhatsApp number used by the footer button below (digits only, country
 // code first, no + or spaces) — https://wa.me/<number>.
 const WHATSAPP_NUMBER = '971544078461';
 
-type Mode = 'login' | 'register';
+type Mode = 'login' | 'register' | 'reset';
 
 export default function Login() {
   const [, setLocation] = useLocation();
-  const { login, register, continueAsGuest } = useAuth();
+  const { login, register, loginWithGoogle, resetPassword, firebaseEnabled, continueAsGuest } = useAuth();
   const [mode, setMode] = useState<Mode>('login');
-  const [selectedRole, setSelectedRole] = useState<RegisterInputRole>('student');
+  const [selectedRole, setSelectedRole] = useState<FirebaseSessionInputRole>('student');
   const [displayName, setDisplayName] = useState('');
-  const [identifier, setIdentifier] = useState(''); // login: username or email
-  const [username, setUsername] = useState(''); // register: username
-  const [email, setEmail] = useState(''); // register: optional email
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [resetSent, setResetSent] = useState(false);
 
   const friendlyError = (err: unknown): string => {
-    const message = (err as { message?: string })?.message ?? '';
-    // ApiError messages look like "HTTP 401 Unauthorized: Invalid username...".
-    // Strip the HTTP prefix so the person just sees the actual reason.
-    const afterColon = message.includes(': ') ? message.split(': ').slice(1).join(': ') : message;
-    if (afterColon) return afterColon;
-    return mode === 'login' ? 'Login failed. Please check your username/email and password.' : 'Could not create account.';
+    const code = (err as { code?: string })?.code ?? '';
+    if (code === 'auth/user-not-found' || code === 'auth/wrong-password' || code === 'auth/invalid-credential') {
+      return 'Incorrect email or password.';
+    }
+    if (code === 'auth/email-already-in-use') {
+      return 'An account already exists with that email — try logging in instead.';
+    }
+    if (code === 'auth/weak-password') {
+      return 'Password should be at least 6 characters.';
+    }
+    if (code === 'auth/too-many-requests') {
+      return 'Too many attempts. Please wait a moment and try again.';
+    }
+    if (!firebaseEnabled) {
+      return 'Sign-in is not set up yet for this deployment. See NETLIFY_DEPLOYMENT.md for Firebase setup.';
+    }
+    if (mode === 'reset') {
+      return 'Could not send reset email. Double-check the address and try again.';
+    }
+    return mode === 'login' ? 'Login failed. Please check your credentials.' : 'Could not create account.';
   };
 
   const switchMode = (next: Mode) => {
     setMode(next);
     setError('');
+    setResetSent(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -56,21 +70,15 @@ export default function Login() {
 
     try {
       if (mode === 'login') {
-        await login(identifier, password);
+        await login(email, password);
+        setLocation('/home');
+      } else if (mode === 'register') {
+        await register(email, password, displayName, selectedRole);
+        setLocation('/home');
       } else {
-        if (!username.trim() && !email.trim()) {
-          setError('Enter a username or an email address.');
-          setIsLoading(false);
-          return;
-        }
-        await register(
-          { username: username.trim() || undefined, email: email.trim() || undefined },
-          password,
-          displayName,
-          selectedRole,
-        );
+        await resetPassword(email);
+        setResetSent(true);
       }
-      setLocation('/home');
     } catch (err) {
       setError(friendlyError(err));
     } finally {
@@ -81,6 +89,19 @@ export default function Login() {
   const handleContinueAsGuest = () => {
     continueAsGuest();
     setLocation('/home');
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError('');
+    setIsLoading(true);
+    try {
+      await loginWithGoogle();
+      setLocation('/home');
+    } catch (err) {
+      setError(friendlyError(err));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -133,10 +154,14 @@ export default function Login() {
           </div>
 
           <h1 className="text-3xl font-black text-center mb-2 text-foreground">
-            {mode === 'login' ? 'Welcome Back!' : 'Create an Account'}
+            {mode === 'login' && 'Welcome Back!'}
+            {mode === 'register' && 'Create an Account'}
+            {mode === 'reset' && 'Reset your password'}
           </h1>
           <p className="text-center text-muted-foreground mb-8 font-semibold">
-            {mode === 'login' ? 'Sign in to continue' : 'Choose your role to get started'}
+            {mode === 'login' && 'Sign in to continue'}
+            {mode === 'register' && 'Choose your role to get started'}
+            {mode === 'reset' && "We'll email you a link to get back in"}
           </p>
 
           {mode === 'register' && (
@@ -161,118 +186,157 @@ export default function Login() {
           )}
 
           <AnimatePresence mode="wait">
-            <motion.form
-              key={mode}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              onSubmit={handleSubmit}
-              className="space-y-4"
-            >
-              {mode === 'register' && (
-                <div>
-                  <Label htmlFor="displayName" className="text-foreground font-bold">Name</Label>
-                  <Input
-                    id="displayName"
-                    type="text"
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    placeholder="Your name"
-                    required
-                    className="mt-1.5 rounded-xl"
-                    data-testid="input-display-name"
-                  />
-                </div>
-              )}
-
-              {mode === 'login' ? (
-                <div>
-                  <Label htmlFor="identifier" className="text-foreground font-bold">Username or Email</Label>
-                  <Input
-                    id="identifier"
-                    type="text"
-                    value={identifier}
-                    onChange={(e) => setIdentifier(e.target.value)}
-                    placeholder="your username or email"
-                    required
-                    autoComplete="username"
-                    className="mt-1.5 rounded-xl"
-                    data-testid="input-identifier"
-                  />
-                </div>
-              ) : (
-                <>
-                  <div>
-                    <Label htmlFor="username" className="text-foreground font-bold">Username</Label>
-                    <Input
-                      id="username"
-                      type="text"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      placeholder="Pick a username"
-                      autoComplete="username"
-                      className="mt-1.5 rounded-xl"
-                      data-testid="input-username"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="email" className="text-foreground font-bold">
-                      Email <span className="font-normal text-muted-foreground">(optional)</span>
-                    </Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="your@email.com"
-                      className="mt-1.5 rounded-xl"
-                      data-testid="input-email"
-                    />
-                  </div>
-                </>
-              )}
-
-              <div>
-                <Label htmlFor="password" className="text-foreground font-bold">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  minLength={6}
-                  autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-                  className="mt-1.5 rounded-xl"
-                  data-testid="input-password"
-                />
-              </div>
-
-              {error && (
-                <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl p-3 text-sm font-semibold">
-                  {error}
-                </div>
-              )}
-
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-black text-lg rounded-xl h-12"
-                data-testid="button-submit"
+            {mode === 'reset' && resetSent ? (
+              <motion.div
+                key="reset-sent"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="space-y-4"
               >
-                {isLoading ? 'One moment...' : mode === 'login' ? "Let's Learn!" : 'Create Account'}
-              </Button>
-            </motion.form>
+                <div className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-xl p-4 text-sm font-semibold text-center">
+                  Check your inbox! We sent a password reset link to {email}.
+                </div>
+                <Button
+                  type="button"
+                  onClick={() => switchMode('login')}
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-black text-lg rounded-xl h-12"
+                  data-testid="button-back-to-login"
+                >
+                  Back to Sign In
+                </Button>
+              </motion.div>
+            ) : (
+              <motion.form
+                key={mode}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                onSubmit={handleSubmit}
+                className="space-y-4"
+              >
+                {mode === 'register' && (
+                  <div>
+                    <Label htmlFor="displayName" className="text-foreground font-bold">Name</Label>
+                    <Input
+                      id="displayName"
+                      type="text"
+                      value={displayName}
+                      onChange={(e) => setDisplayName(e.target.value)}
+                      placeholder="Your name"
+                      required
+                      className="mt-1.5 rounded-xl"
+                      data-testid="input-display-name"
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <Label htmlFor="email" className="text-foreground font-bold">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="your@email.com"
+                    required
+                    className="mt-1.5 rounded-xl"
+                    data-testid="input-email"
+                  />
+                </div>
+
+                {mode !== 'reset' && (
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="password" className="text-foreground font-bold">Password</Label>
+                      {mode === 'login' && (
+                        <button
+                          type="button"
+                          onClick={() => switchMode('reset')}
+                          className="text-sm font-bold text-purple-600 hover:text-purple-700 dark:text-purple-400"
+                          data-testid="button-forgot-password"
+                        >
+                          Forgot password?
+                        </button>
+                      )}
+                    </div>
+                    <Input
+                      id="password"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      required
+                      minLength={6}
+                      className="mt-1.5 rounded-xl"
+                      data-testid="input-password"
+                    />
+                  </div>
+                )}
+
+                {error && (
+                  <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl p-3 text-sm font-semibold">
+                    {error}
+                  </div>
+                )}
+
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-black text-lg rounded-xl h-12"
+                  data-testid="button-submit"
+                >
+                  {isLoading
+                    ? 'One moment...'
+                    : mode === 'login'
+                    ? "Let's Learn!"
+                    : mode === 'register'
+                    ? 'Create Account'
+                    : 'Send Reset Link'}
+                </Button>
+
+                {mode !== 'reset' && (
+                  <>
+                    <div className="flex items-center gap-3 py-1">
+                      <div className="flex-1 h-px bg-border" />
+                      <span className="text-xs font-bold text-muted-foreground">OR</span>
+                      <div className="flex-1 h-px bg-border" />
+                    </div>
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      disabled={isLoading}
+                      onClick={handleGoogleSignIn}
+                      className="w-full font-bold rounded-xl h-12"
+                      data-testid="button-google-signin"
+                    >
+                      Continue with Google
+                    </Button>
+                  </>
+                )}
+              </motion.form>
+            )}
           </AnimatePresence>
 
           <div className="text-center mt-6 space-y-2">
-            <button
-              type="button"
-              onClick={() => switchMode(mode === 'login' ? 'register' : 'login')}
-              className="text-sm text-muted-foreground font-medium hover:text-foreground"
-              data-testid="button-toggle-mode"
-            >
-              {mode === 'login' ? 'New here? Create an account' : 'Already have an account? Sign in'}
-            </button>
+            {mode === 'reset' ? (
+              <button
+                type="button"
+                onClick={() => switchMode('login')}
+                className="text-sm text-muted-foreground font-medium hover:text-foreground"
+                data-testid="button-back-to-login-link"
+              >
+                Back to Sign In
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => switchMode(mode === 'login' ? 'register' : 'login')}
+                className="text-sm text-muted-foreground font-medium hover:text-foreground"
+                data-testid="button-toggle-mode"
+              >
+                {mode === 'login' ? 'New here? Create an account' : 'Already have an account? Sign in'}
+              </button>
+            )}
           </div>
 
           <div className="mt-6 flex items-center gap-3">

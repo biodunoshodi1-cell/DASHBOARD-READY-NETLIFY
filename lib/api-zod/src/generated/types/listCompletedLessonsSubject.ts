@@ -16,4 +16,5 @@ export const ListCompletedLessonsSubject = {
   science: 'science',
   geography: 'geography',
   pshe: 'pshe',
+  typing: 'typing',
 } as const;

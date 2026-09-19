@@ -32,7 +32,7 @@ router.get("/users", requireRole("teacher", "admin"), async (req, res): Promise<
     .limit(limit)
     .offset(offset);
   const countRows = await db.select().from(usersTable).where(filters.length > 0 ? and(...filters) : undefined);
-  const safe = rows.map(({ passwordHash: _, ...u }) => u);
+  const safe = rows.map(({ passwordHash: _, firebaseUid: __, ...u }) => u);
   res.json(ListUsersResponse.parse({ users: safe, total: countRows.length, page, limit }));
 });
 
@@ -42,7 +42,7 @@ router.get("/users/:userId", requireSelfOrRole("userId", ["parent", "teacher", "
   if (isNaN(userId)) { res.status(400).json({ error: "Invalid userId" }); return; }
   const [user] = await db.select().from(usersTable).where(eq(usersTable.id, userId));
   if (!user) { res.status(404).json({ error: "User not found" }); return; }
-  const { passwordHash: _, ...safe } = user;
+  const { passwordHash: _, firebaseUid: __, ...safe } = user;
   res.json(GetUserResponse.parse(safe));
 });
 
@@ -54,7 +54,7 @@ router.patch("/users/:userId", requireSelfOrRole("userId", ["admin"]), async (re
   if (!parsed.success) { res.status(400).json({ error: parsed.error.message }); return; }
   const [updated] = await db.update(usersTable).set(parsed.data).where(eq(usersTable.id, userId)).returning();
   if (!updated) { res.status(404).json({ error: "User not found" }); return; }
-  const { passwordHash: _, ...safe } = updated;
+  const { passwordHash: _, firebaseUid: __, ...safe } = updated;
   res.json(UpdateUserResponse.parse(safe));
 });
 

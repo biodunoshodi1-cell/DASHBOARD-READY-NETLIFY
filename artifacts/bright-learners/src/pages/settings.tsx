@@ -141,7 +141,7 @@ export default function Settings() {
           </div>
 
           {/* High Contrast */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between pb-6 border-b-2 border-border">
             <div>
               <Label htmlFor="high-contrast" className="text-lg font-black text-foreground">High Contrast Mode</Label>
               <p className="text-sm text-muted-foreground font-semibold">Stronger colors for better visibility</p>
@@ -151,6 +151,20 @@ export default function Settings() {
               checked={settings.highContrast}
               onCheckedChange={(checked) => settings.updateSettings({ highContrast: checked })}
               data-testid="switch-high-contrast"
+            />
+          </div>
+
+          {/* Typing Finger Guide */}
+          <div className="flex items-center justify-between">
+            <div>
+              <Label htmlFor="finger-guide" className="text-lg font-black text-foreground">Typing Finger Guide</Label>
+              <p className="text-sm text-muted-foreground font-semibold">Show the color-coded keyboard and finger hints in Typing lessons</p>
+            </div>
+            <Switch
+              id="finger-guide"
+              checked={settings.showFingerGuide}
+              onCheckedChange={(checked) => settings.updateSettings({ showFingerGuide: checked })}
+              data-testid="switch-finger-guide"
             />
           </div>
         </motion.div>

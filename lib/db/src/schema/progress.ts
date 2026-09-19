@@ -20,7 +20,7 @@ export const userProgressTable = pgTable("user_progress", {
 export const lessonProgressTable = pgTable("lesson_progress", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
-  subject: text("subject", { enum: ["math", "english", "phonics", "science", "geography", "pshe"] }).notNull(),
+  subject: text("subject", { enum: ["math", "english", "phonics", "science", "geography", "pshe", "typing"] }).notNull(),
   lessonId: text("lesson_id").notNull(),
   lessonTitle: text("lesson_title").notNull(),
   score: integer("score").notNull().default(0),

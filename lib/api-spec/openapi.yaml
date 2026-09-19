@@ -28,6 +28,8 @@ tags:
     description: Dashboard summaries
   - name: lessons
     description: Lessons and content
+  - name: typing
+    description: Typing curriculum module assignments
 paths:
   /healthz:
     get:
@@ -62,7 +64,7 @@ paths:
     post:
       operationId: login
       tags: [auth]
-      summary: Login with username/email and password
+      summary: Login with email and password
       requestBody:
         required: true
         content:
@@ -97,6 +99,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
+
+  /auth/firebase-session:
+    post:
+      operationId: firebaseSession
+      tags: [auth]
+      summary: Exchange a Firebase Authentication ID token for an app session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FirebaseSessionInput"
+      responses:
+        "200":
+          description: Session established (existing user matched by Firebase uid or email)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "201":
+          description: Session established (new user created from Firebase account)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Invalid or expired Firebase ID token
 
   /auth/logout:
     post:
@@ -237,7 +266,7 @@ paths:
           in: query
           schema:
             type: string
-            enum: [math, english, phonics, science, geography, pshe]
+            enum: [math, english, phonics, science, geography, pshe, typing]
       responses:
         "200":
           description: Lesson progress list
@@ -355,7 +384,7 @@ paths:
           required: true
           schema:
             type: string
-            enum: [math-sprint, memory-match, word-builder, balloon-pop, treasure-hunt, shape-match, letter-match, sentence-builder, number-puzzle, picture-puzzle, times-tables]
+            enum: [math-sprint, memory-match, word-builder, balloon-pop, treasure-hunt, shape-match, letter-match, sentence-builder, number-puzzle, picture-puzzle]
         - name: limit
           in: query
           schema:
@@ -577,6 +606,66 @@ paths:
                 items:
                   $ref: "#/components/schemas/SubjectProgress"
 
+  # TYPING
+  /typing/assign:
+    post:
+      operationId: assignTypingModule
+      tags: [typing]
+      summary: Assign a typing curriculum module to a student (parent/teacher)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TypingAssignmentInput"
+      responses:
+        "201":
+          description: Assignment created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TypingAssignment"
+
+  /typing/assignments/{studentId}:
+    get:
+      operationId: listTypingAssignments
+      tags: [typing]
+      summary: List a student's assigned typing modules, with completion status
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Assignment list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TypingAssignment"
+
+  /typing/assignments/{id}:
+    delete:
+      operationId: deleteTypingAssignment
+      tags: [typing]
+      summary: Remove a typing module assignment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -602,10 +691,8 @@ components:
       properties:
         id:
           type: number
-        username:
-          type: ["string", "null"]
         email:
-          type: ["string", "null"]
+          type: string
         displayName:
           type: string
         role:
@@ -623,6 +710,7 @@ components:
           type: string
       required:
         - id
+        - email
         - displayName
         - role
         - createdAt
@@ -649,27 +737,22 @@ components:
     LoginInput:
       type: object
       properties:
-        identifier:
+        email:
           type: string
-          description: Username or email address
         password:
           type: string
         role:
           type: string
           enum: [student, parent, teacher, admin]
       required:
-        - identifier
+        - email
         - password
 
     RegisterInput:
       type: object
       properties:
-        username:
-          type: string
-          description: Required if email is omitted
         email:
           type: string
-          description: Required if username is omitted
         password:
           type: string
         displayName:
@@ -682,9 +765,30 @@ components:
         age:
           type: number
       required:
+        - email
         - password
         - displayName
         - role
+
+    FirebaseSessionInput:
+      type: object
+      properties:
+        idToken:
+          type: string
+          description: The Firebase Authentication ID token from the frontend's signed-in user
+        # Only used the first time a brand-new Firebase account signs in (no
+        # matching user by firebaseUid or email yet). Ignored for existing users.
+        displayName:
+          type: string
+        role:
+          type: string
+          enum: [student, parent, teacher, admin]
+        gradeLevel:
+          type: number
+        age:
+          type: number
+      required:
+        - idToken
 
     UserUpdate:
       type: object
@@ -742,7 +846,7 @@ components:
           type: number
         subject:
           type: string
-          enum: [math, english, phonics, science, geography, pshe]
+          enum: [math, english, phonics, science, geography, pshe, typing]
         lessonId:
           type: string
         lessonTitle:
@@ -773,7 +877,7 @@ components:
           type: number
         subject:
           type: string
-          enum: [math, english, phonics, science, geography, pshe]
+          enum: [math, english, phonics, science, geography, pshe, typing]
         lessonId:
           type: string
         lessonTitle:
@@ -815,7 +919,7 @@ components:
       properties:
         subject:
           type: string
-          enum: [math, english, phonics, science, geography, pshe]
+          enum: [math, english, phonics, science, geography, pshe, typing]
         lessonsCompleted:
           type: number
         totalLessons:
@@ -831,6 +935,51 @@ components:
         - accuracy
         - timeMinutes
 
+    TypingAssignment:
+      type: object
+      properties:
+        id:
+          type: number
+        studentId:
+          type: number
+        assignedBy:
+          type: number
+        levelId:
+          type: string
+        moduleId:
+          type: string
+        note:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+        completed:
+          type: boolean
+      required:
+        - id
+        - studentId
+        - assignedBy
+        - levelId
+        - moduleId
+        - createdAt
+        - completed
+
+    TypingAssignmentInput:
+      type: object
+      properties:
+        studentId:
+          type: number
+        levelId:
+          type: string
+        moduleId:
+          type: string
+        note:
+          type: string
+      required:
+        - studentId
+        - levelId
+        - moduleId
+
     Achievement:
       type: object
       properties:
@@ -844,7 +993,7 @@ components:
           type: string
         category:
           type: string
-          enum: [math, english, phonics, science, geography, pshe, games, streaks, general]
+          enum: [math, english, phonics, science, geography, pshe, typing, games, streaks, general]
         xpReward:
           type: number
         coinsReward:
@@ -974,7 +1123,7 @@ components:
           type: number
         game:
           type: string
-          enum: [math-sprint, memory-match, word-builder, balloon-pop, treasure-hunt, shape-match, letter-match, sentence-builder, number-puzzle, picture-puzzle, times-tables]
+          enum: [math-sprint, memory-match, word-builder, balloon-pop, treasure-hunt, shape-match, letter-match, sentence-builder, number-puzzle, picture-puzzle]
         score:
           type: number
         coinsEarned:
@@ -1018,7 +1167,7 @@ components:
           type: string
         subject:
           type: string
-          enum: [math, english, phonics, science, geography, pshe]
+          enum: [math, english, phonics, science, geography, pshe, typing]
         question:
           type: string
         options:

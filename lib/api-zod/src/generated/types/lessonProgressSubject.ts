@@ -16,4 +16,5 @@ export const LessonProgressSubject = {
   science: 'science',
   geography: 'geography',
   pshe: 'pshe',
+  typing: 'typing',
 } as const;

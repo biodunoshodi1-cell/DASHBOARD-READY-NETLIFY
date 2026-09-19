@@ -14,7 +14,6 @@ const games = [
   { id: 'letter-match', name: 'Letter Match', description: 'Match uppercase & lowercase', icon: '🔠', color: 'from-indigo-400 to-purple-500' },
   { id: 'sentence-builder', name: 'Sentence Builder', description: 'Build proper sentences', icon: '📝', color: 'from-purple-400 to-pink-500' },
   { id: 'number-puzzle', name: 'Number Puzzle', description: 'Solve math mysteries', icon: '🔢', color: 'from-pink-400 to-rose-500' },
-  { id: 'times-tables', name: 'Times Tables Rock Stars', description: 'Practice, sprint, and battle friends live!', icon: '🎸', color: 'from-fuchsia-600 to-indigo-700' },
   { id: 'live-race', name: 'Live Challenge', description: 'Compete live with a room code!', icon: '🏆', color: 'from-fuchsia-500 to-purple-600' },
   { id: 'live-memory', name: 'Live Memory', description: 'Match pairs live with up to 4 friends!', icon: '🧠', color: 'from-emerald-500 to-teal-600' },
   { id: 'brain-games', name: 'Brain Games', description: 'Sharpen your memory with color & number challenges!', icon: '🎯', color: 'from-indigo-500 to-purple-600' },

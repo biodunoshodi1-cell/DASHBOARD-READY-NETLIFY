@@ -20,7 +20,6 @@ const ACCOUNT_ONLY_PREFIXES = [
   '/admin-dashboard',
   '/games/live-race',
   '/games/live-memory',
-  '/games/times-tables',
 ];
 
 export function RouteGuard({ children }: RouteGuardProps) {

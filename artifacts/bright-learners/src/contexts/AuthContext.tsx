@@ -1,6 +1,14 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useLogin, useRegister, useLogout, useGetMe, getGetMeQueryKey } from '@workspace/api-client-react';
-import type { User, RegisterInputRole } from '@workspace/api-client-react';
+import { useLogout, useGetMe, useFirebaseSession, getGetMeQueryKey } from '@workspace/api-client-react';
+import type { User, FirebaseSessionInputRole } from '@workspace/api-client-react';
+import {
+  isFirebaseConfigured,
+  signInWithGoogle as firebaseSignInWithGoogle,
+  signInWithEmail as firebaseSignInWithEmail,
+  registerWithEmail as firebaseRegisterWithEmail,
+  resetPassword as firebaseResetPassword,
+  signOutOfFirebase,
+} from '@/lib/firebase';
 
 interface AuthContextValue {
   user: User | null;
@@ -13,25 +21,26 @@ interface AuthContextValue {
    * a real account (dashboards, Live Race, Live Memory) isn't available in
    * this mode, since those genuinely need a working backend session. */
   isGuest: boolean;
-  /** Sign in with a username (or email) + password against this app's own
-   * backend — no third-party authenticator involved. */
-  login: (identifier: string, password: string) => Promise<void>;
-  /** Create a new account with a username and/or email + password. */
+  /** Firebase configured on this deployment? If false, only legacy password login/register are available. */
+  firebaseEnabled: boolean;
+  /** Sign in with email/password via Firebase, then establish an app session. */
+  login: (email: string, password: string) => Promise<void>;
+  /** Create a new Firebase account, then establish an app session with the given profile details. */
   register: (
-    identifier: { username?: string; email?: string },
+    email: string,
     password: string,
     displayName: string,
-    role: RegisterInputRole,
+    role: FirebaseSessionInputRole,
     gradeLevel?: number,
     age?: number,
   ) => Promise<void>;
+  /** Sign in with Google via Firebase, then establish an app session (auto-creates a student account on first sign-in). */
+  loginWithGoogle: () => Promise<void>;
+  /** Send a password reset email via Firebase. */
+  resetPassword: (email: string) => Promise<void>;
   /** Skip sign-in entirely and browse as a guest — no backend/database call is made. */
   continueAsGuest: () => void;
   logout: () => Promise<void>;
-  /** Merge partial fields into the current user and persist them locally —
-   * used after a mutation (e.g. changing avatarUrl) that already updated
-   * the server so the UI reflects it immediately without a full refetch. */
-  updateLocalUser: (fields: Partial<User>) => void;
 }
 
 const GUEST_STORAGE_KEY = 'bright-learners-guest';
@@ -46,8 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isGuest, setIsGuest] = useState<boolean>(() => localStorage.getItem(GUEST_STORAGE_KEY) === 'true');
 
   const { data: meData, isLoading: meLoading } = useGetMe({ query: { queryKey: getGetMeQueryKey(), enabled: !user && !isGuest, retry: false } });
-  const loginMutation = useLogin();
-  const registerMutation = useRegister();
+  const firebaseSessionMutation = useFirebaseSession();
   const logoutMutation = useLogout();
 
   useEffect(() => {
@@ -57,25 +65,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [meData, user]);
 
-  const login = async (identifier: string, password: string) => {
-    const userData = await loginMutation.mutateAsync({ data: { identifier, password } });
+  const establishSessionFromFirebaseUser = async (
+    firebaseUser: { getIdToken: () => Promise<string> },
+    profile?: { displayName?: string; role?: FirebaseSessionInputRole; gradeLevel?: number; age?: number },
+  ) => {
+    const idToken = await firebaseUser.getIdToken();
+    const userData = await firebaseSessionMutation.mutateAsync({
+      data: { idToken, ...profile },
+    });
     setUser(userData);
     localStorage.setItem('bright-learners-user', JSON.stringify(userData));
   };
 
+  const login = async (email: string, password: string) => {
+    const firebaseUser = await firebaseSignInWithEmail(email, password);
+    await establishSessionFromFirebaseUser(firebaseUser);
+  };
+
   const register = async (
-    identifier: { username?: string; email?: string },
+    email: string,
     password: string,
     displayName: string,
-    role: RegisterInputRole,
+    role: FirebaseSessionInputRole,
     gradeLevel?: number,
     age?: number,
   ) => {
-    const userData = await registerMutation.mutateAsync({
-      data: { ...identifier, password, displayName, role, gradeLevel, age },
+    const firebaseUser = await firebaseRegisterWithEmail(email, password);
+    await establishSessionFromFirebaseUser(firebaseUser, { displayName, role, gradeLevel, age });
+  };
+
+  const loginWithGoogle = async () => {
+    const firebaseUser = await firebaseSignInWithGoogle();
+    await establishSessionFromFirebaseUser(firebaseUser, {
+      displayName: firebaseUser.displayName ?? undefined,
     });
-    setUser(userData);
-    localStorage.setItem('bright-learners-user', JSON.stringify(userData));
+  };
+
+  const resetPassword = async (email: string) => {
+    await firebaseResetPassword(email);
   };
 
   const continueAsGuest = () => {
@@ -90,18 +117,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsGuest(false);
       return;
     }
-    await logoutMutation.mutateAsync();
+    await Promise.allSettled([logoutMutation.mutateAsync(), signOutOfFirebase()]);
     setUser(null);
     localStorage.removeItem('bright-learners-user');
-  };
-
-  const updateLocalUser = (fields: Partial<User>) => {
-    setUser((prev) => {
-      if (!prev) return prev;
-      const next = { ...prev, ...fields };
-      localStorage.setItem('bright-learners-user', JSON.stringify(next));
-      return next;
-    });
   };
 
   return (
@@ -110,11 +128,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         isLoading: meLoading,
         isGuest,
+        firebaseEnabled: isFirebaseConfigured,
         login,
         register,
+        loginWithGoogle,
+        resetPassword,
         continueAsGuest,
         logout,
-        updateLocalUser,
       }}
     >
       {children}

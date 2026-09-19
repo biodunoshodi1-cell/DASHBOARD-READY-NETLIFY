@@ -9,7 +9,7 @@
   base = "artifacts/bright-learners"
   # PORT/BASE_PATH are required by vite.config.ts at build time (Replit
   # holdovers) — they don't affect the built static output.
-  command = "cd ../.. && pnpm install --no-frozen-lockfile && cd artifacts/bright-learners && pnpm run build"
+  command = "cd ../.. && pnpm install --frozen-lockfile && cd artifacts/bright-learners && pnpm run build"
   publish = "dist/public"
 
 [build.environment]

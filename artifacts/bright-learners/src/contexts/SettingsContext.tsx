@@ -8,6 +8,7 @@ interface Settings {
   dyslexiaFont: boolean;
   highContrast: boolean;
   darkMode: boolean;
+  showFingerGuide: boolean;
 }
 
 interface SettingsContextValue extends Settings {
@@ -23,6 +24,7 @@ const defaultSettings: Settings = {
   dyslexiaFont: false,
   highContrast: false,
   darkMode: false,
+  showFingerGuide: true,
 };
 
 const SettingsContext = createContext<SettingsContextValue | undefined>(undefined);

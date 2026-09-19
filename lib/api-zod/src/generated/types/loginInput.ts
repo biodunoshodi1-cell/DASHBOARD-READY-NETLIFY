@@ -8,8 +8,7 @@
 import type { LoginInputRole } from './loginInputRole';
 
 export interface LoginInput {
-  /** Username or email address */
-  identifier: string;
+  email: string;
   password: string;
   role?: LoginInputRole;
 }

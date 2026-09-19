@@ -387,6 +387,10 @@
   .gradient-challenge {
     background: linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%);
   }
+
+  .gradient-typing {
+    background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+  }
 }
 
 @keyframes float {
